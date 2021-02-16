@@ -10,6 +10,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
+import static java.nio.file.FileSystems.getDefault;
+
 @Service
 public class StorageService {
 
@@ -51,7 +53,7 @@ public class StorageService {
     private List<Path> createSortedPaths() {
 
         String userName = authService.getCurrentUser().getUsername();
-        Path rootPathStorage = FileSystems.getDefault().getPath("storage", userName);
+        Path rootPathStorage = getDefault().getPath("storage", userName);
 
         Set<Path> paths = new TreeSet<>();
 
@@ -94,7 +96,7 @@ public class StorageService {
     private List<Path> createSortedPathsLevelOne() {
 
         String userName = authService.getCurrentUser().getUsername();
-        Path rootPathStorage = FileSystems.getDefault().getPath("storage", userName);
+        Path rootPathStorage = getDefault().getPath("storage", userName);
 
         Set<Path> paths = new TreeSet<>();
 
@@ -137,7 +139,7 @@ public class StorageService {
 
     // TODO validate (and then append) relativePath. We only want to place files/folders in already existing folders
     public void upload(MultipartFile file, String relativePath) {
-        Path rootPathStorage = FileSystems.getDefault().getPath(
+        Path rootPathStorage = getDefault().getPath(
                 relativePath,
                 file.getOriginalFilename());
         try {
@@ -157,23 +159,30 @@ public class StorageService {
 
     public String create(String newPackageName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path newPackagePath = FileSystems.getDefault().getPath(STORAGE, userName, newPackageName);
+        Path newPackagePath = getDefault().getPath(STORAGE, userName, newPackageName);
         Path createdPackagePath = Files.createDirectory(newPackagePath);
         return createdPackagePath.getFileName().toString();
     }
 
     public String update(String oldName, String newName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path oldPackagePath = FileSystems.getDefault().getPath(STORAGE, userName, oldName);
-        Path newPackagePath = FileSystems.getDefault().getPath(STORAGE, userName, newName);
+        Path oldPackagePath = getDefault().getPath(STORAGE, userName, oldName);
+        Path newPackagePath = getDefault().getPath(STORAGE, userName, newName);
         Path createdPackagePath = Files.move(oldPackagePath, newPackagePath);
         return createdPackagePath.toFile().toString();
     }
 
     public void delete(String packageName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path packagePath = FileSystems.getDefault().getPath(STORAGE, userName, packageName);
+        Path packagePath = getDefault().getPath(STORAGE, userName, packageName);
         Files.delete(packagePath);
+    }
+
+    public String createFolder(String newFolderName, String parentFolderFullPath) throws IOException {
+        String userName = authService.getCurrentUser().getUsername();
+        Path newFolderPath = getDefault().getPath(STORAGE, userName, parentFolderFullPath, newFolderName);
+        Path createdFolderPath = Files.createDirectory(newFolderPath);
+        return createdFolderPath.toString();
     }
 
 }
