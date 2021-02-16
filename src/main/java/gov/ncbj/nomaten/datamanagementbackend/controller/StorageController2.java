@@ -64,7 +64,20 @@ public class StorageController2 {
     public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
         String newFolderName = createFolderRequest.getNewFolderName();
         String parentFolderFullPath = createFolderRequest.getParentFolderFullPath();
-        return ResponseEntity.status(OK).body(new CreateFolderResponse(storageService.createFolder(newFolderName, parentFolderFullPath)));
+        return ResponseEntity
+                .status(OK)
+                .body(new CreateFolderResponse(storageService.createFolder(newFolderName, parentFolderFullPath)));
+    }
+
+    @DeleteMapping(value = "/folders",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<DeleteFolderResponse> deleteFolder(@RequestBody DeleteFolderRequest deleteFolderRequest) throws IOException {
+        storageService.deleteFolder(deleteFolderRequest.getPackageName(), deleteFolderRequest.getFolderPath());
+        return ResponseEntity
+                .status(OK)
+                .body(new DeleteFolderResponse("Folder "
+                        + deleteFolderRequest.getFolderPath() + " successfully deleted!"));
     }
 
 }

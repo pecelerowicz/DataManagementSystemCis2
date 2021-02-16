@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -183,6 +184,15 @@ public class StorageService {
         Path newFolderPath = getDefault().getPath(STORAGE, userName, parentFolderFullPath, newFolderName);
         Path createdFolderPath = Files.createDirectory(newFolderPath);
         return createdFolderPath.toString();
+    }
+
+    public void deleteFolder(String packageName, String folderPath) throws IOException {
+        String userName = authService.getCurrentUser().getUsername();
+        Path folderPathString = getDefault().getPath(STORAGE, userName, packageName, folderPath);
+        Files.walk(folderPathString)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 
 }
