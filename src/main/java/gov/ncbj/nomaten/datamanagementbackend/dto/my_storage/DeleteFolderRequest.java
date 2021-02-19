@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeleteFolderRequest {
     private String packageName;
-    private String folderPath;
+    private String folderPathString;
 }

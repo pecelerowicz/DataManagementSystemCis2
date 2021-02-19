@@ -176,7 +176,10 @@ public class StorageService {
     public void delete(String packageName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
         Path packagePath = getDefault().getPath(STORAGE, userName, packageName);
-        Files.delete(packagePath);
+        Files.walk(packagePath)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 
     public String createFolder(String newFolderName, String parentFolderFullPath) throws IOException {
@@ -186,10 +189,10 @@ public class StorageService {
         return createdFolderPath.toString();
     }
 
-    public void deleteFolder(String packageName, String folderPath) throws IOException {
+    public void deleteFolder(String packageName, String folderPathString) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path folderPathString = getDefault().getPath(STORAGE, userName, packageName, folderPath);
-        Files.walk(folderPathString)
+        Path folderPath = getDefault().getPath(STORAGE, userName, packageName, folderPathString);
+        Files.walk(folderPath)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);

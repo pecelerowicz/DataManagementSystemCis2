@@ -37,26 +37,26 @@ public class StorageController2 {
         String createdFileName = storageService.create(createPackageRequest.getPackageName());
         return ResponseEntity.status(CREATED).body(new CreatePackageResponse(createdFileName));
     }
-//
-//    @PutMapping(value = "/packages",
-//            consumes = APPLICATION_JSON_VALUE,
-//            produces = APPLICATION_JSON_VALUE)
-//    public ResponseEntity<UpdatePackageResponse> updatePackage(
-//            @RequestBody @Valid UpdatePackageRequest updatePackageRequest) throws IOException {
-//        String newPath = storageService.update(updatePackageRequest.getOldName(),
-//                updatePackageRequest.getNewName());
-//        return ResponseEntity.status(ACCEPTED).body(new UpdatePackageResponse(newPath));
-//    }
-//
-//    @DeleteMapping(value = "/packages",
-//            consumes = APPLICATION_JSON_VALUE,
-//            produces = APPLICATION_JSON_VALUE)
-//    public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
-//        storageService.delete(deletePackageRequest.getPackageName());
-//        return ResponseEntity.status(OK)
-//                .body(new DeletePackageResponse("The package "
-//                        + deletePackageRequest.getPackageName() + " was deleted!"));
-//    }
+
+    @PutMapping(value = "/packages",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UpdatePackageResponse> updatePackage(
+            @RequestBody @Valid UpdatePackageRequest updatePackageRequest) throws IOException {
+        String newName = storageService.update(updatePackageRequest.getOldName(),
+                updatePackageRequest.getNewName());
+        return ResponseEntity.status(ACCEPTED).body(new UpdatePackageResponse(newName));
+    }
+
+    @DeleteMapping(value = "/packages",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
+        storageService.delete(deletePackageRequest.getPackageName());
+        return ResponseEntity.status(OK)
+                .body(new DeletePackageResponse("The package "
+                        + deletePackageRequest.getPackageName() + " was deleted!"));
+    }
 
     @PostMapping(value = "/folders",
             consumes = APPLICATION_JSON_VALUE,
@@ -73,11 +73,11 @@ public class StorageController2 {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<DeleteFolderResponse> deleteFolder(@RequestBody DeleteFolderRequest deleteFolderRequest) throws IOException {
-        storageService.deleteFolder(deleteFolderRequest.getPackageName(), deleteFolderRequest.getFolderPath());
+        storageService.deleteFolder(deleteFolderRequest.getPackageName(), deleteFolderRequest.getFolderPathString());
         return ResponseEntity
                 .status(OK)
                 .body(new DeleteFolderResponse("Folder "
-                        + deleteFolderRequest.getFolderPath() + " successfully deleted!"));
+                        + deleteFolderRequest.getFolderPathString() + " successfully deleted!"));
     }
 
 }
