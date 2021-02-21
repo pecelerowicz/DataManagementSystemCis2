@@ -45,4 +45,15 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private List<DataSet> dataSets = new LinkedList<>();
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", created=" + created +
+                ", enabled=" + enabled +
+                '}';
+    }
 }

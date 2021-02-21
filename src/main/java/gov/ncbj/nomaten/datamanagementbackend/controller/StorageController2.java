@@ -1,6 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.*;
+import gov.ncbj.nomaten.datamanagementbackend.service.StoragePackageService;
 import gov.ncbj.nomaten.datamanagementbackend.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class StorageController2 {
 
     @Autowired
     private StorageService storageService;
+
+    @Autowired
+    private StoragePackageService storagePackageService;
 
     /**** PACKAGES ****/
 
@@ -58,6 +62,14 @@ public class StorageController2 {
                         + deletePackageRequest.getPackageName() + " was deleted!"));
     }
 
+    @GetMapping(value = "/storagesPackages")
+    public ResponseEntity<StoragesPackagesResponse> getStoragesPackages() throws IOException {
+        return ResponseEntity
+                .status(OK)
+                .body(new StoragesPackagesResponse(storagePackageService.getStoragesAndPackages()));
+    }
+
+    /**** FOLDERS ****/
     @PostMapping(value = "/folders",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
