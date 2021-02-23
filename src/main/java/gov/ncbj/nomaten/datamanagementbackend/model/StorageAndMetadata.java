@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoragePackage implements Comparable<StoragePackage>{ // TODO isFolder = false; isPackage = false (NOT AT THE SAME TIME).
+public class StorageAndMetadata implements Comparable<StorageAndMetadata>{ // TODO hasStorage = false; hasMetadata = false (NOT AT THE SAME TIME).
     private String name;
-    private boolean isStorage;
-    private boolean isPackage;
+    private boolean hasStorage;
+    private boolean hasMetadata;
 
     @Override
-    public int compareTo(StoragePackage that) {
+    public int compareTo(StorageAndMetadata that) {
         return this.name.compareTo(that.name);
     }
 }
