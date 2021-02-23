@@ -45,6 +45,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private List<DataSet> dataSets = new LinkedList<>();
 
+    @OneToMany(mappedBy = "user", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private List<Info> infoList = new LinkedList<>();
+
     @Override
     public String toString() {
         return "User{" +
