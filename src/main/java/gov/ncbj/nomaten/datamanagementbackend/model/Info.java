@@ -12,7 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "info")
+@Table(name = "info", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "name"} )})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
