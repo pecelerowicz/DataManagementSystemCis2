@@ -8,26 +8,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
+import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
+import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.readFolderStructure;
 import static java.nio.file.FileSystems.getDefault;
 
 @Service
 public class FolderService {
 
-    private static String STORAGE = "storage";
-
     @Autowired
     private AuthService authService;
 
     public PathNode getFolderStructure() {
-        List<Path> paths = createSortedPaths();
-        PathNode root = new PathNode(paths.remove(0));
-        for(Path path: paths) {
-            root = addNode(root, path);
-        }
-        return root;
+        return readFolderStructure(authService.getCurrentUser());
     }
 
     public String createFolder(String newFolderName, String parentFolderFullPath) throws IOException {
@@ -50,60 +44,6 @@ public class FolderService {
     public void uploadFile(MultipartFile file, String relativePath) throws IOException {
         Path rootPathStorage = getDefault().getPath(relativePath, file.getOriginalFilename());
         file.transferTo(rootPathStorage);
-    }
-
-    private PathNode addNode(PathNode where, Path what) {
-        if(what.getParent().equals(where.getPath())) {
-            where.getChildren().add(new PathNode(what));
-        } else {
-            for(PathNode child: where.getChildren()) {
-                addNode(child, what);
-            }
-        }
-        return where;
-    }
-
-    private List<Path> createSortedPaths() {
-
-        String userName = authService.getCurrentUser().getUsername();
-        Path rootPathStorage = getDefault().getPath("storage", userName);
-
-        Set<Path> paths = new TreeSet<>();
-
-        try {
-            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    paths.add(dir);
-                    return super.preVisitDirectory(dir, attrs);
-                }
-
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    paths.add(file);
-                    return super.visitFile(file, attrs);
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return super.visitFileFailed(file, exc);
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return super.postVisitDirectory(dir, exc);
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        List<Path> pathList = new LinkedList<>();
-        paths.forEach(p -> {
-            pathList.add(p);
-        });
-
-        return pathList;
     }
 
 }
