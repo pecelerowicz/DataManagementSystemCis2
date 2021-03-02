@@ -57,10 +57,10 @@ public class StorageMetadataController {
     }
 
     @GetMapping(value = "/storageMetadata")
-    public ResponseEntity<StorageAndMetadataResponse> getStorageAndMetadata() throws IOException {
+    public ResponseEntity<StorageAndMetadataListResponse> getStorageAndMetadata() throws IOException {
         return ResponseEntity
                 .status(OK)
-                .body(new StorageAndMetadataResponse(storageAndMetadataService.getStorageAndMetadata()));
+                .body(new StorageAndMetadataListResponse(storageAndMetadataService.getStorageAndMetadataList()));
     }
 
 }

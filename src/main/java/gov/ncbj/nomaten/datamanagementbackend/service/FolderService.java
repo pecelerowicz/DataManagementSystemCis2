@@ -20,7 +20,11 @@ public class FolderService {
     @Autowired
     private AuthService authService;
 
-    public PathNode getFolderStructure() {
+    public PathNode getPackageFolderStructure(String storageName) {
+        return readFolderStructure(authService.getCurrentUser(), storageName);
+    }
+
+    public PathNode getFullFolderStructure() {
         return readFolderStructure(authService.getCurrentUser());
     }
 

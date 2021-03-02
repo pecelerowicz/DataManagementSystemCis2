@@ -32,7 +32,7 @@ public class DataManipulation {
     }
 
     public static List<String> metadataNamesOfUser(User user) {
-        return user.getDataSets()
+        return user.getInfoList()
                 .stream()
                 .map(p -> p.getName())
                 .collect(Collectors.toList());
@@ -44,7 +44,9 @@ public class DataManipulation {
     }
 
     public static PathNode readFolderStructure(User user) {
-        List<Path> paths = createSortedPaths(user);
+        String userName = user.getUsername();
+        Path rootPath = getDefault().getPath(STORAGE, userName);
+        List<Path> paths = createSortedPaths(rootPath);
         PathNode root = new PathNode(paths.remove(0));
         for(Path path: paths) {
             root = addNode(root, path);
@@ -52,13 +54,19 @@ public class DataManipulation {
         return root;
     }
 
-    private static List<Path> createSortedPaths(User user) {
-
+    public static PathNode readFolderStructure(User user, String storageName) {
         String userName = user.getUsername();
-        Path rootPathStorage = getDefault().getPath(STORAGE, userName);
+        Path rootPath = getDefault().getPath(STORAGE, userName, storageName);
+        List<Path> paths = createSortedPaths(rootPath);
+        PathNode root = new PathNode(paths.remove(0));
+        for(Path path: paths) {
+            root = addNode(root, path);
+        }
+        return root;
+    }
 
+    private static List<Path> createSortedPaths(Path rootPathStorage) {
         Set<Path> paths = new TreeSet<>();
-
         try {
             Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<>() {
                 @Override

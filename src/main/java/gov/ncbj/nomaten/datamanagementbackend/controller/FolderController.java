@@ -24,9 +24,14 @@ public class FolderController {
     @Autowired
     private FolderService folderService;
 
-    @GetMapping("/folders")
-    public PathNode getFolderStructure() {
-        return folderService.getFolderStructure();
+    @GetMapping("/package-folders/{storageName}")
+    public PathNode getPackageFolderStructure(@PathVariable String storageName) {
+        return folderService.getPackageFolderStructure(storageName);
+    }
+
+    @GetMapping("/full-folders")
+    public PathNode getFullFolderStructure() {
+        return folderService.getFullFolderStructure();
     }
 
     @PostMapping(value = "/folders",

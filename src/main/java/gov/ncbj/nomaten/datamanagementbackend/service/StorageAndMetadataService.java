@@ -121,7 +121,7 @@ public class StorageAndMetadataService {
 
     ///////////////////////////////////////
 
-    public List<StorageAndMetadata> getStorageAndMetadata() throws IOException {
+    public List<StorageAndMetadata> getStorageAndMetadataList() throws IOException {
         User user = authService.getCurrentUser();
         List<String> metadataNames = metadataNamesOfUser(user);
         List<String> storageNames = storageNamesOfUser(user);
