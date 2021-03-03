@@ -25,7 +25,7 @@ public class StorageAndMetadataService {
         this.authService = authService;
     }
 
-    public PathNode getStorage() {
+    public PathNode getPackage() {
         List<Path> paths = createSortedPathsLevelOne();
         PathNode root = new PathNode(paths.remove(0));
         for(Path path: paths) {
@@ -34,14 +34,14 @@ public class StorageAndMetadataService {
         return root;
     }
 
-    public String createStorage(String newPackageName) throws IOException {
+    public String createPackage(String newPackageName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
         Path newPackagePath = getDefault().getPath(STORAGE, userName, newPackageName);
         Path createdPackagePath = Files.createDirectory(newPackagePath);
         return createdPackagePath.getFileName().toString();
     }
 
-    public String updateStorage(String oldName, String newName) throws IOException {
+    public String updatePackage(String oldName, String newName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
         Path oldPackagePath = getDefault().getPath(STORAGE, userName, oldName);
         Path newPackagePath = getDefault().getPath(STORAGE, userName, newName);
@@ -49,7 +49,7 @@ public class StorageAndMetadataService {
         return createdPackagePath.toFile().toString();
     }
 
-    public void deleteStorage(String packageName) throws IOException {
+    public void deletePackage(String packageName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
         Path packagePath = getDefault().getPath(STORAGE, userName, packageName);
         Files.walk(packagePath)
@@ -140,7 +140,7 @@ public class StorageAndMetadataService {
             }
         }
         for(String storageName: storage) {
-            if(!metadata.contains(storage)) {
+            if(!metadata.contains(storageName)) {
                 storageAndMetadataList.add(new StorageAndMetadata(storageName, true, false));
             }
         }
@@ -148,5 +148,13 @@ public class StorageAndMetadataService {
         return storageAndMetadataList;
     }
 
+    ////////////////////////////////////////////////
+
+    public String createStorage(String storageName) throws IOException {
+        String userName = authService.getCurrentUser().getUsername();
+        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
+        Path createdStoragePath = Files.createDirectory(newStoragePath);
+        return createdStoragePath.getFileName().toString();
+    }
 
 }

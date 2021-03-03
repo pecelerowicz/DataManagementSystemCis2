@@ -21,36 +21,36 @@ public class StorageMetadataController {
     @Autowired
     private StorageAndMetadataService storageAndMetadataService;
 
-    @GetMapping(value = "/storage",
+    @GetMapping(value = "/package",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PackagesResponse> getStorage() {
-        return new ResponseEntity<>(pathNodeToPackagesResponse(storageAndMetadataService.getStorage()), OK);
+    public ResponseEntity<PackagesResponse> getPackage() {
+        return new ResponseEntity<>(pathNodeToPackagesResponse(storageAndMetadataService.getPackage()), OK);
     }
 
-    @PostMapping(value = "/storage",
+    @PostMapping(value = "/package",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<CreatePackageResponse> createStorage(
+    public ResponseEntity<CreatePackageResponse> createPackage(
             @RequestBody @Valid CreatePackageRequest createPackageRequest) throws IOException {
-        String createdStorageName = storageAndMetadataService.createStorage(createPackageRequest.getPackageName());
+        String createdStorageName = storageAndMetadataService.createPackage(createPackageRequest.getPackageName());
         return ResponseEntity.status(CREATED).body(new CreatePackageResponse(createdStorageName));
     }
 
-    @PutMapping(value = "/storage",
+    @PutMapping(value = "/package",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdatePackageResponse> updateStorage(
+    public ResponseEntity<UpdatePackageResponse> updatePackage(
             @RequestBody @Valid UpdatePackageRequest updatePackageRequest) throws IOException {
-        String newName = storageAndMetadataService.updateStorage(updatePackageRequest.getOldName(),
+        String newName = storageAndMetadataService.updatePackage(updatePackageRequest.getOldName(),
                 updatePackageRequest.getNewName());
         return ResponseEntity.status(ACCEPTED).body(new UpdatePackageResponse(newName));
     }
 
-    @DeleteMapping(value = "/storage",
+    @DeleteMapping(value = "/package",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<DeletePackageResponse> deleteStorage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
-        storageAndMetadataService.deleteStorage(deletePackageRequest.getPackageName());
+    public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
+        storageAndMetadataService.deletePackage(deletePackageRequest.getPackageName());
         return ResponseEntity.status(OK)
                 .body(new DeletePackageResponse("The package "
                         + deletePackageRequest.getPackageName() + " was deleted!"));
@@ -61,6 +61,12 @@ public class StorageMetadataController {
         return ResponseEntity
                 .status(OK)
                 .body(new StorageAndMetadataListResponse(storageAndMetadataService.getStorageAndMetadataList()));
+    }
+
+    @PostMapping(value = "/storage")
+    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
+        CreateStorageResponse createStorageResponse = new CreateStorageResponse(storageAndMetadataService.createStorage(createStorageRequest.getStorageName()));
+        return ResponseEntity.status(OK).body(createStorageResponse);
     }
 
 }
