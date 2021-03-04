@@ -1,10 +1,12 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
+import gov.ncbj.nomaten.datamanagementbackend.model.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.StorageAndMetadata;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,13 +51,27 @@ public class StorageAndMetadataService {
         return createdPackagePath.toFile().toString();
     }
 
+    @Transactional
     public void deletePackage(String packageName) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
+        User user = authService.getCurrentUser();
+        String userName = user.getUsername();
         Path packagePath = getDefault().getPath(STORAGE, userName, packageName);
-        Files.walk(packagePath)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        if(Files.exists(packagePath)) {
+            Files.walk(packagePath)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+        Optional<Info> maybeTargetInfo = user
+                .getInfoList()
+                .stream()
+                .filter(info -> info.getName().equals(packageName))
+                .findFirst();
+        if(maybeTargetInfo.isPresent()) {
+            Info targetInfo = maybeTargetInfo.get();
+            user.getInfoList().remove(targetInfo);
+            targetInfo.setUser(null);
+        }
     }
 
 
