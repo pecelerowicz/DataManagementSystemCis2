@@ -16,6 +16,7 @@ import java.util.*;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.*;
 import static java.nio.file.FileSystems.getDefault;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class StorageAndMetadataService {
@@ -171,6 +172,34 @@ public class StorageAndMetadataService {
         Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
         Path createdStoragePath = Files.createDirectory(newStoragePath);
         return createdStoragePath.getFileName().toString();
+    }
+
+    @Transactional
+    public String createMetadata(String metadataName) throws IOException {
+        User user = authService.getCurrentUser();
+
+        List<StorageAndMetadata> storageAndMetadataList = getStorageAndMetadataList();
+        List<StorageAndMetadata> filtered = storageAndMetadataList
+                .stream()
+                .filter(sm -> sm.getName().equals(metadataName))
+                .collect(toList());
+
+        if(filtered.size() == 0) {
+            throw new RuntimeException("No package " + metadataName);
+        } else if(filtered.size() > 1) {
+            throw new RuntimeException("Corrupted data");
+        } else {
+            StorageAndMetadata storageAndMetadata = filtered.get(0);
+            if(storageAndMetadata.isHasMetadata()) {
+                throw new RuntimeException("Metadata " + metadataName + " already created!");
+            }
+        }
+
+        Info info = new Info();
+        info.setUser(user);
+        info.setName(metadataName);
+        user.getInfoList().add(info);
+        return metadataName;
     }
 
 }

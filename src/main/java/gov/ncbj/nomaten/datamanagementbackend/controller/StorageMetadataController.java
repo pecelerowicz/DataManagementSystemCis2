@@ -69,4 +69,10 @@ public class StorageMetadataController {
         return ResponseEntity.status(OK).body(createStorageResponse);
     }
 
+    @PostMapping(value = "/metadata")
+    public ResponseEntity<CreateMetadataResponse> createMetadata(@RequestBody CreateMetadataRequest createMetadataRequest) throws IOException{
+        CreateMetadataResponse createMetadataResponse = new CreateMetadataResponse(storageAndMetadataService.createMetadata(createMetadataRequest.getMetadataName()));
+        return ResponseEntity.status(OK).body(createMetadataResponse);
+    }
+
 }
