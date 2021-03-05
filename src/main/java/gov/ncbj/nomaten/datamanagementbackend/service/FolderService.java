@@ -28,9 +28,9 @@ public class FolderService {
         return readFolderStructure(authService.getCurrentUser());
     }
 
-    public String createFolder(String newFolderName, String parentFolderFullPath) throws IOException {
+    public String createFolder(String newFolderName, String packageName, String parentFolderRelativePath) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path newFolderPath = getDefault().getPath(STORAGE, userName, parentFolderFullPath, newFolderName);
+        Path newFolderPath = getDefault().getPath(STORAGE, userName, packageName, parentFolderRelativePath, newFolderName);
         Path createdFolderPath = Files.createDirectory(newFolderPath);
         return createdFolderPath.toString();
     }

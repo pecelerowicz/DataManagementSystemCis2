@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateFolderRequest {
     private String newFolderName;
-    private String parentFolderFullPath;
+    private String packageName;
+    private String parentFolderRelativePath;
 }

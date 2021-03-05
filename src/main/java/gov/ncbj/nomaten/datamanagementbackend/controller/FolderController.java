@@ -39,10 +39,12 @@ public class FolderController {
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
         String newFolderName = createFolderRequest.getNewFolderName();
-        String parentFolderFullPath = createFolderRequest.getParentFolderFullPath();
+        String packageName = createFolderRequest.getPackageName();
+        String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath();
+
         return ResponseEntity
                 .status(OK)
-                .body(new CreateFolderResponse(folderService.createFolder(newFolderName, parentFolderFullPath)));
+                .body(new CreateFolderResponse(folderService.createFolder(newFolderName, packageName, parentFolderRelativePath)));
     }
 
     @DeleteMapping(value = "/folders",
