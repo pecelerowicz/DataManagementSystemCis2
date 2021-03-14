@@ -14,9 +14,9 @@ public class PathNode implements Comparable<PathNode> {
     private boolean isFolder;
     private Set<PathNode> children = new TreeSet<>();
 
-    public PathNode(Path path) {
+    public PathNode(Path path, Path rootPath) {
         this.path = path;
-        this.relative = path.toString();
+        this.relative = rootPath.relativize(path).toString(); //path.toString();
         this.isFolder = Files.isDirectory(this.path);
         this.children = new TreeSet<>();
     }

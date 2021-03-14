@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
+import com.google.gson.Gson;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 
@@ -59,9 +60,12 @@ public class FolderController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<UploadFileResponse> uploadLocal(@RequestParam("file") MultipartFile multipartFile,
-                                                          @RequestParam("internalPath") String relativePath) throws IOException{
-        folderService.uploadFile(multipartFile, relativePath);
+    public ResponseEntity<UploadFileResponse> uploadLocal(@RequestParam("file") MultipartFile multipartFile, @RequestParam("uploadFileRequest") String uploadFileRequestString) throws IOException{
+        Gson gson = new Gson();
+        UploadFileRequest uploadFileRequest = gson.fromJson(uploadFileRequestString, UploadFileRequest.class);
+        String packageName = uploadFileRequest.getPackageName();
+        String folderRelativePath = uploadFileRequest.getFolderRelativePath();
+        folderService.uploadFile(multipartFile, packageName, folderRelativePath);
         return ResponseEntity.status(HttpStatus.OK).body(new UploadFileResponse("Successfully uploaded"));
     }
 

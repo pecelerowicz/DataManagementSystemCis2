@@ -47,9 +47,9 @@ public class DataManipulation {
         String userName = user.getUsername();
         Path rootPath = getDefault().getPath(STORAGE, userName);
         List<Path> paths = createSortedPaths(rootPath);
-        PathNode root = new PathNode(paths.remove(0));
+        PathNode root = new PathNode(paths.remove(0), rootPath);
         for(Path path: paths) {
-            root = addNode(root, path);
+            root = addNode(root, path, rootPath);
         }
         return root;
     }
@@ -58,9 +58,9 @@ public class DataManipulation {
         String userName = user.getUsername();
         Path rootPath = getDefault().getPath(STORAGE, userName, storageName);
         List<Path> paths = createSortedPaths(rootPath);
-        PathNode root = new PathNode(paths.remove(0));
+        PathNode root = new PathNode(paths.remove(0), rootPath);
         for(Path path: paths) {
-            root = addNode(root, path);
+            root = addNode(root, path, rootPath);
         }
         return root;
     }
@@ -103,12 +103,12 @@ public class DataManipulation {
         return pathList;
     }
 
-    private static PathNode addNode(PathNode where, Path what) {
+    private static PathNode addNode(PathNode where, Path what, Path rootPath) {
         if(what.getParent().equals(where.getPath())) {
-            where.getChildren().add(new PathNode(what));
+            where.getChildren().add(new PathNode(what, rootPath));
         } else {
             for(PathNode child: where.getChildren()) {
-                addNode(child, what);
+                addNode(child, what, rootPath);
             }
         }
         return where;

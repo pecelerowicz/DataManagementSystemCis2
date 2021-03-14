@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.UploadFileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
@@ -45,8 +46,9 @@ public class FolderService {
     }
 
     // TODO validate (and then append) relativePath. We only want to place files/folders in already existing folders
-    public void uploadFile(MultipartFile file, String relativePath) throws IOException {
-        Path rootPathStorage = getDefault().getPath(relativePath, file.getOriginalFilename());
+    public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
+        String userName = authService.getCurrentUser().getUsername();
+        Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getName());
         file.transferTo(rootPathStorage);
     }
 
