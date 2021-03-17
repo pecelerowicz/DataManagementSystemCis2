@@ -48,7 +48,7 @@ public class FolderService {
     // TODO validate (and then append) relativePath. We only want to place files/folders in already existing folders
     public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getName());
+        Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getOriginalFilename());
         file.transferTo(rootPathStorage);
     }
 

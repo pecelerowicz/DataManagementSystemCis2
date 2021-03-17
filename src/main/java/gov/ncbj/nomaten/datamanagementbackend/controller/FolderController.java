@@ -41,7 +41,8 @@ public class FolderController {
     public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
         String newFolderName = createFolderRequest.getNewFolderName();
         String packageName = createFolderRequest.getPackageName();
-        String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath();
+        String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath() == null
+                ? "" : createFolderRequest.getParentFolderRelativePath();
 
         return ResponseEntity
                 .status(OK)
