@@ -122,4 +122,10 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
+    public User getUserByName(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException("No user " + username + " found"));
+    }
+
 }
