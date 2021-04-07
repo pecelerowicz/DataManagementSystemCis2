@@ -68,7 +68,7 @@ public class DataManipulation {
     private static List<Path> createSortedPaths(Path rootPathStorage) {
         Set<Path> paths = new TreeSet<>();
         try {
-            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<>() {
+            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     paths.add(dir);
