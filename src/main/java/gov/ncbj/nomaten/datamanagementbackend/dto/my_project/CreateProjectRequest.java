@@ -1,16 +1,13 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_project;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class DataSetDto {
-    private Long id;
+@AllArgsConstructor
+public class CreateProjectRequest {
     private String name;
     private String description;
 }

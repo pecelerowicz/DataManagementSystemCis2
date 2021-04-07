@@ -44,7 +44,7 @@ public class Main {
         Set<Path> paths = new TreeSet<>();
         Path rootPathStorage = FileSystems.getDefault().getPath("storage");
         try {
-            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<>() {
+            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     paths.add(dir);

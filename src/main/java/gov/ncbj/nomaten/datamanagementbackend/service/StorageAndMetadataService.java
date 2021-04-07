@@ -101,7 +101,7 @@ public class StorageAndMetadataService {
         Set<Path> paths = new TreeSet<>();
 
         try {
-            Files.walkFileTree(rootPathStorage, EnumSet.noneOf(FileVisitOption.class),1, new SimpleFileVisitor<>() {
+            Files.walkFileTree(rootPathStorage, EnumSet.noneOf(FileVisitOption.class),1, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     paths.add(dir);
