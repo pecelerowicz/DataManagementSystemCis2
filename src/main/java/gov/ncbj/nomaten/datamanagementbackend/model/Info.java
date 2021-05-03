@@ -27,6 +27,16 @@ public class Info {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "access")
+    @Enumerated(EnumType.STRING)
+    private Access access;
+
+    @Column(name = "short_name")
+    private String shortName;
+
+    @Column(name = "long_name")
+    private String longName;
+
     @Column(name = "description")
     private String description;
 
@@ -41,5 +51,9 @@ public class Info {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public enum Access {
+        PUBLIC, PROTECTED, PRIVATE
     }
 }

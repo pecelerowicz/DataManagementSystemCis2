@@ -200,6 +200,7 @@ public class StorageAndMetadataService {
         Info info = new Info();
         info.setUser(user);
         info.setName(metadataName);
+        info.setAccess(Info.Access.PRIVATE);
         user.getInfoList().add(info);
         return metadataName;
     }
