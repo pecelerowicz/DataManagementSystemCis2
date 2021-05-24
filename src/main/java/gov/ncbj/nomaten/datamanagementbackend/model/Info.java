@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "info", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "name"} )})
+@Table(name = "info", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "info_name"} )})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,8 +25,8 @@ public class Info {
     private Long id;
 
     @NotBlank(message = "Info name cannot be blank")
-    @Column(name = "name")
-    private String name;
+    @Column(name = "info_name")
+    private String infoName;
 
     @Column(name = "access")
     @Enumerated(EnumType.STRING)
@@ -40,6 +41,10 @@ public class Info {
     @Column(name = "description")
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "device_id")
+    private Device device;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -48,7 +53,7 @@ public class Info {
     public String toString() {
         return "Info{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + infoName + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }

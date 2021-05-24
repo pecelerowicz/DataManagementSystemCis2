@@ -68,7 +68,7 @@ public class StorageAndMetadataService {
         Optional<Info> maybeTargetInfo = user
                 .getInfoList()
                 .stream()
-                .filter(info -> info.getName().equals(packageName))
+                .filter(info -> info.getInfoName().equals(packageName))
                 .findFirst();
         if(maybeTargetInfo.isPresent()) {
             Info targetInfo = maybeTargetInfo.get();
@@ -199,7 +199,7 @@ public class StorageAndMetadataService {
 
         Info info = new Info();
         info.setUser(user);
-        info.setName(metadataName);
+        info.setInfoName(metadataName);
         info.setAccess(Info.Access.PRIVATE);
         user.getInfoList().add(info);
         return metadataName;

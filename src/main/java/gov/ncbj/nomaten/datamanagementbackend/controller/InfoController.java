@@ -1,8 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.DeviceDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
 import gov.ncbj.nomaten.datamanagementbackend.model.Info;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,29 +21,37 @@ public class InfoController {
     }
 
     @GetMapping("/package-info/{infoName}")
-    public ResponseEntity<InfoResponse> getPackageInfo(@PathVariable String infoName) {
+    public ResponseEntity<InfoDto> getPackageInfo(@PathVariable String infoName) {
         Info info = infoService.getInfo(infoName);
-        InfoResponse infoResponse = InfoResponse
+        InfoDto infoResponse = InfoDto
                 .builder()
-                .name(info.getName())
                 .access(info.getAccess())
+                .infoName(info.getInfoName())
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
+                .deviceDto(DeviceDto
+                        .builder()
+                        .name(info.getDevice().getName())
+                        .build())
                 .build();
         return ResponseEntity.ok(infoResponse);
     }
 
     @PutMapping("/package-info")
-    public ResponseEntity<UpdateInfoResponse> updatePackageInfo(@RequestBody UpdateInfoRequest updateInfoRequest) {
-        Info info = infoService.updateInfo(updateInfoRequest);
-        UpdateInfoResponse updateInfoResponse = UpdateInfoResponse
+    public ResponseEntity<InfoDto> updatePackageInfo(@RequestBody InfoDto infoDto) {
+        Info info = infoService.updateInfo(infoDto);
+        InfoDto infoResponse = InfoDto
                 .builder()
-                .name(info.getName())
+                .infoName(info.getInfoName())
                 .access(info.getAccess())
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
+                .deviceDto(DeviceDto
+                        .builder()
+                        .name(info.getDevice().getName())
+                        .build())
                 .build();
-        return ResponseEntity.ok(updateInfoResponse);
+        return ResponseEntity.ok(infoResponse);
     }
 
 }

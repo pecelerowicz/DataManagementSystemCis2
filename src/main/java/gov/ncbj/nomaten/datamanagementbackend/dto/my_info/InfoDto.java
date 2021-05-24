@@ -6,14 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateInfoResponse {
-    private String name;
+public class InfoDto {
+    private String infoName;
     private Info.Access access;
     private String shortName;
     private String longName;
+    private DeviceDto deviceDto;
 }
+
+
