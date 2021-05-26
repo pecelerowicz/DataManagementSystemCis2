@@ -48,11 +48,12 @@ public class InfoService {
         info.setAccess(access==null || access.equals("") ? Info.Access.PRIVATE : access);
         info.setShortName(shortName==null || shortName.equals("") ? null : shortName);
         info.setLongName(longName==null || longName.equals("") ? null : longName);
-        Device device = deviceRepository
-                .findByName(deviceDto.getName())
-                .orElseThrow(() -> new RuntimeException("No device: " + deviceDto.getName()));
-        info.setDevice(device);
-
+        if(deviceDto.getName() != null) {
+            Device device = deviceRepository
+                    .findByName(deviceDto.getName())
+                    .orElseThrow(() -> new RuntimeException("No device: " + deviceDto.getName()));
+            info.setDevice(device);
+        }
         return info;
     }
 

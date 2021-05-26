@@ -23,6 +23,7 @@ public class InfoController {
     @GetMapping("/package-info/{infoName}")
     public ResponseEntity<InfoDto> getPackageInfo(@PathVariable String infoName) {
         Info info = infoService.getInfo(infoName);
+        System.out.println(info);
         InfoDto infoResponse = InfoDto
                 .builder()
                 .access(info.getAccess())
@@ -31,7 +32,7 @@ public class InfoController {
                 .longName(info.getLongName())
                 .deviceDto(DeviceDto
                         .builder()
-                        .name(info.getDevice().getName())
+                        .name(info.getDevice()==null?null:info.getDevice().getName())
                         .build())
                 .build();
         return ResponseEntity.ok(infoResponse);
@@ -48,7 +49,7 @@ public class InfoController {
                 .longName(info.getLongName())
                 .deviceDto(DeviceDto
                         .builder()
-                        .name(info.getDevice().getName())
+                        .name(info.getDevice()!=null ? info.getDevice().getName() : "")
                         .build())
                 .build();
         return ResponseEntity.ok(infoResponse);
