@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -26,6 +27,7 @@ public class Info {
 
     @NotBlank(message = "Info name cannot be blank")
     @Column(name = "info_name")
+    @Length(min = 1, max = 20)
     private String infoName;
 
     @Column(name = "access")
@@ -38,12 +40,8 @@ public class Info {
     @Column(name = "long_name")
     private String longName;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "device_id")
-    private Device device;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -53,8 +51,12 @@ public class Info {
     public String toString() {
         return "Info{" +
                 "id=" + id +
-                ", name='" + infoName + '\'' +
+                ", infoName='" + infoName + '\'' +
+                ", access=" + access +
+                ", shortName='" + shortName + '\'' +
+                ", longName='" + longName + '\'' +
                 ", description='" + description + '\'' +
+                ", user=" + user +
                 '}';
     }
 

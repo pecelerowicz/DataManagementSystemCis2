@@ -15,7 +15,7 @@ public class InfoDto {
     private Info.Access access;
     private String shortName;
     private String longName;
-    private DeviceDto deviceDto;
+    private String description;
 }
 
 

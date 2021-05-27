@@ -1,12 +1,15 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.DeviceDto;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
 import gov.ncbj.nomaten.datamanagementbackend.model.Info;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
+import gov.ncbj.nomaten.datamanagementbackend.validators.InfoDtoValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @CrossOrigin
 @RestController
@@ -23,23 +26,20 @@ public class InfoController {
     @GetMapping("/package-info/{infoName}")
     public ResponseEntity<InfoDto> getPackageInfo(@PathVariable String infoName) {
         Info info = infoService.getInfo(infoName);
-        System.out.println(info);
         InfoDto infoResponse = InfoDto
                 .builder()
                 .access(info.getAccess())
                 .infoName(info.getInfoName())
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
-                .deviceDto(DeviceDto
-                        .builder()
-                        .name(info.getDevice()==null?null:info.getDevice().getName())
-                        .build())
+                .description(info.getDescription())
                 .build();
-        return ResponseEntity.ok(infoResponse);
+        return ok(infoResponse);
     }
 
     @PutMapping("/package-info")
     public ResponseEntity<InfoDto> updatePackageInfo(@RequestBody InfoDto infoDto) {
+        new InfoDtoValidator().validate(infoDto);
         Info info = infoService.updateInfo(infoDto);
         InfoDto infoResponse = InfoDto
                 .builder()
@@ -47,12 +47,9 @@ public class InfoController {
                 .access(info.getAccess())
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
-                .deviceDto(DeviceDto
-                        .builder()
-                        .name(info.getDevice()!=null ? info.getDevice().getName() : "")
-                        .build())
+                .description(info.getDescription())
                 .build();
-        return ResponseEntity.ok(infoResponse);
+        return ok(infoResponse);
     }
 
 }
