@@ -34,7 +34,7 @@ public class DataManipulation {
     public static List<String> metadataNamesOfUser(User user) {
         return user.getInfoList()
                 .stream()
-                .map(p -> p.getName())
+                .map(p -> p.getInfoName())
                 .collect(Collectors.toList());
     }
 

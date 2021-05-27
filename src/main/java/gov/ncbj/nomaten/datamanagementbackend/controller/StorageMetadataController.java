@@ -2,6 +2,9 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.StorageAndMetadataService;
+import gov.ncbj.nomaten.datamanagementbackend.validators.CreateMetadataRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.CreatePackageRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +34,8 @@ public class StorageMetadataController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CreatePackageResponse> createPackage(
-            @RequestBody @Valid CreatePackageRequest createPackageRequest) throws IOException {
+            @RequestBody CreatePackageRequest createPackageRequest) throws IOException {
+        new CreatePackageRequestValidator().validate(createPackageRequest);
         String createdStorageName = storageAndMetadataService.createPackage(createPackageRequest.getPackageName());
         return ResponseEntity.status(CREATED).body(new CreatePackageResponse(createdStorageName));
     }
@@ -71,6 +75,7 @@ public class StorageMetadataController {
 
     @PostMapping(value = "/metadata")
     public ResponseEntity<CreateMetadataResponse> createMetadata(@RequestBody CreateMetadataRequest createMetadataRequest) throws IOException{
+        new CreateMetadataRequestValidator().validate(createMetadataRequest);
         CreateMetadataResponse createMetadataResponse = new CreateMetadataResponse(storageAndMetadataService.createMetadata(createMetadataRequest.getMetadataName()));
         return ResponseEntity.status(OK).body(createMetadataResponse);
     }
