@@ -4,6 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
 import gov.ncbj.nomaten.datamanagementbackend.model.Info;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.InfoDtoValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.InfoNameValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class InfoController {
 
     @GetMapping("/package-info/{infoName}")
     public ResponseEntity<InfoDto> getPackageInfo(@PathVariable String infoName) {
+        new InfoNameValidator().validate(infoName);
         Info info = infoService.getInfo(infoName);
         InfoDto infoResponse = InfoDto
                 .builder()
