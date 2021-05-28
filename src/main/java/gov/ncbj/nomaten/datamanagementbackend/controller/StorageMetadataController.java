@@ -53,6 +53,7 @@ public class StorageMetadataController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
+        new DeletePackageRequestValidator().validate(deletePackageRequest);
         storageAndMetadataService.deletePackage(deletePackageRequest.getPackageName());
         return ResponseEntity.status(OK)
                 .body(new DeletePackageResponse("The package "
