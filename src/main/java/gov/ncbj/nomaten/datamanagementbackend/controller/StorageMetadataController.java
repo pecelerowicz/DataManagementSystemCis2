@@ -2,9 +2,7 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.StorageAndMetadataService;
-import gov.ncbj.nomaten.datamanagementbackend.validators.CreateMetadataRequestValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.CreatePackageRequestValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +42,8 @@ public class StorageMetadataController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UpdatePackageResponse> updatePackage(
-            @RequestBody @Valid UpdatePackageRequest updatePackageRequest) throws IOException {
+            @RequestBody UpdatePackageRequest updatePackageRequest) throws IOException {
+        new UpdatePackageRequestValidator().validate(updatePackageRequest);
         String newName = storageAndMetadataService.updatePackage(updatePackageRequest.getOldName(),
                 updatePackageRequest.getNewName());
         return ResponseEntity.status(ACCEPTED).body(new UpdatePackageResponse(newName));
@@ -69,6 +68,7 @@ public class StorageMetadataController {
 
     @PostMapping(value = "/storage")
     public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
+        new CreateStorageRequestValidator().validate(createStorageRequest);
         CreateStorageResponse createStorageResponse = new CreateStorageResponse(storageAndMetadataService.createStorage(createStorageRequest.getStorageName()));
         return ResponseEntity.status(OK).body(createStorageResponse);
     }

@@ -4,7 +4,6 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
 import gov.ncbj.nomaten.datamanagementbackend.model.Info;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.InfoDtoValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

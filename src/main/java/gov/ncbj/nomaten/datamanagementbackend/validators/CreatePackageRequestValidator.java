@@ -13,8 +13,8 @@ public class CreatePackageRequestValidator implements Validator<CreatePackageReq
             throw new RuntimeException("The package name cannot exceed 20 characters");
         }
 
-        if(!createPackageRequest.getPackageName().matches("[A-Za-z]+[0-9]*")) {
-            throw new RuntimeException("The package name cannot contain white spaces, special characters or start with a numeral");
+        if(!createPackageRequest.getPackageName().matches("[A-Za-z]+[A-Za-z0-9]*")) {
+            throw new RuntimeException("The package name cannot contain white spaces, special characters or start with numeral");
         }
     }
 }
