@@ -13,8 +13,8 @@ public class CreateMetadataRequestValidator implements Validator<CreateMetadataR
             throw new RuntimeException("The metadata name cannot exceed 20 characters");
         }
 
-        if(!createMetadataRequest.getMetadataName().matches("[A-Za-z]+[0-9]*")) {
-            throw new RuntimeException("Package name cannot contain white spaces or special characters or start with a numeral");
+        if(!createMetadataRequest.getMetadataName().matches("[A-Za-z]+[A-Za-z0-9]*")) {
+            throw new RuntimeException("Metadata name cannot contain white characters, special characters or start with numeral");
         }
     }
 }
