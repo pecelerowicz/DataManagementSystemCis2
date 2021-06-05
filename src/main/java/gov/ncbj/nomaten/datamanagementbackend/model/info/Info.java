@@ -1,15 +1,18 @@
-package gov.ncbj.nomaten.datamanagementbackend.model;
+package gov.ncbj.nomaten.datamanagementbackend.model.info;
 
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrractometerInfo;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Check;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -42,6 +45,14 @@ public class Info {
 
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "info_difr_id", referencedColumnName = "id")
+    private DifrractometerInfo diffractometerInfo;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "info_test_id", referencedColumnName = "id")
+    private TestInfo testInfo;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")

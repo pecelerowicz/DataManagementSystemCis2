@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
-import gov.ncbj.nomaten.datamanagementbackend.model.Info;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.StorageAndMetadata;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
