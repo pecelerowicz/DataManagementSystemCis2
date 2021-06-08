@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto.my_info;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubInfoDto {
+public class InfoTestResponse {
     private String infoName;
     private String message;
 }

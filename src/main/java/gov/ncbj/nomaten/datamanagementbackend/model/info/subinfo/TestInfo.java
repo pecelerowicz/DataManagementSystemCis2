@@ -26,7 +26,19 @@ public class TestInfo {
     @OneToOne(mappedBy = "testInfo")
     private Info info;
 
-    @Column(name = "test_field")
-    private String testField;
+    @Column(name = "test_field_1")
+    private String testField1;
+
+    @Column(name = "test_field_2")
+    private String testField2;
+
+    @Column(name = "test_field_3")
+    private String testField3;
+
+    @Column(name = "test_field_4")
+    private String testField4;
+
+    @Column(name = "test_field_5")
+    private String testField5;
 
 }

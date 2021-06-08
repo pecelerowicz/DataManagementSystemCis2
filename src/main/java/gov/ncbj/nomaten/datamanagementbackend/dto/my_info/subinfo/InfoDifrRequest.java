@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto.my_info;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrractometerInfo;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddUpdateDifrractometerInfoRequest {
+public class InfoDifrRequest {
     private String infoName;
+
     private DifrractometerInfo.Geometry geometry;
     private double incidentSoller;
     private double incidentSlit;

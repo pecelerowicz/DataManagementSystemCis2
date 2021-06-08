@@ -10,13 +10,13 @@ insert into user (created, email, enabled, password, username) values ("2021-06-
 insert into user (created, email, enabled, password, username) values ("2021-06-08 08:53:56", "konrad@gazeta.pl", true, "$2a$10$B5wtRob3.ksgjZGxDfc64eC0qq5kxNjMwmJ.1YAiOw9KcyUjYKBKi", "konrad")
 insert into user (created, email, enabled, password, username) values ("2021-06-08 08:53:56", "maksymilian@gazeta.pl", true, "$2a$10$b.2pMcFmPAhu56K/d3y2a.aaEQut2x8ic9.mhOgOLsdU.U3M4fEk2", "maksymilian")
 
-insert into info_test (test_field) values ("just a test 1")
+insert into info_test (test_field_1, test_field_2, test_field_3, test_field_4, test_field_5) values ("just a test 1", "just a test 2", "just a test 3", "just a test 4", "just a test 5")
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package1", "This is some loooong name", "This is some short name", null, 1, 1)
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package2", "This is some loooong name", "This is some short name", null, null, 1)
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package5", "This is some loooong name", "This is some short name", null, null, 1)
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package6", "This is some loooong name", "This is some short name", null, null, 1)
 
-insert into info_test (test_field) values ("just a test 2")
+insert into info_test (test_field_1, test_field_2, test_field_3, test_field_4, test_field_5) values ("just another test 1", "just another test 2", "just another test 3", "just another test 4", "just another test 5")
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package1", "This is some loooong name", "This is some short name", null, 2, 2)
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package2", "This is some loooong name", "This is some short name", null, null, 2)
 insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package5", "This is some loooong name", "This is some short name", null, null, 2)

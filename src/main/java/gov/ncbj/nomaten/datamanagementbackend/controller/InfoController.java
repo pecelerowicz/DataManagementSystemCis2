@@ -1,9 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.AddUpdateDifrractometerInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.AddUpdateTestInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.SubInfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.InfoDifrRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.InfoDifrResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.InfoTestRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.InfoTestResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrractometerInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
@@ -59,43 +60,43 @@ public class InfoController {
     }
 
     // difrractometer info
-    @PostMapping("/package-info/dif-info")
-    public ResponseEntity<SubInfoDto> addOrUpdateDifrractometerInfo(@RequestBody AddUpdateDifrractometerInfoRequest difrractometerInfoRequest) {
-        DifrractometerInfo difrractometerInfo = infoService.addDifrractometerInfo(difrractometerInfoRequest);
-        return ok(SubInfoDto
+    @PostMapping("/package-info/difr-info")
+    public ResponseEntity<InfoDifrResponse> addOrUpdateDifrractometerInfo(@RequestBody InfoDifrRequest infoDifrRequest) {
+        DifrractometerInfo difrractometerInfo = infoService.addDifrractometerInfo(infoDifrRequest);
+        return ok(InfoDifrResponse
                 .builder()
                 .infoName(difrractometerInfo.getInfo().getInfoName())
-                .message("Difrractometer info added/updated")
+                .message("Difrractometer info added or updated")
                 .build());
     }
 
-    @DeleteMapping("/package-info/dif-info")
-    public ResponseEntity<SubInfoDto> deleteDifrractometerInfo(@RequestBody SubInfoDto subInfoDto) {
-        infoService.deleteDifrractometerInfo(subInfoDto);
-        return ok(SubInfoDto
+    @DeleteMapping("/package-info/difr-info")
+    public ResponseEntity<InfoDifrResponse> deleteDifrractometerInfo(@RequestBody InfoDifrRequest infoDifrRequest) {
+        infoService.deleteDifrractometerInfo(infoDifrRequest);
+        return ok(InfoDifrResponse
                 .builder()
-                .infoName(subInfoDto.getInfoName())
+                .infoName(infoDifrRequest.getInfoName())
                 .message("Difrractometer info deleted")
                 .build());
     }
 
     // test info
     @PostMapping("/package-info/test-info")
-    public ResponseEntity<SubInfoDto> addOrUpdateTestInfo(@RequestBody AddUpdateTestInfoRequest testInfoRequest) {
-        TestInfo testInfo = infoService.addTestInfo(testInfoRequest);
-        return ok(SubInfoDto
+    public ResponseEntity<InfoTestResponse> addOrUpdateTestInfo(@RequestBody InfoTestRequest infoTestRequest) {
+        TestInfo testInfo = infoService.addTestInfo(infoTestRequest);
+        return ok(InfoTestResponse
                 .builder()
                 .infoName(testInfo.getInfo().getInfoName())
-                .message("Test info added/updated")
+                .message("Test info added or updated")
                 .build());
     }
 
     @DeleteMapping("/package-info/test-info")
-    public ResponseEntity<SubInfoDto> deleteTestInfo(@RequestBody SubInfoDto subInfoDto) {
-        infoService.deleteTestInfo(subInfoDto);
-        return ok(SubInfoDto
+    public ResponseEntity<InfoTestResponse> deleteTestInfo(@RequestBody InfoTestRequest infoTestRequest) {
+        infoService.deleteTestInfo(infoTestRequest);
+        return ok(InfoTestResponse
                 .builder()
-                .infoName(subInfoDto.getInfoName())
+                .infoName(infoTestRequest.getInfoName())
                 .message("Test info deleted")
                 .build());
     }
