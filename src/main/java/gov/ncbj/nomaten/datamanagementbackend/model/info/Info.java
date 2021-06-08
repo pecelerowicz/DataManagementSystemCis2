@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Check;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -17,7 +16,11 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "info", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "info_name"} )})
+@Table(name = "info", uniqueConstraints = {@UniqueConstraint(name="unique_user_id_info_name", columnNames = {"user_id", "info_name"}),
+                                           @UniqueConstraint(name="unique_info_difr_id", columnNames = {"info_difr_id"}),
+                                           @UniqueConstraint(name="unique_info_test_id", columnNames = {"info_test_id"}),
+})
+//todo constraint at most one subinfo for one info
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
