@@ -5,6 +5,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 
 public class DifrInfoMapper {
     public static DifrInfoDto difrInfoToDto(DifrInfo difrInfo) {
+        System.out.println();
         return DifrInfoDto
             .builder()
             .infoName(difrInfo.getInfo().getInfoName())
@@ -29,7 +30,7 @@ public class DifrInfoMapper {
     }
 
     public static DifrInfo dtoToDifrInfo(DifrInfoDto difrInfoDto) {
-        return DifrInfo
+        return difrInfoDto == null ? null : DifrInfo
             .builder()
             .geometry(difrInfoDto.getGeometry())
             .incidentSoller(difrInfoDto.getIncidentSoller())

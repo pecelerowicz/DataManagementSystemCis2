@@ -1,6 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoDto;
 
 //TODO check for no spaces, special characters etc.
 
@@ -48,6 +50,20 @@ public class InfoDtoValidator implements Validator<InfoDto> {
             if(description.length()>500) {
                 throw new RuntimeException("Description cannot exceed 500 characters");
             }
+        }
+
+        DifrInfoDto difrInfoDto = infoDto.getDifrInfoDto();
+        TestInfoDto testInfoDto = infoDto.getTestInfoDto();
+        int numberOfFilled = 0;
+        if(difrInfoDto != null) {
+            numberOfFilled++;
+        }
+        if(testInfoDto != null) {
+            numberOfFilled++;
+        }
+
+        if(numberOfFilled > 1) {
+            throw new RuntimeException("The number of subinfos cannot be greater than 1");
         }
     }
 }

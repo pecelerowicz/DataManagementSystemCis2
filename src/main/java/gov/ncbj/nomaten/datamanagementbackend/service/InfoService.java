@@ -46,6 +46,18 @@ public class InfoService {
         info.setLongName(longName==null || longName.equals("") ? null : longName);
         info.setDescription(description==null || description.equals("") ? null : description);
 
+        TestInfo testInfo = dtoToTestInfo(infoDto.getTestInfoDto());
+        if(testInfo != null) {
+            testInfo.setInfo(info);
+        }
+        info.setTestInfo(testInfo);
+
+        DifrInfo difrInfo = dtoToDifrInfo(infoDto.getDifrInfoDto());
+        if(difrInfo != null) {
+            difrInfo.setInfo(info);
+        }
+        info.setDifrInfo(difrInfo);
+
         return info;
     }
 

@@ -23,7 +23,7 @@ public class DifrInfo {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(mappedBy = "diffractometerInfo")
+    @OneToOne(mappedBy = "difrInfo")
     private Info info;
 
     @Column(name = "geometry")

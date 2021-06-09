@@ -17,7 +17,7 @@ public class TestInfoMapper {
     }
 
     public static TestInfo dtoToTestInfo(TestInfoDto testInfoDto) {
-        return TestInfo
+        return testInfoDto == null ? null : TestInfo
             .builder()
             .testField1(testInfoDto.getTestField1())
             .testField2(testInfoDto.getTestField2())

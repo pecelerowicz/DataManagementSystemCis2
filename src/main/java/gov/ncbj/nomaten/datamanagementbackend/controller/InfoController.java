@@ -1,10 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoDto;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
-import gov.ncbj.nomaten.datamanagementbackend.mapper.InfoMapper;
-import gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
@@ -40,7 +40,8 @@ public class InfoController {
     @PutMapping("/package-info")
     public ResponseEntity<InfoDto> updatePackageInfo(@RequestBody InfoDto infoDto) {
         new InfoDtoValidator().validate(infoDto);
-        return ok(infoToDto(infoService.updateInfo(infoDto)));
+        Info info = infoService.updateInfo(infoDto);
+        return ok(infoToDto(info));
     }
 
     // difrractometer info
@@ -50,9 +51,13 @@ public class InfoController {
     }
 
     @DeleteMapping("/package-info/difr-info")
-    public ResponseEntity<DifrInfoDto> deleteDifrractometerInfo(@RequestBody DifrInfoDto difrInfoDto) {
+    public ResponseEntity<DifrInfoResponse> deleteDifrractometerInfo(@RequestBody DifrInfoDto difrInfoDto) {
         infoService.deleteDifrractometerInfo(difrInfoDto);
-        return ok(difrInfoDto);
+        return ok(DifrInfoResponse
+                .builder()
+                .infoName(difrInfoDto.getInfoName())
+                .message("Difr info " + difrInfoDto.getInfoName() + " was deleted")
+                .build());
     }
 
     // test info
@@ -63,9 +68,13 @@ public class InfoController {
     }
 
     @DeleteMapping("/package-info/test-info")
-    public ResponseEntity<TestInfoDto> deleteTestInfo(@RequestBody TestInfoDto testInfoDto) {
+    public ResponseEntity<TestInfoResponse> deleteTestInfo(@RequestBody TestInfoDto testInfoDto) {
         infoService.deleteTestInfo(testInfoDto);
-        return ok(testInfoDto);
+        return ok(TestInfoResponse
+                .builder()
+                .infoName(testInfoDto.getInfoName())
+                .message("Test info " + testInfoDto.getInfoName() + " was deleted")
+                .build());
     }
 
 }
