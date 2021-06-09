@@ -1,7 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.model.info;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrractometerInfo;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +51,7 @@ public class Info {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "info_difr_id", referencedColumnName = "id")
-    private DifrractometerInfo diffractometerInfo;
+    private DifrInfo difrInfo;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "info_test_id", referencedColumnName = "id")

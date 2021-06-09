@@ -1,15 +1,18 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.InfoDifrRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.InfoTestRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoDto;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
-import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrractometerInfo;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.dtoToDifrInfo;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.dtoToTestInfo;
 
 @Service
 public class InfoService {
@@ -48,64 +51,38 @@ public class InfoService {
 
     // difrractometer info
     @Transactional
-    public DifrractometerInfo addDifrractometerInfo(InfoDifrRequest infoDifrRequest) {
-        Info info = getInfo(infoDifrRequest.getInfoName());
-        DifrractometerInfo difrractometerInfo = DifrractometerInfo
-                .builder()
-                .info(info)
-                .geometry(infoDifrRequest.getGeometry())
-                .incidentSoller(infoDifrRequest.getIncidentSoller())
-                .incidentSlit(infoDifrRequest.getIncidentSlit())
-                .detectorSoller(infoDifrRequest.getDetectorSoller())
-                .detectorSlit(infoDifrRequest.getDetectorSlit())
-                .detectorAbsorber(infoDifrRequest.getDetectorAbsorber())
-                .generatorVoltage(infoDifrRequest.getGeneratorVoltage())
-                .generatorCurrent(infoDifrRequest.getGeneratorCurrent())
-                .dataRangeStart(infoDifrRequest.getDataRangeStart())
-                .dataRangeEnd(infoDifrRequest.getDataRangeEnd())
-                .stepSize(infoDifrRequest.getStepSize())
-                .stepTime(infoDifrRequest.getStepTime())
-                .stage(infoDifrRequest.getStage())
-                .spinningRocking(infoDifrRequest.isSpinningRocking())
-                .spinningRockingVelocity(infoDifrRequest.getSpinningRockingVelocity())
-                .temperature(infoDifrRequest.getTemperature())
-                .comments(infoDifrRequest.getComments())
-                .build();
-        info.setDiffractometerInfo(difrractometerInfo);
-        return difrractometerInfo;
+    public DifrInfo addDifrractometerInfo(DifrInfoDto difrInfoDto) {
+        Info info = getInfo(difrInfoDto.getInfoName());
+        DifrInfo difrInfo = dtoToDifrInfo(difrInfoDto);
+        difrInfo.setInfo(info);
+        info.setDifrInfo(difrInfo);
+        return difrInfo;
     }
 
     @Transactional
-    public void deleteDifrractometerInfo(InfoDifrRequest infoDifrRequest) {
-        Info info = getInfo(infoDifrRequest.getInfoName());
-        DifrractometerInfo difrractometerInfo = info.getDiffractometerInfo();
-        if(difrractometerInfo == null) {
+    public void deleteDifrractometerInfo(DifrInfoDto difrInfoDto) {
+        Info info = getInfo(difrInfoDto.getInfoName());
+        DifrInfo difrInfo = info.getDifrInfo();
+        if(difrInfo == null) {
             throw new RuntimeException("No diffractometer info in: " + info.getInfoName());
         } else {
-            info.setDiffractometerInfo(null);
+            info.setDifrInfo(null);
         }
     }
 
     // test info
     @Transactional
-    public TestInfo addTestInfo(InfoTestRequest infoTestRequest) {
-        Info info = getInfo(infoTestRequest.getInfoName());
-        TestInfo testInfo = TestInfo
-                .builder()
-                .info(info)
-                .testField1(infoTestRequest.getTestField1())
-                .testField2(infoTestRequest.getTestField2())
-                .testField3(infoTestRequest.getTestField3())
-                .testField4(infoTestRequest.getTestField4())
-                .testField5(infoTestRequest.getTestField5())
-                .build();
+    public TestInfo addTestInfo(TestInfoDto testInfoDto) {
+        Info info = getInfo(testInfoDto.getInfoName());
+        TestInfo testInfo = dtoToTestInfo(testInfoDto);
+        testInfo.setInfo(info);
         info.setTestInfo(testInfo);
         return testInfo;
     }
 
     @Transactional
-    public void deleteTestInfo(InfoTestRequest infoTestRequest) {
-        Info info = getInfo(infoTestRequest.getInfoName());
+    public void deleteTestInfo(TestInfoDto testInfoDto) {
+        Info info = getInfo(testInfoDto.getInfoName());
         TestInfo testInfo = info.getTestInfo();
         if (testInfo == null) {
             throw new RuntimeException("No test info in: " + info.getInfoName());

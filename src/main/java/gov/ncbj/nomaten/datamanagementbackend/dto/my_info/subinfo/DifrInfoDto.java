@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo;
 
-import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrractometerInfo;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,22 +10,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InfoDifrRequest {
+public class DifrInfoDto {
     private String infoName;
 
-    private DifrractometerInfo.Geometry geometry;
+    private DifrInfo.Geometry geometry;
     private double incidentSoller;
     private double incidentSlit;
     private double detectorSoller;
     private double detectorSlit;
-    private DifrractometerInfo.DetectorAbsorber detectorAbsorber;
+    private DifrInfo.DetectorAbsorber detectorAbsorber;
     private double generatorVoltage;
     private double generatorCurrent;
     private double dataRangeStart;
     private double dataRangeEnd;
     private double stepSize;
     private double stepTime;
-    private DifrractometerInfo.Stage stage;
+    private DifrInfo.Stage stage;
     private boolean spinningRocking;
     private double spinningRockingVelocity;
     private double temperature;

@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DifrractometerInfo {
+public class DifrInfo {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
