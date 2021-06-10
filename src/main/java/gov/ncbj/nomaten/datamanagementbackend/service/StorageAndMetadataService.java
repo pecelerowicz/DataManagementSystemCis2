@@ -169,12 +169,12 @@ public class StorageAndMetadataService {
 
     ////////////////////////////////////////////////
 
-    public String createStorage(String storageName) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
-        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
-        Path createdStoragePath = Files.createDirectory(newStoragePath);
-        return createdStoragePath.getFileName().toString();
-    }
+//    public String createStorage(String storageName) throws IOException {
+//        String userName = authService.getCurrentUser().getUsername();
+//        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
+//        Path createdStoragePath = Files.createDirectory(newStoragePath);
+//        return createdStoragePath.getFileName().toString();
+//    }
 
     @Transactional
     public String createMetadata(String metadataName) throws IOException {

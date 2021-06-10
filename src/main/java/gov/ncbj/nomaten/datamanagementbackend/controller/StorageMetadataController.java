@@ -67,12 +67,12 @@ public class StorageMetadataController {
                 .body(new StorageAndMetadataListResponse(storageAndMetadataService.getStorageAndMetadataList()));
     }
 
-    @PostMapping(value = "/storage")
-    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
-        new CreateStorageRequestValidator().validate(createStorageRequest);
-        CreateStorageResponse createStorageResponse = new CreateStorageResponse(storageAndMetadataService.createStorage(createStorageRequest.getStorageName()));
-        return ResponseEntity.status(OK).body(createStorageResponse);
-    }
+//    @PostMapping(value = "/storage")
+//    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
+//        new CreateStorageRequestValidator().validate(createStorageRequest);
+//        CreateStorageResponse createStorageResponse = new CreateStorageResponse(storageAndMetadataService.createStorage(createStorageRequest.getStorageName()));
+//        return ResponseEntity.status(OK).body(createStorageResponse);
+//    }
 
     @PostMapping(value = "/metadata")
     public ResponseEntity<CreateMetadataResponse> createMetadata(@RequestBody CreateMetadataRequest createMetadataRequest) throws IOException{
