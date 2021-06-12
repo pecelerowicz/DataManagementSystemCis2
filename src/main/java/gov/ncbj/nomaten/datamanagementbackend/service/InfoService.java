@@ -27,10 +27,26 @@ public class InfoService {
     public Info getInfo(String infoName) {
         User user = authService.getCurrentUser();
         return user.getInfoList()
-                .stream()
-                .filter(i -> i.getInfoName().equals(infoName))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("No Info: " + infoName));
+            .stream()
+            .filter(i -> i.getInfoName().equals(infoName))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("No Info: " + infoName));
+    }
+
+    @Transactional
+    public Info createInfo(InfoDto infoDto) {
+        User user = authService.getCurrentUser();
+        Info info = Info
+            .builder()
+            .infoName(infoDto.getInfoName())
+            .access(infoDto.getAccess())
+            .shortName(infoDto.getShortName())
+            .longName(infoDto.getLongName())
+            .description(infoDto.getDescription())
+            .user(user)
+            .build();
+        user.getInfoList().add(info);
+        return info;
     }
 
     @Transactional

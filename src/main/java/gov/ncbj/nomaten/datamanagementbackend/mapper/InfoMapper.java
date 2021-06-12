@@ -8,7 +8,6 @@ import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testI
 
 public class InfoMapper {
     public static InfoDto infoToDto(Info info) {
-        System.out.println();
         return InfoDto
             .builder()
             .access(info.getAccess())

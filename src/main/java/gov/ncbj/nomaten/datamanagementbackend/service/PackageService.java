@@ -1,8 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeleteInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeletePackageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
-import gov.ncbj.nomaten.datamanagementbackend.model.StorageAndMetadata;
+import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,19 +18,43 @@ import java.util.*;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.*;
 import static java.nio.file.FileSystems.getDefault;
+import static java.nio.file.Files.walk;
 import static java.util.stream.Collectors.toList;
 
 @Service
-public class StorageAndMetadataService {
+public class PackageService {
 
     AuthService authService;
 
     @Autowired
-    public StorageAndMetadataService(AuthService authService) {
+    public PackageService(AuthService authService) {
         this.authService = authService;
     }
 
-    public PathNode getPackage() {
+    public List<Info> getInfoList() {
+        return authService.getCurrentUser().getInfoList();
+    }
+
+    @Transactional
+    public void deleteInfo(DeleteInfoRequest deleteInfoRequest) {
+        String infoName = deleteInfoRequest.getInfoName();
+        User user = authService.getCurrentUser();
+
+        Optional<Info> maybeTargetInfo = user
+                .getInfoList()
+                .stream()
+                .filter(info -> info.getInfoName().equals(infoName))
+                .findFirst();
+        if(maybeTargetInfo.isPresent()) {
+            Info targetInfo = maybeTargetInfo.get();
+            user.getInfoList().remove(targetInfo);
+            targetInfo.setUser(null);
+        } else {
+            throw new RuntimeException("No info " + infoName);
+        }
+    }
+
+    public PathNode getStorageList() {
         String userName = authService.getCurrentUser().getUsername();
         Path rootPath = getDefault().getPath(STORAGE, userName);
         List<Path> paths = createSortedPathsLevelOne();
@@ -39,14 +65,14 @@ public class StorageAndMetadataService {
         return root;
     }
 
-    public String createPackage(String newPackageName) throws IOException {
+    public String createStorage(String storageName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        Path newPackagePath = getDefault().getPath(STORAGE, userName, newPackageName);
-        Path createdPackagePath = Files.createDirectory(newPackagePath);
-        return createdPackagePath.getFileName().toString();
+        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
+        Path createdStoragePath = Files.createDirectory(newStoragePath);
+        return createdStoragePath.getFileName().toString();
     }
 
-    public String updatePackage(String oldName, String newName) throws IOException {
+    public String updateStorage(String oldName, String newName) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
         Path oldPackagePath = getDefault().getPath(STORAGE, userName, oldName);
         Path newPackagePath = getDefault().getPath(STORAGE, userName, newName);
@@ -54,30 +80,61 @@ public class StorageAndMetadataService {
         return createdPackagePath.toFile().toString();
     }
 
-    @Transactional
-    public void deletePackage(String packageName) throws IOException {
+    public boolean deleteStorage(String storageName) throws IOException {
         User user = authService.getCurrentUser();
         String userName = user.getUsername();
-        Path packagePath = getDefault().getPath(STORAGE, userName, packageName);
-        if(Files.exists(packagePath)) {
-            Files.walk(packagePath)
+        Path storagePath = getDefault().getPath(STORAGE, userName, storageName);
+
+        try {
+            walk(storagePath)
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException("No storage " + storageName);
         }
+    }
+
+    public List<Package> getPackages() throws IOException {
+        User user = authService.getCurrentUser();
+        List<String> metadataNames = metadataNamesOfUser(user);
+        List<String> storageNames = storageNamesOfUser(user);
+        return combineStorageWithMetadata(metadataNames, storageNames);
+    }
+
+    @Transactional
+    public void deletePackage(DeletePackageRequest deletePackageRequest) throws IOException {
+        String packageName = deletePackageRequest.getPackageName();
+        User user = authService.getCurrentUser();
+        String userName = user.getUsername();
+        Path storagePath = getDefault().getPath(STORAGE, userName, packageName);
+
         Optional<Info> maybeTargetInfo = user
                 .getInfoList()
                 .stream()
                 .filter(info -> info.getInfoName().equals(packageName))
                 .findFirst();
-        if(maybeTargetInfo.isPresent()) {
-            Info targetInfo = maybeTargetInfo.get();
-            user.getInfoList().remove(targetInfo);
-            targetInfo.setUser(null);
+
+        if(Files.exists(storagePath) || maybeTargetInfo.isPresent()) {
+            if(Files.exists(storagePath)) {
+                Files.walk(storagePath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            }
+
+            if(maybeTargetInfo.isPresent()) {
+                Info targetInfo = maybeTargetInfo.get();
+                user.getInfoList().remove(targetInfo);
+                targetInfo.setUser(null);
+            }
+        } else {
+            throw new RuntimeException("No package " + deletePackageRequest.getPackageName());
         }
     }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //TODO move the logic below to the special util package (or sth like that)
     private PathNode addNode(PathNode where, Path what, Path rootPath) {
@@ -90,8 +147,6 @@ public class StorageAndMetadataService {
         }
         return where;
     }
-
-
 
     private List<Path> createSortedPathsLevelOne() {
 
@@ -137,51 +192,32 @@ public class StorageAndMetadataService {
         return pathList;
     }
 
-
-    ///////////////////////////////////////
-
-    public List<StorageAndMetadata> getStorageAndMetadataList() throws IOException {
-        User user = authService.getCurrentUser();
-        List<String> metadataNames = metadataNamesOfUser(user);
-        List<String> storageNames = storageNamesOfUser(user);
-        return combineStorageWithMetadata(metadataNames, storageNames);
-    }
-
-    private List<StorageAndMetadata> combineStorageWithMetadata(List<String> metadataNames, List<String> storageNames) {
+    private List<Package> combineStorageWithMetadata(List<String> metadataNames, List<String> storageNames) {
         Set<String> metadata = new HashSet<>(metadataNames);
         Set<String> storage = new HashSet<>(storageNames);
-        List<StorageAndMetadata> storageAndMetadataList = new LinkedList<>();
+        List<Package> packageList = new LinkedList<>();
         for(String matadataName: metadata) {
             if(storage.contains(matadataName)) {
-                storageAndMetadataList.add(new StorageAndMetadata(matadataName, true, true));
+                packageList.add(new Package(matadataName, true, true));
             } else {
-                storageAndMetadataList.add(new StorageAndMetadata(matadataName, false, true));
+                packageList.add(new Package(matadataName, false, true));
             }
         }
         for(String storageName: storage) {
             if(!metadata.contains(storageName)) {
-                storageAndMetadataList.add(new StorageAndMetadata(storageName, true, false));
+                packageList.add(new Package(storageName, true, false));
             }
         }
-        Collections.sort(storageAndMetadataList);
-        return storageAndMetadataList;
+        Collections.sort(packageList);
+        return packageList;
     }
-
-    ////////////////////////////////////////////////
-
-//    public String createStorage(String storageName) throws IOException {
-//        String userName = authService.getCurrentUser().getUsername();
-//        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
-//        Path createdStoragePath = Files.createDirectory(newStoragePath);
-//        return createdStoragePath.getFileName().toString();
-//    }
 
     @Transactional
     public String createMetadata(String metadataName) throws IOException {
         User user = authService.getCurrentUser();
 
-        List<StorageAndMetadata> storageAndMetadataList = getStorageAndMetadataList();
-        List<StorageAndMetadata> filtered = storageAndMetadataList
+        List<Package> packageList = getPackages();
+        List<Package> filtered = packageList
                 .stream()
                 .filter(sm -> sm.getName().equals(metadataName))
                 .collect(toList());
@@ -191,8 +227,8 @@ public class StorageAndMetadataService {
         } else if(filtered.size() > 1) {
             throw new RuntimeException("Corrupted data");
         } else {
-            StorageAndMetadata storageAndMetadata = filtered.get(0);
-            if(storageAndMetadata.isHasMetadata()) {
+            Package aPackage = filtered.get(0);
+            if(aPackage.isHasMetadata()) {
                 throw new RuntimeException("Metadata " + metadataName + " already created!");
             }
         }

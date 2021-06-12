@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.difrInfoToDto;
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.InfoMapper.infoToDto;
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToDto;
@@ -32,9 +34,16 @@ public class InfoController {
     }
 
     @GetMapping("/package-info/{infoName}")
-    public ResponseEntity<InfoDto> getPackageInfo(@PathVariable String infoName) {
+    public ResponseEntity<InfoDto> getInfo(@PathVariable String infoName) {
         new InfoNameValidator().validate(infoName);
         return ok(infoToDto(infoService.getInfo(infoName)));
+    }
+
+    @PostMapping(value = "/package-info")
+    public ResponseEntity<InfoDto> createInfo(@RequestBody InfoDto infoDto) throws IOException {
+        new InfoDtoValidator().validate(infoDto);
+        Info info = infoService.createInfo(infoDto);
+        return ok(infoToDto(info));
     }
 
     @PutMapping("/package-info")
