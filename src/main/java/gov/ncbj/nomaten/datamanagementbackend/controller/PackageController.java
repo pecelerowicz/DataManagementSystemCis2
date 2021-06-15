@@ -2,12 +2,14 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.PackageService;
-import gov.ncbj.nomaten.datamanagementbackend.validators.*;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.CreateStorageRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.DeleteInfoRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.DeleteStorageRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.UpdateStorageRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.io.IOException;
 
 import static gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetStorageListResponse.pathNodeToPackagesResponse;
@@ -15,7 +17,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/package")
 public class PackageController {
 
     @Autowired
@@ -28,10 +30,11 @@ public class PackageController {
 
     @DeleteMapping(value = "/info")
     public ResponseEntity<DeleteInfoResponse> deleteInfo(@RequestBody DeleteInfoRequest deleteInfoRequest) {
+        new DeleteInfoRequestValidator().validate(deleteInfoRequest);
         packageService.deleteInfo(deleteInfoRequest);
         return ResponseEntity.status(OK).body(DeleteInfoResponse
                 .builder()
-                .deleteMessage("Info " + deleteInfoRequest.getInfoName() + " was deleted")
+                .deleteMessage("Info " + deleteInfoRequest.getInfoName() + " was deleted!")
                 .build());
     }
 
@@ -41,8 +44,7 @@ public class PackageController {
     }
 
     @PostMapping(value = "/storage")
-    public ResponseEntity<CreateStorageResponse> createStorage(
-            @RequestBody CreateStorageRequest createStorageRequest) throws IOException {
+    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
         new CreateStorageRequestValidator().validate(createStorageRequest);
         String createdStorageName = packageService.createStorage(createStorageRequest.getStorageName());
         return ResponseEntity.status(CREATED).body(new CreateStorageResponse(createdStorageName));
@@ -62,8 +64,7 @@ public class PackageController {
         new DeleteStorageRequestValidator().validate(deleteStorageRequest);
         packageService.deleteStorage(deleteStorageRequest.getStorageName());
         return ResponseEntity.status(OK)
-                .body(new DeleteStorageResponse("The storage "
-                        + deleteStorageRequest.getStorageName() + " was deleted!"));
+                .body(new DeleteStorageResponse("The storage " + deleteStorageRequest.getStorageName() + " was deleted!"));
     }
 
     @GetMapping(value = "/package")

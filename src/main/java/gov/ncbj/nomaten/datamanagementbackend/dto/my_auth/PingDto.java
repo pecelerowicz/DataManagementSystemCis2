@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

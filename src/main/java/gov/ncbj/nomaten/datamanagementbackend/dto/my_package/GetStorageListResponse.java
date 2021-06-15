@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class GetStorageListResponse {
                 .map(p -> p.getPath().toFile().toString())
                 .map(p -> p.substring(p.lastIndexOf("/") + 1))
                 .map(p -> p.substring(p.lastIndexOf("\\") + 1))   // TODO remove later for Linux servers
-                .collect(Collectors.toList());
+                .collect(toList());
         return new GetStorageListResponse(names);
     }
 }

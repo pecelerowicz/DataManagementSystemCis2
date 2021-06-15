@@ -10,6 +10,6 @@ import java.util.stream.Collectors;
 public class GetInfoListResponse {
     private List<String> infoNameList;
     public GetInfoListResponse(List<Info> infoList) {
-        infoNameList = infoList.stream().map(info -> info.getInfoName()).collect(Collectors.toList());
+        infoNameList = infoList.stream().map(Info::getInfoName).collect(Collectors.toList());
     }
 }

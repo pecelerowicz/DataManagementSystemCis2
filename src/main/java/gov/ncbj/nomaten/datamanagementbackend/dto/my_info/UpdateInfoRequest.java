@@ -1,7 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_info;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoDto;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InfoDto {
+public class UpdateInfoRequest {
     private String infoName;
     private Info.Access access;
     private String shortName;
     private String longName;
     private String description;
-    private DifrInfoDto difrInfoDto;
-    private TestInfoDto testInfoDto;
+    private UpdateDifrInfoRequest updateDifrInfoRequest;
+    private UpdateTestInfoRequest updateTestInfoRequest;
 }
-
-

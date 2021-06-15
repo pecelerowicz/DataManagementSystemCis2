@@ -1,11 +1,11 @@
 package gov.ncbj.nomaten.datamanagementbackend.mapper;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoDto;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 
 public class TestInfoMapper {
-    public static TestInfoDto testInfoToDto(TestInfo testInfo) {
-        return TestInfoDto
+    public static GetTestInfoResponse testInfoToGetTestInfoResponse(TestInfo testInfo) {
+        return GetTestInfoResponse
             .builder()
             .infoName(testInfo.getInfo().getInfoName())
             .testField1(testInfo.getTestField1())
@@ -16,14 +16,49 @@ public class TestInfoMapper {
             .build();
     }
 
-    public static TestInfo dtoToTestInfo(TestInfoDto testInfoDto) {
-        return testInfoDto == null ? null : TestInfo
+    public static TestInfo createTestInfoRequestToTestInfo(CreateTestInfoRequest createTestInfoRequest) {
+        return createTestInfoRequest == null ? null : TestInfo
+                .builder()
+                .testField1(createTestInfoRequest.getTestField1())
+                .testField2(createTestInfoRequest.getTestField2())
+                .testField3(createTestInfoRequest.getTestField3())
+                .testField4(createTestInfoRequest.getTestField4())
+                .testField5(createTestInfoRequest.getTestField5())
+                .build();
+    }
+
+    public static TestInfo updateTestInfoRequestToTestInfo(UpdateTestInfoRequest updateTestInfoRequest) {
+        return updateTestInfoRequest == null ? null : TestInfo
             .builder()
-            .testField1(testInfoDto.getTestField1())
-            .testField2(testInfoDto.getTestField2())
-            .testField3(testInfoDto.getTestField3())
-            .testField4(testInfoDto.getTestField4())
-            .testField5(testInfoDto.getTestField5())
+            .testField1(updateTestInfoRequest.getTestField1())
+            .testField2(updateTestInfoRequest.getTestField2())
+            .testField3(updateTestInfoRequest.getTestField3())
+            .testField4(updateTestInfoRequest.getTestField4())
+            .testField5(updateTestInfoRequest.getTestField5())
+            .build();
+    }
+
+    public static CreateTestInfoResponse testInfoToCreateTestInfoResponse(TestInfo testInfo) {
+        return CreateTestInfoResponse
+            .builder()
+            .infoName(testInfo.getInfo().getInfoName())
+            .testField1(testInfo.getTestField1())
+            .testField2(testInfo.getTestField2())
+            .testField3(testInfo.getTestField3())
+            .testField4(testInfo.getTestField4())
+            .testField5(testInfo.getTestField5())
+            .build();
+    }
+
+    public static UpdateTestInfoResponse testInfoToUpdateTestInfoResponse(TestInfo testInfo) {
+        return UpdateTestInfoResponse
+            .builder()
+            .infoName(testInfo.getInfo().getInfoName())
+            .testField1(testInfo.getTestField1())
+            .testField2(testInfo.getTestField2())
+            .testField3(testInfo.getTestField3())
+            .testField4(testInfo.getTestField4())
+            .testField5(testInfo.getTestField5())
             .build();
     }
 }

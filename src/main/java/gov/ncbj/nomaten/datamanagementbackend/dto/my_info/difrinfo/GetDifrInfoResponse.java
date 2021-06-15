@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DifrInfoDto {
+public class GetDifrInfoResponse {
     private String infoName;
 
     private DifrInfo.Geometry geometry;

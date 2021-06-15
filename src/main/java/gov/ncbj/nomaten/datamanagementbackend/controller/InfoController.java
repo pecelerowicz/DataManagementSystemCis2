@@ -1,29 +1,26 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoDto;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.DifrInfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoDto;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.InfoDto;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.subinfo.TestInfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
-import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
-import gov.ncbj.nomaten.datamanagementbackend.validators.InfoDtoValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.InfoNameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.CreateInfoRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.UpdateInfoRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.GetInfoRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.difrInfoToDto;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.InfoMapper.infoToDto;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToDto;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.*;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.*;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.InfoMapper.*;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToCreateTestInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToGetTestInfoResponse;
 import static org.springframework.http.ResponseEntity.ok;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/info")
 public class InfoController {
 
     private InfoService infoService;
@@ -33,56 +30,74 @@ public class InfoController {
         this.infoService = infoService;
     }
 
-    @GetMapping("/package-info/{infoName}")
-    public ResponseEntity<InfoDto> getInfo(@PathVariable String infoName) {
-        new InfoNameValidator().validate(infoName);
-        return ok(infoToDto(infoService.getInfo(infoName)));
+    // info
+    @GetMapping("/")
+    public ResponseEntity<GetInfoResponse> getInfo(@RequestBody GetInfoRequest getInfoRequest) {
+        GetInfoRequestValidator.builder().build().validate(getInfoRequest);
+        return ok(infoToGetInfoResponse(infoService.getInfo(getInfoRequest.getInfoName())));
     }
 
-    @PostMapping(value = "/package-info")
-    public ResponseEntity<InfoDto> createInfo(@RequestBody InfoDto infoDto) throws IOException {
-        new InfoDtoValidator().validate(infoDto);
-        Info info = infoService.createInfo(infoDto);
-        return ok(infoToDto(info));
+    @PostMapping(value = "/")
+    public ResponseEntity<CreateInfoResponse> createInfo(@RequestBody CreateInfoRequest createInfoRequest) {
+        CreateInfoRequestValidator.builder().build().validate(createInfoRequest);
+        return ok(infoToCreateInfoResponse(infoService.createInfo(createInfoRequest)));
     }
 
-    @PutMapping("/package-info")
-    public ResponseEntity<InfoDto> updatePackageInfo(@RequestBody InfoDto infoDto) {
-        new InfoDtoValidator().validate(infoDto);
-        Info info = infoService.updateInfo(infoDto);
-        return ok(infoToDto(info));
+    @PutMapping("/")
+    public ResponseEntity<UpdateInfoResponse> updateInfo(@RequestBody UpdateInfoRequest updateInfoRequest) {
+        UpdateInfoRequestValidator.builder().build().validate(updateInfoRequest);
+        return ok(infoToUpdateInfoResponse(infoService.updateInfo(updateInfoRequest)));
     }
 
     // difrractometer info
-    @PostMapping("/package-info/difr-info")
-    public ResponseEntity<DifrInfoDto> addOrUpdateDifrractometerInfo(@RequestBody DifrInfoDto difrInfoDto) {
-        return ok(difrInfoToDto(infoService.addDifrractometerInfo(difrInfoDto)));
+    @GetMapping("/difr-info")
+    public ResponseEntity<GetDifrInfoResponse> getDifrInfo(@RequestBody GetDifrInfoRequest getDifrInfoRequest) {
+        return ok(difrInfoToGetDifrInfoResponse(infoService.getDifrInfo(getDifrInfoRequest)));
     }
 
-    @DeleteMapping("/package-info/difr-info")
-    public ResponseEntity<DifrInfoResponse> deleteDifrractometerInfo(@RequestBody DifrInfoDto difrInfoDto) {
-        infoService.deleteDifrractometerInfo(difrInfoDto);
-        return ok(DifrInfoResponse
+    @PostMapping("/difr-info")
+    public ResponseEntity<CreateDifrInfoResponse> createDifrInfo(@RequestBody CreateDifrInfoRequest createDifrInfoRequest) {
+        return ok(difrInfoToCreateDifrInfoResponse(infoService.createDifrInfo(createDifrInfoRequest)));
+    }
+
+    @PutMapping("/difr-info")
+    public ResponseEntity<UpdateDifrInfoResponse> updateDifrInfo(@RequestBody UpdateDifrInfoRequest updateDifrInfoRequest) {
+        return ok(difrInfoToUpdateDifrInfoResponse(infoService.updateDifrInfo(updateDifrInfoRequest)));
+    }
+
+    @DeleteMapping("/difr-info")
+    public ResponseEntity<DeleteDifrInfoResponse> deleteDifrInfo(@RequestBody DeleteDifrInfoRequest deleteDifrInfoRequest) {
+        infoService.deleteDifrInfo(deleteDifrInfoRequest);
+        return ok(DeleteDifrInfoResponse
                 .builder()
-                .infoName(difrInfoDto.getInfoName())
-                .message("Difr info " + difrInfoDto.getInfoName() + " was deleted")
+                .infoName(deleteDifrInfoRequest.getInfoName())
+                .message("Difr info " + deleteDifrInfoRequest.getInfoName() + " was deleted")
                 .build());
     }
 
     // test info
-    @PostMapping("/package-info/test-info")
-    public ResponseEntity<TestInfoDto> addOrUpdateTestInfo(@RequestBody TestInfoDto testInfoDto) {
-        TestInfo testInfo = infoService.addTestInfo(testInfoDto);
-        return ok(testInfoToDto(testInfo));
+    @GetMapping("/test-info")
+    public ResponseEntity<GetTestInfoResponse> getTestInfo(@RequestBody GetTestInfoRequest getTestInfoRequest) {
+        return ok(testInfoToGetTestInfoResponse(infoService.getTestInfo(getTestInfoRequest)));
     }
 
-    @DeleteMapping("/package-info/test-info")
-    public ResponseEntity<TestInfoResponse> deleteTestInfo(@RequestBody TestInfoDto testInfoDto) {
-        infoService.deleteTestInfo(testInfoDto);
-        return ok(TestInfoResponse
+    @PostMapping("/test-info")
+    public ResponseEntity<CreateTestInfoResponse> createTestInfo(@RequestBody CreateTestInfoRequest createTestInfoRequest) {
+        return ok(testInfoToCreateTestInfoResponse(infoService.createTestInfo(createTestInfoRequest)));
+    }
+
+    @PutMapping("/test-info")
+    public ResponseEntity<UpdateTestInfoResponse> updateTestInfo(@RequestBody UpdateTestInfoRequest updateTestInfoRequest) {
+        return ok(testInfoToUpdateTestInfoResponse(infoService.updateTestInfo(updateTestInfoRequest)));
+    }
+
+    @DeleteMapping("/test-info")
+    public ResponseEntity<DeleteTestInfoResponse> deleteTestInfo(@RequestBody DeleteTestInfoRequest deleteTestInfoRequest) {
+        infoService.deleteTestInfo(deleteTestInfoRequest);
+        return ok(DeleteTestInfoResponse
                 .builder()
-                .infoName(testInfoDto.getInfoName())
-                .message("Test info " + testInfoDto.getInfoName() + " was deleted")
+                .infoName(deleteTestInfoRequest.getInfoName())
+                .message("Test info " + deleteTestInfoRequest.getInfoName() + " was deleted")
                 .build());
     }
 

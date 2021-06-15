@@ -1,6 +1,7 @@
-package gov.ncbj.nomaten.datamanagementbackend.validators;
+package gov.ncbj.nomaten.datamanagementbackend.validators.my_package;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.UpdateStorageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 
 public class UpdateStorageRequestValidator implements Validator<UpdateStorageRequest> {
     @Override
