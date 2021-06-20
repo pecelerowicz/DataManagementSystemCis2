@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DeleteTestInfoResponse {
     private String infoName;
-    private String message;
+    private String deleteMessage;
 }

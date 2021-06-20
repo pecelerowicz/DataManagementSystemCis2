@@ -3,7 +3,7 @@ delete from user
 delete from info_difr
 delete from info_test
 
---this probably should be done programatically
+--this probably should be done programmatically
 ALTER TABLE info ADD CONSTRAINT not_more_than_one_specific_info CHECK ((info_difr_id IS NULL AND info_test_id IS NULL) OR (info_difr_id IS NULL AND info_test_id IS NOT NULL) OR (info_difr_id IS NOT NULL AND info_test_id IS NULL))
 
 insert into user (created, email, enabled, password, username) values ("2021-06-08 08:49:10", "michal@gazeta.pl" , true, "$2a$10$OLwgc52vrQxWMgHz6WzPSepHYOt7WKI73yvjJwL.XYBgMwlpbT6ey", "michal")

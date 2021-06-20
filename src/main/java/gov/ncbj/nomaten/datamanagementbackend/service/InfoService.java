@@ -4,12 +4,11 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.CreateDifrInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.DeleteDifrInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.GetDifrInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.DeleteTestInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.GetTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.DeleteInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -17,6 +16,8 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.createDifrInfoRequestToDifrInfo;
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.updateDifrInfoRequestToDifrInfo;
@@ -34,6 +35,10 @@ public class InfoService {
     }
 
     // info
+    public List<Info> getInfoList() {
+        return authService.getCurrentUser().getInfoList();
+    }
+
     public Info getInfo(String infoName) {
         User user = authService.getCurrentUser();
         return user.getInfoList()
@@ -67,29 +72,42 @@ public class InfoService {
         info.setLongName(updateInfoRequest.getLongName());
         info.setDescription(updateInfoRequest.getDescription());
 
-        DifrInfo difrInfo = updateDifrInfo(updateInfoRequest.getUpdateDifrInfoRequest());
-        difrInfo.setInfo(info);
-        info.setDifrInfo(difrInfo);
-
-        TestInfo testInfo = updateTestInfoRequestToTestInfo(updateInfoRequest.getUpdateTestInfoRequest());
-        if(testInfo != null) {
-            testInfo.setInfo(info);
+        if(updateInfoRequest.getUpdateDifrInfoRequest() != null && info.getDifrInfo() != null) {
+            updateDifrInfo(updateInfoRequest.getUpdateDifrInfoRequest());
         }
-        info.setTestInfo(testInfo);
+
+        if(updateInfoRequest.getUpdateTestInfoRequest() != null && info.getTestInfo() != null) {
+            updateTestInfo(updateInfoRequest.getUpdateTestInfoRequest());
+        }
+
+
 
         return info;
     }
 
+    @Transactional
+    public void deleteInfo(DeleteInfoRequest deleteInfoRequest) {
+        Info info = getInfo(deleteInfoRequest.getInfoName());
+        User user = authService.getCurrentUser();
+        user.getInfoList().remove(info);
+        info.setUser(null);
+    }
+
     // difrractometer info
-    public DifrInfo getDifrInfo(GetDifrInfoRequest getDifrInfoRequest) {
-        return getInfo(getDifrInfoRequest.getInfoName()).getDifrInfo();
+    public DifrInfo getDifrInfo(String infoName) {
+        DifrInfo difrInfo = getInfo(infoName).getDifrInfo();
+        if(difrInfo == null) {
+            throw new RuntimeException("No Difr Info in " + infoName);
+        } else {
+            return difrInfo;
+        }
     }
 
     @Transactional
     public DifrInfo createDifrInfo(CreateDifrInfoRequest createDifrInfoRequest) {
         Info info = getInfo(createDifrInfoRequest.getInfoName());
         if(info.getDifrInfo() != null) {
-            throw new RuntimeException("Difr Info already created!");
+            throw new RuntimeException("Difr Info already exists in: " + info.getInfoName());
         }
         DifrInfo difrInfo = createDifrInfoRequestToDifrInfo(createDifrInfoRequest);
         difrInfo.setInfo(info);
@@ -101,7 +119,7 @@ public class InfoService {
     public DifrInfo updateDifrInfo(UpdateDifrInfoRequest updateDifrInfoRequest) {
         Info info = getInfo(updateDifrInfoRequest.getInfoName());
         if(info.getDifrInfo() == null) {
-            throw new RuntimeException("Difr info does not exist");
+            throw new RuntimeException("No difr info in: " + info.getInfoName());
         }
         DifrInfo newDifrInfo = updateDifrInfoRequestToDifrInfo(updateDifrInfoRequest);
         newDifrInfo.setInfo(info);
@@ -114,7 +132,7 @@ public class InfoService {
         Info info = getInfo(deleteDifrInfoRequest.getInfoName());
         DifrInfo difrInfo = info.getDifrInfo();
         if(difrInfo == null) {
-            throw new RuntimeException("No diffractometer info in: " + info.getInfoName());
+            throw new RuntimeException("No difr info in: " + info.getInfoName());
         } else {
             info.setDifrInfo(null);
             difrInfo.setInfo(null);
@@ -122,15 +140,20 @@ public class InfoService {
     }
 
     // test info
-    public TestInfo getTestInfo(GetTestInfoRequest getTestInfoRequest) {
-        return getInfo(getTestInfoRequest.getInfoName()).getTestInfo();
+    public TestInfo getTestInfo(String infoName) {
+        TestInfo testInfo = getInfo(infoName).getTestInfo();
+        if(testInfo == null) {
+            throw new RuntimeException("No Test Info in " + infoName);
+        } else {
+            return getInfo(infoName).getTestInfo();
+        }
     }
 
     @Transactional
     public TestInfo createTestInfo(CreateTestInfoRequest createTestInfoRequest) {
         Info info = getInfo(createTestInfoRequest.getInfoName());
         if(info.getTestInfo() != null) {
-            throw new RuntimeException("Test Info already created!");
+            throw new RuntimeException("Test Info already exists");
         }
         TestInfo testInfo = createTestInfoRequestToTestInfo(createTestInfoRequest);
         testInfo.setInfo(info);

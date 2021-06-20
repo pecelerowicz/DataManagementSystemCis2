@@ -1,14 +1,14 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_storage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-public class GetDifrInfoRequest {
-    private String infoName;
+public class DeleteStorageResponse {
+    private String deleteStorageMessage;
 }

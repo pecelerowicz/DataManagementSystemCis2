@@ -1,8 +1,14 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UpdateDifrInfoResponse {
     private String infoName;

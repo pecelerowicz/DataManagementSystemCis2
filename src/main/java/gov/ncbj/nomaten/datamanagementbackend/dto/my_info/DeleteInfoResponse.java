@@ -5,10 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-public class GetInfoRequest {
+public class DeleteInfoResponse {
     private String infoName;
+    private String deleteMessage;
 }

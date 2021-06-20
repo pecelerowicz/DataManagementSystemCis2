@@ -1,8 +1,10 @@
-package gov.ncbj.nomaten.datamanagementbackend.validators.my_package;
+package gov.ncbj.nomaten.datamanagementbackend.validators.my_storage;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeleteStorageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.DeleteStorageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
+import lombok.Builder;
 
+@Builder
 public class DeleteStorageRequestValidator implements Validator<DeleteStorageRequest> {
     @Override
     public void validate(DeleteStorageRequest deleteStorageRequest) {

@@ -1,6 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_package;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

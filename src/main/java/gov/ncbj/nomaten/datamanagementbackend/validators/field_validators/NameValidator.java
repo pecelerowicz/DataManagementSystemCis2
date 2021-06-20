@@ -9,13 +9,13 @@ public class NameValidator implements Validator<String> {
     public void validate(String name) {
         notNullValidate(name);
         if(name.length() == 0) {
-            throw new RuntimeException("Info name cannot be empty");
+            throw new RuntimeException("Name cannot be empty");
         }
         if(name.length()>20) {
-            throw new RuntimeException("Info name cannot exceed 20 characters");
+            throw new RuntimeException("Name cannot exceed 20 characters");
         }
         if(!name.matches("[A-Za-z]+[A-Za-z0-9]*")) {
-            throw new RuntimeException("The info name cannot contain white characters, special characters or start with numeral");
+            throw new RuntimeException("Name cannot contain white characters, special characters or start with numeral");
         }
     }
 }

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DeleteDifrInfoResponse {
     private String infoName;
-    private String message;
+    private String deleteMessage;
 }

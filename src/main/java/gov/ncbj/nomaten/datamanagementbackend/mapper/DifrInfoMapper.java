@@ -29,8 +29,7 @@ public class DifrInfoMapper {
     }
 
     public static DifrInfo createDifrInfoRequestToDifrInfo(CreateDifrInfoRequest createDifrInfoRequest) {
-        return createDifrInfoRequest == null ? null : DifrInfo
-            .builder()
+        return DifrInfo.builder()
             .geometry(createDifrInfoRequest.getGeometry())
             .incidentSoller(createDifrInfoRequest.getIncidentSoller())
             .incidentSlit(createDifrInfoRequest.getIncidentSlit())
@@ -52,8 +51,7 @@ public class DifrInfoMapper {
     }
 
     public static DifrInfo updateDifrInfoRequestToDifrInfo(UpdateDifrInfoRequest updateDifrInfoRequest) {
-        return updateDifrInfoRequest == null ? null : DifrInfo
-            .builder()
+        return DifrInfo.builder()
             .geometry(updateDifrInfoRequest.getGeometry())
             .incidentSoller(updateDifrInfoRequest.getIncidentSoller())
             .incidentSlit(updateDifrInfoRequest.getIncidentSlit())

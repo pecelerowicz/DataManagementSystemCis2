@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateInfoRequest {
     private String infoName;
+
     private Info.Access access;
     private String shortName;
     private String longName;

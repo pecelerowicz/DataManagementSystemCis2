@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto.my_package;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_storage;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,8 @@ public class GetStorageListResponse {
                 .stream()
                 .map(p -> p.getPath().toFile().toString())
                 .map(p -> p.substring(p.lastIndexOf("/") + 1))
-                .map(p -> p.substring(p.lastIndexOf("\\") + 1))   // TODO remove later for Linux servers
+                // TODO remove later for Linux servers
+                .map(p -> p.substring(p.lastIndexOf("\\") + 1))
                 .collect(toList());
         return new GetStorageListResponse(names);
     }

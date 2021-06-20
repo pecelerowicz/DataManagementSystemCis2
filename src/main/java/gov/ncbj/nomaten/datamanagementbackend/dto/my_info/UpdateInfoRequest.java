@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateInfoRequest {
     private String infoName;
+
     private Info.Access access;
     private String shortName;
     private String longName;

@@ -23,7 +23,7 @@ public class UpdateInfoRequestValidator implements Validator<UpdateInfoRequest> 
         if(updateDifrInfoRequest != null) {
             // validate updateDifrInfoRequest
             if(!updateDifrInfoRequest.getInfoName().equals(updateInfoRequest.getInfoName())) {
-                throw new RuntimeException("Inconsistent info names!");
+                throw new RuntimeException("Inconsistent info names");
             }
             numberOfSubinfos++;
         }
@@ -31,13 +31,13 @@ public class UpdateInfoRequestValidator implements Validator<UpdateInfoRequest> 
         if(updateTestInfoRequest != null) {
             // validate updateTestInfoRequest
             if(!updateTestInfoRequest.getInfoName().equals(updateInfoRequest.getInfoName())) {
-                throw new RuntimeException("Inconsistent info names!");
+                throw new RuntimeException("Inconsistent info names");
             }
             numberOfSubinfos++;
         }
 
         if(numberOfSubinfos > 1) {
-            throw new RuntimeException("The number of subinfos cannot be greater than 1!");
+            throw new RuntimeException("The number of subinfos cannot be greater than 1");
         }
     }
 }
