@@ -5,7 +5,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 
 public class TestInfoMapper {
     public static GetTestInfoResponse testInfoToGetTestInfoResponse(TestInfo testInfo) {
-        return GetTestInfoResponse
+        return testInfo==null ? null : GetTestInfoResponse
             .builder()
             .infoName(testInfo.getInfo().getInfoName())
             .testField1(testInfo.getTestField1())
@@ -51,7 +51,7 @@ public class TestInfoMapper {
     }
 
     public static UpdateTestInfoResponse testInfoToUpdateTestInfoResponse(TestInfo testInfo) {
-        return UpdateTestInfoResponse
+        return testInfo == null ? null : UpdateTestInfoResponse  //since it is used also in InfoMapper and nulls are acceptable
             .builder()
             .infoName(testInfo.getInfo().getInfoName())
             .testField1(testInfo.getTestField1())

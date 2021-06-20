@@ -97,7 +97,7 @@ public class DifrInfoMapper {
     }
 
     public static UpdateDifrInfoResponse difrInfoToUpdateDifrInfoResponse(DifrInfo difrInfo) {
-        return UpdateDifrInfoResponse
+        return difrInfo == null ? null : UpdateDifrInfoResponse //since it is used also in InfoMapper and nulls are acceptable
             .builder()
             .infoName(difrInfo.getInfo().getInfoName())
             .geometry(difrInfo.getGeometry())

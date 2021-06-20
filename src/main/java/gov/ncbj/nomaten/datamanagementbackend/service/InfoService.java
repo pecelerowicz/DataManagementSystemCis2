@@ -72,15 +72,14 @@ public class InfoService {
         info.setLongName(updateInfoRequest.getLongName());
         info.setDescription(updateInfoRequest.getDescription());
 
-        if(updateInfoRequest.getUpdateDifrInfoRequest() != null && info.getDifrInfo() != null) {
-            updateDifrInfo(updateInfoRequest.getUpdateDifrInfoRequest());
+        info.setDifrInfo(null);
+        info.setTestInfo(null);
+        if(updateInfoRequest.getCreateDifrInfoRequest() != null) {
+            info.setDifrInfo(createDifrInfo(updateInfoRequest.getCreateDifrInfoRequest()));
         }
-
-        if(updateInfoRequest.getUpdateTestInfoRequest() != null && info.getTestInfo() != null) {
-            updateTestInfo(updateInfoRequest.getUpdateTestInfoRequest());
+        if(updateInfoRequest.getCreateTestInfoRequest() != null) {
+            info.setTestInfo(createTestInfo(updateInfoRequest.getCreateTestInfoRequest()));
         }
-
-
 
         return info;
     }

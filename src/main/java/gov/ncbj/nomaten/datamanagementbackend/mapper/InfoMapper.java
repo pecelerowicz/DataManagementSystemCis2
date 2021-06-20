@@ -6,7 +6,9 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.difrInfoToGetDifrInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.difrInfoToUpdateDifrInfoResponse;
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToGetTestInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToUpdateTestInfoResponse;
 
 public class InfoMapper {
     public static GetInfoResponse infoToGetInfoResponse(Info info) {
@@ -18,7 +20,7 @@ public class InfoMapper {
             .longName(info.getLongName())
             .description(info.getDescription())
             .getDifrInfoResponse(difrInfoToGetDifrInfoResponse(info.getDifrInfo()))
-            .getTestInfoResponse(info.getTestInfo() == null ? null : testInfoToGetTestInfoResponse(info.getTestInfo()))
+            .getTestInfoResponse(testInfoToGetTestInfoResponse(info.getTestInfo()))
             .build();
     }
 
@@ -41,6 +43,8 @@ public class InfoMapper {
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
                 .description(info.getDescription())
+                .updateDifrInfoResponse(difrInfoToUpdateDifrInfoResponse(info.getDifrInfo()))
+                .updateTestInfoResponse(testInfoToUpdateTestInfoResponse(info.getTestInfo()))
                 .build();
     }
 }

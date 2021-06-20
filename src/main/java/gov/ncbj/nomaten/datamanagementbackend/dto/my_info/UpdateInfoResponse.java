@@ -1,7 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_info;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +20,6 @@ public class UpdateInfoResponse {
     private String shortName;
     private String longName;
     private String description;
-    private UpdateDifrInfoRequest difrInfoRequest;
-    private UpdateTestInfoRequest testInfoDto;
+    private UpdateDifrInfoResponse updateDifrInfoResponse;
+    private UpdateTestInfoResponse updateTestInfoResponse;
 }

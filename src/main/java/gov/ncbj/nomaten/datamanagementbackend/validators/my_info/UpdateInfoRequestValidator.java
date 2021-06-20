@@ -1,10 +1,16 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_info;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.CreateDifrInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.field_validators.*;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.difr_info.CreateDifrInfoRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.difr_info.UpdateDifrInfoRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.test_info.CreateTestInfoRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.test_info.UpdateTestInfoRequestValidator;
 import lombok.Builder;
 
 @Builder
@@ -19,18 +25,18 @@ public class UpdateInfoRequestValidator implements Validator<UpdateInfoRequest> 
         DescriptionValidator.builder().build().validate(updateInfoRequest.getDescription());
 
         int numberOfSubinfos = 0;
-        UpdateDifrInfoRequest updateDifrInfoRequest = updateInfoRequest.getUpdateDifrInfoRequest();
-        if(updateDifrInfoRequest != null) {
-            // validate updateDifrInfoRequest
-            if(!updateDifrInfoRequest.getInfoName().equals(updateInfoRequest.getInfoName())) {
+        CreateDifrInfoRequest createDifrInfoRequest = updateInfoRequest.getCreateDifrInfoRequest();
+        if(createDifrInfoRequest != null) {
+            CreateDifrInfoRequestValidator.builder().build().validate(createDifrInfoRequest);
+            if(!createDifrInfoRequest.getInfoName().equals(updateInfoRequest.getInfoName())) {
                 throw new RuntimeException("Inconsistent info names");
             }
             numberOfSubinfos++;
         }
-        UpdateTestInfoRequest updateTestInfoRequest = updateInfoRequest.getUpdateTestInfoRequest();
-        if(updateTestInfoRequest != null) {
-            // validate updateTestInfoRequest
-            if(!updateTestInfoRequest.getInfoName().equals(updateInfoRequest.getInfoName())) {
+        CreateTestInfoRequest createTestInfoRequest = updateInfoRequest.getCreateTestInfoRequest();
+        if(createTestInfoRequest != null) {
+            CreateTestInfoRequestValidator.builder().build().validate(createTestInfoRequest);
+            if(!createTestInfoRequest.getInfoName().equals(updateInfoRequest.getInfoName())) {
                 throw new RuntimeException("Inconsistent info names");
             }
             numberOfSubinfos++;
