@@ -1,9 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.AuthenticationResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.LoginRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.RefreshTokenRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.RegisterRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.AuthenticationResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.LoginRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RefreshTokenRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RegisterRequest;
 import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.RefreshTokenService;
 import lombok.AllArgsConstructor;

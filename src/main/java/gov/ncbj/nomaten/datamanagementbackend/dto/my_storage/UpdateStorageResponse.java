@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateStorageResponse {
-    private String createStorageMessage;
+public class UpdateStorageResponse {
+    private String updateStorageMessage;
 }

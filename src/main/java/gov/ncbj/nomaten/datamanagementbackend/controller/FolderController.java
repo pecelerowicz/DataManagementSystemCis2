@@ -1,7 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import com.google.gson.Gson;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 
 import gov.ncbj.nomaten.datamanagementbackend.service.FolderService;
@@ -71,4 +71,3 @@ public class FolderController {
     }
 
 }
-

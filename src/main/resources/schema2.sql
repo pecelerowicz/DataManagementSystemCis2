@@ -1,0 +1,17 @@
+--ALTER TABLE info ADD CONSTRAINT not_more_than_one_specific_info CHECK ((info_difr_id IS NULL AND info_test_id IS NULL) OR (info_difr_id IS NULL AND info_test_id IS NOT NULL) OR (info_difr_id IS NOT NULL AND info_test_id IS NULL))
+--
+--insert into user (created, email, enabled, password, username) values ("2021-06-08 08:49:10", "michal@gazeta.pl" , true, "$2a$10$OLwgc52vrQxWMgHz6WzPSepHYOt7WKI73yvjJwL.XYBgMwlpbT6ey", "michal")
+--insert into user (created, email, enabled, password, username) values ("2021-06-08 08:53:56", "konrad@gazeta.pl", true, "$2a$10$B5wtRob3.ksgjZGxDfc64eC0qq5kxNjMwmJ.1YAiOw9KcyUjYKBKi", "konrad")
+--insert into user (created, email, enabled, password, username) values ("2021-06-08 08:53:56", "maksymilian@gazeta.pl", true, "$2a$10$b.2pMcFmPAhu56K/d3y2a.aaEQut2x8ic9.mhOgOLsdU.U3M4fEk2", "maksymilian")
+--
+--insert into info_test (test_field) values ("just a test")
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package1", "This is some loooong name", "This is some short name", null, 1, 1)
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package2", "This is some loooong name", "This is some short name", null, null, 1)
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package5", "This is some loooong name", "This is some short name", null, null, 1)
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package6", "This is some loooong name", "This is some short name", null, null, 1)
+--
+--insert into info_test (test_field) values ("just a test")
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package1", "This is some loooong name", "This is some short name", null, 2, 2)
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package2", "This is some loooong name", "This is some short name", null, 2, 2)
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package5", "This is some loooong name", "This is some short name", null, null, 2)
+--insert into info (access, description, info_name, long_name, short_name, info_difr_id, info_test_id, user_id) values ("PRIVATE", "some description", "package6", "This is some loooong name", "This is some short name", null, null, 2)
