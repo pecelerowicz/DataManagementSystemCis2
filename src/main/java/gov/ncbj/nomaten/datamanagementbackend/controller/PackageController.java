@@ -24,6 +24,12 @@ public class PackageController {
         return ResponseEntity.status(OK).body(new GetPackageListResponse(packageService.getPackages()));
     }
 
+    @PostMapping
+    public ResponseEntity<CreatePackageResponse> createPackage(@RequestBody CreatePackageRequest createPackageRequest) throws IOException {
+        String createdPackageName = packageService.createPackage(createPackageRequest.getPackageName());
+        return ResponseEntity.status(CREATED).body(CreatePackageResponse.builder().createPackageMessage("Package " + createdPackageName + " was created").build());
+    }
+
     @DeleteMapping
     public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
         DeletePackageRequestValidator.builder().build().validate(deletePackageRequest);

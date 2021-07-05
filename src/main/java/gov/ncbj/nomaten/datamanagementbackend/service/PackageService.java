@@ -23,11 +23,13 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class PackageService {
 
-    AuthService authService;
+    private AuthService authService;
+    private StorageService storageService;
 
     @Autowired
-    public PackageService(AuthService authService) {
+    public PackageService(AuthService authService, StorageService storageService) {
         this.authService = authService;
+        this.storageService = storageService;
     }
 
     public List<Package> getPackages() throws IOException {
@@ -35,6 +37,16 @@ public class PackageService {
         List<String> metadataNames = metadataNamesOfUser(user);
         List<String> storageNames = storageNamesOfUser(user);
         return combineStorageWithMetadata(metadataNames, storageNames);
+    }
+
+    public String createPackage(String packageName) throws IOException {
+        User user = authService.getCurrentUser();
+        List<String> metadataNames = metadataNamesOfUser(user);
+        List<String> storageNames = storageNamesOfUser(user);
+        if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
+            throw new RuntimeException("Package " + packageName + " already exists");
+        }
+        return storageService.createStorage(packageName);
     }
 
     @Transactional
