@@ -1,12 +1,17 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.DownloadFileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.*;
 
@@ -28,11 +33,18 @@ public class FolderService {
         return readFolderStructure(authService.getCurrentUser());
     }
 
-    public String createFolder(String newFolderName, String packageName, String parentFolderRelativePath) throws IOException {
+    public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {
+        String newFolderName = createFolderRequest.getNewFolderName();
+        String packageName = createFolderRequest.getPackageName();
+        String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath() == null
+                ? "" : createFolderRequest.getParentFolderRelativePath();
+
         String userName = authService.getCurrentUser().getUsername();
         Path newFolderPath = getDefault().getPath(STORAGE, userName, packageName, parentFolderRelativePath, newFolderName);
         Path createdFolderPath = Files.createDirectory(newFolderPath);
-        return createdFolderPath.toString();
+        Path basePath = getDefault().getPath(STORAGE, userName, packageName);
+        Path subPath = basePath.relativize(createdFolderPath);
+        return subPath.toString();
     }
 
     public void deleteFolder(String packageName, String folderPathString) throws IOException {
@@ -49,6 +61,22 @@ public class FolderService {
         String userName = authService.getCurrentUser().getUsername();
         Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getOriginalFilename());
         file.transferTo(rootPathStorage);
+    }
+
+    // TODO download file
+    public Resource downloadFile(String packageName, String fileNameWithPath) {
+        String userName = authService.getCurrentUser().getUsername();
+        try {
+            Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileNameWithPath);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileNameWithPath, ex);
+        }
     }
 
 }
