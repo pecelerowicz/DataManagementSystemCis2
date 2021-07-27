@@ -2,7 +2,7 @@ package gov.ncbj.nomaten.datamanagementbackend.validators.my_info.test_info;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.DeleteTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.field_validators.NameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import lombok.Builder;
 
 @Builder

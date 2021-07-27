@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.validators.field_validators;
+package gov.ncbj.nomaten.datamanagementbackend.validators;
 
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import lombok.Builder;

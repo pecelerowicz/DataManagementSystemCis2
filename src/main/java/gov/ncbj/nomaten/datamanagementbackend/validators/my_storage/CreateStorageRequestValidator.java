@@ -2,7 +2,7 @@ package gov.ncbj.nomaten.datamanagementbackend.validators.my_storage;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.field_validators.NameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import lombok.Builder;
 
 @Builder

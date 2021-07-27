@@ -2,6 +2,7 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.PackageService;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.CreatePackageRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.DeletePackageRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class PackageController {
 
     @PostMapping
     public ResponseEntity<CreatePackageResponse> createPackage(@RequestBody CreatePackageRequest createPackageRequest) throws IOException {
+        CreatePackageRequestValidator.builder().build().validate(createPackageRequest);
         String createdPackageName = packageService.createPackage(createPackageRequest.getPackageName());
         return ResponseEntity.status(CREATED).body(CreatePackageResponse.builder().createPackageMessage("Package " + createdPackageName + " was created").build());
     }

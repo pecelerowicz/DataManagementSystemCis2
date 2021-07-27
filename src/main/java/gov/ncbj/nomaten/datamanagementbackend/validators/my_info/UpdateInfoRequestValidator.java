@@ -2,15 +2,12 @@ package gov.ncbj.nomaten.datamanagementbackend.validators.my_info;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.CreateDifrInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.field_validators.*;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.difr_info.CreateDifrInfoRequestValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.difr_info.UpdateDifrInfoRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.test_info.CreateTestInfoRequestValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.test_info.UpdateTestInfoRequestValidator;
 import lombok.Builder;
 
 @Builder
