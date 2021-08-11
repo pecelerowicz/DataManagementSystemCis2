@@ -2,6 +2,9 @@ package gov.ncbj.nomaten.datamanagementbackend.service;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.DownloadFileRequest;
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
+import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -25,8 +28,20 @@ public class FolderService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private InfoRepository infoRepository;
+
     public PathNode getPackageFolderStructure(String storageName) {
         return readFolderStructure(authService.getCurrentUser(), storageName);
+    }
+
+    public PathNode getPackageFolderStructureOfUser(String userName, String storageName) {
+        List<Info> infoList = infoRepository.findByUser(authService.getUserByName(userName));
+        if(infoList.stream().noneMatch(info -> info.getInfoName().equals(storageName)
+                && info.getAccess().equals(Info.Access.PUBLIC))) {
+            throw new RuntimeException("User " + userName + " does not have public package " + storageName);
+        }
+        return readFolderStructure(authService.getUserByName(userName), storageName);
     }
 
     public PathNode getFullFolderStructure() {
@@ -37,7 +52,7 @@ public class FolderService {
         String newFolderName = createFolderRequest.getNewFolderName();
         String packageName = createFolderRequest.getPackageName();
         String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath() == null
-                ? "" : createFolderRequest.getParentFolderRelativePath();
+                ? "" : createFolderRequest.getParentFolderRelativePath(); // todo this is probably redundant now
 
         String userName = authService.getCurrentUser().getUsername();
         Path newFolderPath = getDefault().getPath(STORAGE, userName, packageName, parentFolderRelativePath, newFolderName);
@@ -79,7 +94,25 @@ public class FolderService {
         }
     }
 
+    public Resource downloadFileOfUser(String userName, String packageName, String fileNameWithPath) {
+        List<Info> infoList = infoRepository.findByUserUsername(userName);
+
+        if(!infoList.stream().anyMatch(info -> info.getInfoName().equals(packageName)
+                && info.getAccess().equals(Info.Access.PUBLIC))) {
+            throw new RuntimeException("User " + userName + " does not have public package " + packageName);
+        }
+
+        try {
+            Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileNameWithPath);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileNameWithPath, ex);
+        }
+    }
+
 }
-
-
-
