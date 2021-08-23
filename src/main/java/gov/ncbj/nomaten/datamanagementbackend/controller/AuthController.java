@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -49,6 +51,12 @@ public class AuthController {
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
         return ResponseEntity.status(OK).body("Refresh Token deleted successfully.");
+    }
+
+    // TODO zrobić porządne dto
+    @GetMapping("/users")
+    public ResponseEntity<List<String>> getUsers() {
+        return ResponseEntity.status(OK).body(authService.getUsers());
     }
 
 }

@@ -43,7 +43,7 @@ public class DifrInfoMapper {
             .stepSize(createDifrInfoRequest.getStepSize())
             .stepTime(createDifrInfoRequest.getStepTime())
             .stage(createDifrInfoRequest.getStage())
-            .spinningRocking(createDifrInfoRequest.isSpinningRocking())
+            .spinningRocking(createDifrInfoRequest.getSpinningRocking())
             .spinningRockingVelocity(createDifrInfoRequest.getSpinningRockingVelocity())
             .temperature(createDifrInfoRequest.getTemperature())
             .comments(createDifrInfoRequest.getComments())

@@ -46,6 +46,9 @@ public class DataManipulation {
     public static PathNode readFolderStructure(User user) {
         String userName = user.getUsername();
         Path rootPath = getDefault().getPath(STORAGE, userName);
+        if(Files.notExists(rootPath)) {
+            throw new RuntimeException("Folder does not exist");
+        }
         List<Path> paths = createSortedPaths(rootPath);
         PathNode root = new PathNode(paths.remove(0), rootPath);
         for(Path path: paths) {
@@ -57,6 +60,9 @@ public class DataManipulation {
     public static PathNode readFolderStructure(User user, String storageName) {
         String userName = user.getUsername();
         Path rootPath = getDefault().getPath(STORAGE, userName, storageName);
+        if(Files.notExists(rootPath)) {
+            throw new RuntimeException("Folder does not exist");
+        }
         List<Path> paths = createSortedPaths(rootPath);
         PathNode root = new PathNode(paths.remove(0), rootPath);
         for(Path path: paths) {

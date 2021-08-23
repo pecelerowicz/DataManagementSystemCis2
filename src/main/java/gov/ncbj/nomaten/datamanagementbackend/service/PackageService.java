@@ -2,7 +2,6 @@ package gov.ncbj.nomaten.datamanagementbackend.service;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeletePackageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
-import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.*;
 import static java.nio.file.FileSystems.getDefault;
-import static java.nio.file.Files.walk;
 import static java.util.stream.Collectors.toList;
 
 @Service

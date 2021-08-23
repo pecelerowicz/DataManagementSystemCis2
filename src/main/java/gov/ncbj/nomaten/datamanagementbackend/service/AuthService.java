@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.time.Instant.now;
 
@@ -126,6 +128,10 @@ public class AuthService {
     public User getUserByName(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException("No user " + username + " found"));
+    }
+
+    public List<String> getUsers() {
+        return userRepository.findAll().stream().map(User::getUsername).collect(Collectors.toList());
     }
 
 }

@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeleteFolderResponse {
-    private String deletedFolderPath;
+    private String deleteFolderMessage;
 }

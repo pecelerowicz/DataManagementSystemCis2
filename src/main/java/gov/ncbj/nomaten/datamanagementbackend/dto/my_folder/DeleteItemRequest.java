@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteFolderRequest {
+public class DeleteItemRequest {
     private String packageName;
-    private String folderPathString;
+    private String itemPathString;
 }
