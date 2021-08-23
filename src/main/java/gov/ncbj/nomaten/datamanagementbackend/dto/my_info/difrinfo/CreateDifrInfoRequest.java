@@ -14,20 +14,20 @@ public class CreateDifrInfoRequest {
     private String infoName;
 
     private DifrInfo.Geometry geometry;
-    private double incidentSoller;
-    private double incidentSlit;
-    private double detectorSoller;
-    private double detectorSlit;
+    private Double incidentSoller;
+    private Double incidentSlit;
+    private Double detectorSoller;
+    private Double detectorSlit;
     private DifrInfo.DetectorAbsorber detectorAbsorber;
-    private double generatorVoltage;
-    private double generatorCurrent;
-    private double dataRangeStart;
-    private double dataRangeEnd;
-    private double stepSize;
-    private double stepTime;
+    private Double generatorVoltage;
+    private Double generatorCurrent;
+    private Double dataRangeStart;
+    private Double dataRangeEnd;
+    private Double stepSize;
+    private Double stepTime;
     private DifrInfo.Stage stage;
-    private boolean spinningRocking;
-    private double spinningRockingVelocity;
-    private double temperature;
+    private Boolean spinningRocking;
+    private Double spinningRockingVelocity;
+    private Double temperature;
     private String comments;
 }

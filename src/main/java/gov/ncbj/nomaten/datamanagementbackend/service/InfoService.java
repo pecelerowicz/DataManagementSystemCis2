@@ -184,5 +184,15 @@ public class InfoService {
         }
     }
 
+    @Transactional
+    public Info getInfoOfUser(String userName, String infoName) {
+        return authService
+                .getUserByName(userName)
+                .getInfoList()
+                .stream()
+                .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User " + userName + " does not have public package " + infoName));
+    }
 }
 
