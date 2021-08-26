@@ -11,7 +11,7 @@ publish:
   services:
     - docker:dind
   script:
-    - docker -v
+    - sudo apt install docker.io
     - docker build -t $TAG_COMMIT -t $TAG_LATEST .
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker push $TAG_COMMIT
