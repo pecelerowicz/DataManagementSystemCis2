@@ -10,7 +10,7 @@ maven-build:
     - ls
   artifacts:
     paths:
-      - downloads/*.txt
+      - /builds/nomaten/DataManagementBackend
 
 
 
