@@ -8,7 +8,7 @@ maven-build:
     - mkdir /downloads
     - cd /downloads
     - touch test.txt
-    - pwd
+    - ls
   artifacts:
     paths:
       - downloads/*.txt
