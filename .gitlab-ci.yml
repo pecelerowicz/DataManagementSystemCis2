@@ -4,10 +4,12 @@ stages:
 maven-build:
   image: maven:3-jdk-8
   stage: build
-  script: "mvn package -B"
-  artifacts: 
+  script: "mkdir /downloads"
+  script: "cd /downloads"
+  script: "touch test.txt"
+  artifacts:
     paths:
-      - target/*.jar
+      - "downloads/"
 
 
 
