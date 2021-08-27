@@ -8,7 +8,7 @@ maven-build:
     - mkdir /downloads
     - cd /builds/nomaten/DataManagementBackend
     - ls
-    - mvn package -B -DskipTests 
+    - mvn package -B 
   artifacts:
     paths:
       - /builds/nomaten/DataManagementBackend
