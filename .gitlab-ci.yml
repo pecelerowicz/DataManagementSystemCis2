@@ -11,7 +11,7 @@ maven-build:
     - mvn package -B -DskipTests 
   artifacts:
     paths:
-      - /builds/nomaten/DataManagementBackend
+      - target/*.jar
 
 
 
