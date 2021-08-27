@@ -8,6 +8,7 @@ maven-build:
     - mkdir /downloads
     - cd /builds/nomaten/DataManagementBackend
     - ls
+    - cat /etc/os-release
   artifacts:
     paths:
       - /builds/nomaten/DataManagementBackend
