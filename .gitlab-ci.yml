@@ -9,6 +9,7 @@ maven-build:
     - cd /downloads
     - touch test.txt
     - cd ..
+    - ls
   artifacts:
     paths:
       - downloads/*.txt
