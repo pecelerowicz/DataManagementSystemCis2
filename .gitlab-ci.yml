@@ -4,7 +4,8 @@ stages:
 maven-build:
   image: maven:3-jdk-8
   stage: build
-  script: 
+  script:
+    - mvn package -B
     - mkdir /downloads
     - cd /downloads
     - touch test.txt
