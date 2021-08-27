@@ -12,7 +12,7 @@ maven-build:
     - apt update
     - apt -y  install wget
     - wget https://repo.mysql.com//mysql-apt-config_0.8.18-1_all.deb
-    - apt -y install mysql-server
+    - apt -y install mariadb-server
   artifacts:
     paths:
       - /builds/nomaten/DataManagementBackend
