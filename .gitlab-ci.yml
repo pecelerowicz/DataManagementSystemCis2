@@ -52,7 +52,7 @@ server-deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f data-management-backend || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name data-management-backend $TAG_COMMIT -e SPRING_DATASOURCE_URL: jdbc:mysql://root_mysql-standalone_1:3306/my_db"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name data-management-backend $TAG_COMMIT -e SPRING_DATASOURCE_URL:jdbc:mysql://root_mysql-standalone_1:3306/my_db"
   environment:
     name: production
     url: http://134.122.86.52
