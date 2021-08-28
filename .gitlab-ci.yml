@@ -37,7 +37,7 @@ docker-build:
 
 
 server-deploy:
-  image: alpine:latest
+  image: docker
   stage: deploy
   tags:
     - deployment
@@ -48,6 +48,9 @@ server-deploy:
     - echo $CI_BUILD_TOKEN
     - echo $CI_REGISTRY
     - chmod og= $ID_RSA
+    - ls
+    - pwd
+    - pip install docker-compose
     - docker-compose up
       #- apk update && apk add openssh-client
       #    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker-compose -f ~/docker-compose.yml up -d"
