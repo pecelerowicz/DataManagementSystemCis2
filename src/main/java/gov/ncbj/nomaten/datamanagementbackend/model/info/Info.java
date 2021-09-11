@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.model.info;
 
+import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
@@ -12,6 +13,10 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import java.util.*;
+
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -60,6 +65,15 @@ public class Info {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany(fetch = LAZY, cascade = {PERSIST, MERGE, DETACH, REFRESH})
+    @JoinTable(
+            name="project_info",
+            joinColumns = @JoinColumn(name = "info_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"info_id", "project_id"})
+    )
+    private List<Project> projects = new LinkedList<>();
 
     @Override
     public String toString() {

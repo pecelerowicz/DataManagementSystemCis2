@@ -19,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.createDifrInfoRequestToDifrInfo;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.updateDifrInfoRequestToDifrInfo;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.createTestInfoRequestToTestInfo;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.updateTestInfoRequestToTestInfo;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.createDifrInfoRequestToDifrInfo;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.updateDifrInfoRequestToDifrInfo;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.createTestInfoRequestToTestInfo;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.updateTestInfoRequestToTestInfo;
 
 @Service
 public class InfoService {
@@ -50,6 +50,7 @@ public class InfoService {
 
     @Transactional
     public Info createInfo(CreateInfoRequest createInfoRequest) {
+        // TODO check for info existence
         User user = authService.getCurrentUser();
         Info info = Info
             .builder()

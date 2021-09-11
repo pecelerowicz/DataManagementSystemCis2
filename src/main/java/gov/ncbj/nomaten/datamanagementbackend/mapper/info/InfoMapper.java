@@ -1,14 +1,14 @@
-package gov.ncbj.nomaten.datamanagementbackend.mapper;
+package gov.ncbj.nomaten.datamanagementbackend.mapper.info;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.difrInfoToGetDifrInfoResponse;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.DifrInfoMapper.difrInfoToUpdateDifrInfoResponse;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToGetTestInfoResponse;
-import static gov.ncbj.nomaten.datamanagementbackend.mapper.TestInfoMapper.testInfoToUpdateTestInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.difrInfoToGetDifrInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.difrInfoToUpdateDifrInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.testInfoToGetTestInfoResponse;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.testInfoToUpdateTestInfoResponse;
 
 public class InfoMapper {
     public static GetInfoResponse infoToGetInfoResponse(Info info) {

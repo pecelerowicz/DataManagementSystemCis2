@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class AttachUserToProjectResponse {
-    private String anotherUserName;
-    private String projectName;
+public class GetProjectsResponse {
+    private List<GetProjectResponse> getProjectResponseList;
 }

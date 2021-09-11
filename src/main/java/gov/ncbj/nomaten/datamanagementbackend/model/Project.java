@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.model;
 
+import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,31 +16,33 @@ import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
+@Entity
+@Table(name = "project", uniqueConstraints = {@UniqueConstraint(name="unique_owner_name_project_name", columnNames = {"owner_name", "project_name"})})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
 public class Project {
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "project_name")
     @NotBlank(message = "Project name is required!")
-    private String name;
+    private String projectName;
 
+    @Column(name = "description")
+    @NotBlank(message = "Project description is required")
     private String description;
 
-    @ManyToMany(mappedBy = "projects", fetch= LAZY , cascade = {PERSIST, MERGE, DETACH, REFRESH})
+    @Column(name = "owner_name")
+    @NotBlank(message = "Project owner_id is required")
+    private String ownerName;
+
+    @ManyToMany(mappedBy = "projects", fetch = LAZY, cascade = {PERSIST, MERGE, DETACH, REFRESH})
     private List<User> users = new LinkedList<>();
 
-    public void addUser(User user) {
-        if(users == null) {
-            users = new LinkedList<>();
-        }
-        users.add(user);
-    }
-
+    @ManyToMany(mappedBy = "projects", fetch = LAZY, cascade = {PERSIST, MERGE, DETACH, REFRESH})
+    private List<Info> infoList = new LinkedList<>();
 }

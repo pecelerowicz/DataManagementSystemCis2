@@ -5,12 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ProjectsResponse {
-    private List<ProjectResponse> projectResponseList;
+public class AddUserRequest {
+    private Long projectId;
+    private String userName;
 }

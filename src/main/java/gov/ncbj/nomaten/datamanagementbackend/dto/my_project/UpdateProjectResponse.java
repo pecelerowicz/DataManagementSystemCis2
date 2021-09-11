@@ -5,10 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GiveUpProjectResponse {
+public class UpdateProjectResponse {
+    private Long id;
     private String projectName;
+    private String description;
+    private String ownerName;
+    private List<String> memberNames;
+    private List<ProjectInfoResponse> projectInfoResponseList;
 }

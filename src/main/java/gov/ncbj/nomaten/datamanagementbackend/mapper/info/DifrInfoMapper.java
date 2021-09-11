@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.mapper;
+package gov.ncbj.nomaten.datamanagementbackend.mapper.info;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;

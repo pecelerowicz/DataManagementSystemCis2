@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.OK;
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.project.ProjectMapper.*;
+import static org.springframework.http.ResponseEntity.ok;
 
 @CrossOrigin
 @RestController
@@ -19,54 +19,65 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<GetProjectResponse> getOwnedProject(@PathVariable Long projectId) {
+        // TODO validation
+        return ok(projectToGetProjectResponse(projectService.getOwnedProject(projectId)));
+    }
+
     @GetMapping("/project")
-    public ResponseEntity<ProjectsResponse> getProjects() {
-        List<ProjectResponse> projectResponseList = projectService.getProjects()
-                .stream()
-                .map(Project::getName)
-                .map(ProjectResponse::new)
-                .collect(toList());
-        return ResponseEntity.status(OK).body(ProjectsResponse.builder().projectResponseList(projectResponseList).build());
+    public ResponseEntity<GetProjectsResponse> getOwnedProjects() {
+        return ok(projectListToGetProjectsResponse(projectService.getOwnedProjects()));
     }
 
-    @GetMapping("/project-all")
-    public ResponseEntity<ProjectsResponse> getAllProjects() {
-        List<ProjectResponse> projectResponseList = projectService.getAllProjects()
-                .stream()
-                .map(Project::getName)
-                .map(ProjectResponse::new)
-                .collect(toList());
-        return ResponseEntity.status(OK).body(ProjectsResponse.builder().projectResponseList(projectResponseList).build());
-    }
-
-    //TODO nie można zrobić dwóch projektów o tej samej nazwie
     @PostMapping("/project")
-    public ResponseEntity<CreateProjectResponse> createProject(@RequestBody CreateProjectRequest createProjectRequest) {
-        CreateProjectResponse createProjectResponse = CreateProjectResponse
-                .builder()
-                .name(projectService.createProject(createProjectRequest.getName(), createProjectRequest.getDescription()))
-                .build();
-        return ResponseEntity.status(OK).body(createProjectResponse);
+    public ResponseEntity<CreateProjectResponse> createOwnedProject(@RequestBody CreateProjectRequest createProjectRequest) {
+        // TODO validation
+        return ok(projectToCreateProjectResponse(projectService.createOwnedProject(createProjectRequest)));
     }
 
-    @PostMapping("/project-user")
-    public ResponseEntity<AttachUserToProjectResponse> attachUserToProject(@RequestBody AttachUserToProjectRequest attachUserToProjectRequest) {
-        projectService.attachUserToProject(attachUserToProjectRequest.getAnotherUserName(), attachUserToProjectRequest.getProjectName());
-        AttachUserToProjectResponse attachUserToProjectResponse = AttachUserToProjectResponse
-                .builder()
-                .anotherUserName(attachUserToProjectRequest.getAnotherUserName())
-                .projectName(attachUserToProjectRequest.getProjectName())
-                .build();
-        return ResponseEntity.status(OK).body(attachUserToProjectResponse);
+    @PutMapping("/project")
+    public ResponseEntity<UpdateProjectResponse> updateOwnedProject(@RequestBody UpdateProjectRequest updateProjectRequest) {
+        // TODO validation
+        return ok(projectToUpdateProjectResponse(projectService.updateOwnedProject(updateProjectRequest)));
     }
 
-    @DeleteMapping("/project-user")
-    public ResponseEntity<GiveUpProjectResponse> giveUpProject(@RequestBody GiveUpProjectRequest giveUpProjectRequest) {
-        projectService.giveUpProject(giveUpProjectRequest.getProjectName());
-        GiveUpProjectResponse giveUpProjectResponse = GiveUpProjectResponse.builder()
-                .projectName(giveUpProjectRequest.getProjectName())
-                .build();
-        return ResponseEntity.status(OK).body(giveUpProjectResponse);
+    @PostMapping("/project/user")
+    public ResponseEntity<AddUserResponse> addUserToOwnedProject(@RequestBody AddUserRequest addUserRequest) {
+        // TODO validation
+        return ok(projectToAddUserResponse(projectService.addUserToOwnedProject(addUserRequest)));
     }
 
+    @PostMapping("/project/info")
+    public ResponseEntity<AddMyInfoToOwnedProjectResponse> addMyInfoToOwnedProject(@RequestBody AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
+        // TODO validation
+        return ok(projectToAddInfoToOwnedProjectResponse(projectService.addMyInfoToOwnedProject(addMyInfoToOwnedProjectRequest)));
+    }
+
+    // TODO removeMyInfoFromOwnedProject
+
+    // TODO removeOtherInfoFromOwnedProject
+
+    // TODO removeUserFromOwnedProject (remove all its infos automatically? Prevent from removing user, who has infos in the project?)
+
+    // TODO deleteOwnedProject
+
+
+
+
+    // TODO getAllProjects  (te, w których jestem)
+    @GetMapping("/project/all")
+    public ResponseEntity<GetProjectsResponse> getProjects() {
+        List<Project> projects = projectService.getProjects();
+
+        return null;
+    }
+
+    // TODO removeMyFromOtherProject
+
+    // TODO addMyInfoToOtherProject
+
+    // TODO removeMyInfoFromOtherProject
+
+    // TODO check what happens if I delete Info which belongs to the project (my project, other project, multiple projects)
 }
