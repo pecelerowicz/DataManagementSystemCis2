@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.AddMyInfoToOwnedProjectRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.AddUserRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.CreateProjectRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.UpdateProjectRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
@@ -120,6 +117,30 @@ public class ProjectService {
                 .orElseThrow(() -> new RuntimeException("User " + ownerName + " does not have info " + infoName));
         project.getInfoList().add(info);
         info.getProjects().add(project);
+        return project;
+    }
+
+    @Transactional
+    public Project removeMyInfoFromOwnedProject(RemoveMyInfoFromOwnedProjectRequest removeMyInfoFromOwnedProjectRequest) {
+        String ownerName = authService.getCurrentUser().getUsername();
+        Long projectId = removeMyInfoFromOwnedProjectRequest.getProjectId();
+        String infoName = removeMyInfoFromOwnedProjectRequest.getInfoName();
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
+        if(!project.getOwnerName().equals(ownerName)) {
+            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
+        }
+        List<String> infoNameList = project.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        if(!infoNameList.contains(infoName)) {
+            throw new RuntimeException("Project with id " + projectId + " does not contain info " + infoName);
+        }
+        Info info = infoRepository.findByUserUsername(ownerName)
+                .stream()
+                .filter(i -> i.getInfoName().equals(infoName))
+                .findAny()
+                .orElseThrow(() -> new RuntimeException("User " + ownerName + " does not have info " + infoName));
+        project.getInfoList().remove(info);
+        info.getProjects().remove(project);
         return project;
     }
 

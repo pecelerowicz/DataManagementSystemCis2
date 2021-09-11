@@ -6,6 +6,7 @@ import gov.ncbj.nomaten.datamanagementbackend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.project.ProjectMapper.*;
@@ -54,7 +55,11 @@ public class ProjectController {
         return ok(projectToAddInfoToOwnedProjectResponse(projectService.addMyInfoToOwnedProject(addMyInfoToOwnedProjectRequest)));
     }
 
-    // TODO removeMyInfoFromOwnedProject
+    @DeleteMapping("/project/info")
+    public ResponseEntity<RemoveMyInfoFromOwnedProjectResponse> removeMyInfoFromOwnedProject(@RequestBody RemoveMyInfoFromOwnedProjectRequest removeMyInfoFromOwnedProjectRequest) {
+        // TODO validation
+        return ok(projectToRemoveMyInfoFromOwnedProjectResponse(projectService.removeMyInfoFromOwnedProject(removeMyInfoFromOwnedProjectRequest)));
+    }
 
     // TODO removeOtherInfoFromOwnedProject
 
@@ -73,9 +78,9 @@ public class ProjectController {
         return null;
     }
 
-    // TODO removeMyFromOtherProject
-
     // TODO addMyInfoToOtherProject
+
+    // TODO removeMyFromOtherProject
 
     // TODO removeMyInfoFromOtherProject
 
