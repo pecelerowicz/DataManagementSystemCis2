@@ -107,7 +107,11 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
         if(!project.getOwnerName().equals(ownerName)) {
-            throw new RuntimeException("Project with id " + projectId + "is not owned by the logged in user");
+            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
+        }
+        List<String> infoNameList = project.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        if(infoNameList.contains(infoName)) {
+            throw new RuntimeException("Project with id " + projectId + " already contains info " + infoName);
         }
         Info info = infoRepository.findByUserUsername(ownerName)
                 .stream()
