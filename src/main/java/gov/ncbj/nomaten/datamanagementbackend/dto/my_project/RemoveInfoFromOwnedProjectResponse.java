@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RemoveMyInfoFromOwnedProjectResponse {
+public class RemoveInfoFromOwnedProjectResponse {
     private Long projectId;
     private String name;
     private String description;

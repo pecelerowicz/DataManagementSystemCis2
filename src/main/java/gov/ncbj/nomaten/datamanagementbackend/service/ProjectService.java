@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -121,24 +118,23 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project removeMyInfoFromOwnedProject(RemoveMyInfoFromOwnedProjectRequest removeMyInfoFromOwnedProjectRequest) {
+    public Project removeInfoFromOwnedProject(RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
         String ownerName = authService.getCurrentUser().getUsername();
-        Long projectId = removeMyInfoFromOwnedProjectRequest.getProjectId();
-        String infoName = removeMyInfoFromOwnedProjectRequest.getInfoName();
+        Long projectId = removeInfoFromOwnedProjectRequest.getProjectId();
+
+        String userName = removeInfoFromOwnedProjectRequest.getUsername();
+        String infoName = removeInfoFromOwnedProjectRequest.getInfoName();
+
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
         if(!project.getOwnerName().equals(ownerName)) {
             throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
         }
-        List<String> infoNameList = project.getInfoList().stream().map(Info::getInfoName).collect(toList());
-        if(!infoNameList.contains(infoName)) {
-            throw new RuntimeException("Project with id " + projectId + " does not contain info " + infoName);
-        }
-        Info info = infoRepository.findByUserUsername(ownerName)
-                .stream()
-                .filter(i -> i.getInfoName().equals(infoName))
+        Info info = project.getInfoList().stream()
+                .filter(i -> i.getUser().getUsername().equals(userName) && i.getInfoName().equals(infoName))
                 .findAny()
-                .orElseThrow(() -> new RuntimeException("User " + ownerName + " does not have info " + infoName));
+                .orElseThrow(() -> new RuntimeException("Project with id " + projectId +
+                        " does not contain info " + infoName + " of " + userName));
         project.getInfoList().remove(info);
         info.getProjects().remove(project);
         return project;
@@ -147,7 +143,9 @@ public class ProjectService {
 
 
 
-    // poniżej te, których nie jestem właścicielem
+
+
+    // poniżej operacje na projektach, których nie jestem właścicielem
 
     public List<Project> getProjects() {
         return authService.getCurrentUser().getProjects();

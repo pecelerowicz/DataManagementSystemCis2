@@ -71,8 +71,8 @@ public class ProjectMapper {
                 .build();
     }
 
-    public static RemoveMyInfoFromOwnedProjectResponse projectToRemoveMyInfoFromOwnedProjectResponse(Project project) {
-        return RemoveMyInfoFromOwnedProjectResponse.builder()
+    public static RemoveInfoFromOwnedProjectResponse projectToRemoveInfoFromOwnedProjectResponse(Project project) {
+        return RemoveInfoFromOwnedProjectResponse.builder()
                 .projectId(project.getId())
                 .name(project.getProjectName())
                 .description(project.getDescription())

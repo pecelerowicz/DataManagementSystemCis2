@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RemoveMyInfoFromOwnedProjectRequest {
-    private String infoName;
+public class RemoveInfoFromOwnedProjectRequest {
     private Long projectId;
+
+    private String username;
+    private String infoName;
 }
