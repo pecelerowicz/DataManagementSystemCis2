@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class GetProjectResponse {
-    private Long id;
+public class RemoveUserFromOwnedProjectResponse {
+    private Long projectId;
     private String name;
     private String description;
     private String ownerName;

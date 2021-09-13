@@ -6,6 +6,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
+import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ public class ProjectService {
 
     @Autowired
     AuthService authService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     ProjectRepository projectRepository;
@@ -138,6 +142,53 @@ public class ProjectService {
         project.getInfoList().remove(info);
         info.getProjects().remove(project);
         return project;
+    }
+
+    @Transactional
+    public Project removeUserFromOwnedProject(RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
+        String ownerName = authService.getCurrentUser().getUsername();
+        String userName = removeUserFromOwnedProjectRequest.getUserName();
+        Long projectId = removeUserFromOwnedProjectRequest.getProjectId();
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new RuntimeException("No user " + userName + " found"));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
+        if(ownerName.equals(userName)) {
+            throw new RuntimeException("Cannot remove project owner from the project");
+        }
+        if(project.getUsers().stream().noneMatch(u -> u.getUsername().equals(userName))) {
+            throw new RuntimeException("No user " + userName + " found in the project with id " + projectId);
+        }
+        if(!project.getOwnerName().equals(ownerName)) {
+            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
+        }
+        if(project.getInfoList().stream().anyMatch(i -> i.getUser().getUsername().equals(userName))) {
+            throw new RuntimeException("Project with id " + projectId + " contains infos by user " + userName);
+        }
+        project.getUsers().remove(user);
+        user.getProjects().remove(project);
+        return project;
+    }
+
+    public List<Project> deleteOwnedProject(DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
+        User owner = authService.getCurrentUser();
+        String ownerName = owner.getUsername();
+        Long projectId = deleteOwnedProjectRequest.getProjectId();
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
+        if(!project.getOwnerName().equals(ownerName)) {
+            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
+        }
+        if(!project.getInfoList().isEmpty()) {
+            throw new RuntimeException("Project with id " + projectId + " contains infos");
+        }
+        if(project.getUsers().size() > 1) {
+            throw new RuntimeException("Project with id " + projectId + " contains member users");
+        }
+        owner.getProjects().remove(project);
+        project.getUsers().remove(owner);
+        projectRepository.delete(project);
+        return owner.getProjects();
     }
 
 

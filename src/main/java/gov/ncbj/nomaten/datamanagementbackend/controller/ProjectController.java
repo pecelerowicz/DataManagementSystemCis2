@@ -62,11 +62,21 @@ public class ProjectController {
         return ok(projectToRemoveInfoFromOwnedProjectResponse(projectService.removeInfoFromOwnedProject(removeInfoFromOwnedProjectRequest)));
     }
 
-    // TODO removeUserFromOwnedProject (remove all its infos automatically? Prevent from removing user, who has infos in the project?)
     @DeleteMapping("/project/user")
+    // TODO check this method
+    public ResponseEntity<RemoveUserFromOwnedProjectResponse> removeUserFromOwnedProject(@RequestBody RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
+        // TODO validation
+        return ok(projectToRemoveUserFromOwnedProjectResponse(projectService.removeUserFromOwnedProject(removeUserFromOwnedProjectRequest)));
+    }
+
+    @DeleteMapping("/project")
+    public ResponseEntity<GetProjectsResponse> deleteOwnedProject(@RequestBody DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
+        // TODO validation
+        return ok(projectListToGetProjectsResponse(projectService.deleteOwnedProject(deleteOwnedProjectRequest)));
+    }
 
 
-    // TODO deleteOwnedProject
+
 
 
 

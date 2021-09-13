@@ -81,4 +81,15 @@ public class ProjectMapper {
                 .projectInfoResponseList(project.getInfoList().stream().map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
+
+    public static RemoveUserFromOwnedProjectResponse projectToRemoveUserFromOwnedProjectResponse(Project project) {
+        return RemoveUserFromOwnedProjectResponse.builder()
+                .projectId(project.getId())
+                .name(project.getProjectName())
+                .description(project.getDescription())
+                .ownerName(project.getOwnerName())
+                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().map(ProjectInfoResponse::new).collect(toList()))
+                .build();
+    }
 }
