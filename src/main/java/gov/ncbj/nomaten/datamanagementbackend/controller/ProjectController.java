@@ -1,13 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
-import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.project.ProjectMapper.*;
 import static org.springframework.http.ResponseEntity.ok;
@@ -20,6 +17,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    // OWNED PROJECTS
     @GetMapping("/project/{projectId}")
     public ResponseEntity<GetProjectResponse> getOwnedProject(@PathVariable Long projectId) {
         // TODO validation
@@ -70,23 +68,24 @@ public class ProjectController {
     }
 
     @DeleteMapping("/project")
+    // TODO check this method (there was no transactional and it seemed to have worked correctly nevertheless)
     public ResponseEntity<GetProjectsResponse> deleteOwnedProject(@RequestBody DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
         // TODO validation
         return ok(projectListToGetProjectsResponse(projectService.deleteOwnedProject(deleteOwnedProjectRequest)));
     }
 
+    // OTHER PROJECTS
+    @GetMapping("/project/all/{projectId}")
+    // TODO check this method
+    public ResponseEntity<GetProjectResponse> getProject(@PathVariable Long projectId) {
+        // TODO validation
+        return ok(projectToGetProjectResponse(projectService.getProject(projectId)));
+    }
 
-
-
-
-
-
-    // TODO getAllProjects  (te, w których jestem)
     @GetMapping("/project/all")
+    // TODO check this method
     public ResponseEntity<GetProjectsResponse> getProjects() {
-        List<Project> projects = projectService.getProjects();
-
-        return null;
+        return ok(projectListToGetProjectsResponse(projectService.getProjects()));
     }
 
     // TODO addMyInfoToOtherProject

@@ -30,6 +30,7 @@ public class ProjectService {
     @Autowired
     InfoRepository infoRepository;
 
+    // OWNED PROJECTS
     public Project getOwnedProject(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(
                 () -> new RuntimeException("No project with id " + projectId));
@@ -170,6 +171,7 @@ public class ProjectService {
         return project;
     }
 
+    @Transactional
     public List<Project> deleteOwnedProject(DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
         User owner = authService.getCurrentUser();
         String ownerName = owner.getUsername();
@@ -191,7 +193,16 @@ public class ProjectService {
         return owner.getProjects();
     }
 
-
+    // OTHER PROJECTS
+    public Project getProject(Long projectId) {
+        String userName = authService.getCurrentUser().getUsername();
+        Project project = projectRepository.findById(projectId).orElseThrow(
+                () -> new RuntimeException("No project with id " + projectId));
+        if(project.getUsers().stream().noneMatch(u -> u.getUsername().equals(userName))) {
+            throw new RuntimeException("Project with id " + projectId + " does not contain user " + userName);
+        }
+        return project;
+    }
 
 
 
