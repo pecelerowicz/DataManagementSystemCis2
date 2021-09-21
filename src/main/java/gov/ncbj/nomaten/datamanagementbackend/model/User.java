@@ -46,12 +46,16 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private List<Info> infoList = new LinkedList<>();
 
+//    @OneToMany(mappedBy = "owner", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+//    private List<Project> ownedProjects = new LinkedList<>();
+
     @ManyToMany(fetch = LAZY, cascade = {PERSIST, MERGE, DETACH, REFRESH})
     @JoinTable(
             name="project_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id")
     )
+    // TODO add constraint in the above just like in Info
     private List<Project> projects = new LinkedList<>();
 
     @Override

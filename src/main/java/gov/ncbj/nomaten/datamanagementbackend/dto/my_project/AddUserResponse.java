@@ -5,13 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class CreateProjectResponse {
-    private Long id;
-    private String projectName;
+public class AddUserResponse {
+    private Long projectId;
+    private String name;
     private String description;
     private String ownerName;
+    private List<String> memberNames;
+    private List<ProjectInfoResponse> projectInfoResponseList;
 }

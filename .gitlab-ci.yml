@@ -1,0 +1,57 @@
+image: docker:latest
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  SPRING_PROFILES_ACTIVE: gitlab-ci
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+
+stages:
+  - build
+  - package
+  - deploy
+
+maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script:
+    - mkdir /downloads
+    - cd /builds/nomaten/DataManagementBackend
+    - ls
+    - mvn package -B -DskipTests 
+  artifacts:
+    paths:
+      - target/*.jar
+
+docker-build:
+  stage: package
+  script:
+    - docker build -t backend -t $TAG_COMMIT -t $TAG_LATEST .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
+
+
+server-deploy:
+  image: alpine:latest
+  stage: deploy
+  tags:
+    - deployment
+  script:
+    - echo $ID_RSA
+    - echo $SERVER_USER
+    - echo $SERVER_IP
+    - echo $CI_BUILD_TOKEN
+    - echo $CI_REGISTRY
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
+      #- ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f data-management-backend || true"
+      #- ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name data-management-backend $TAG_COMMIT --env SPRING_DATASOURCE_URL=jdbc:mysql://root_mysql-standalone_1:3306/my_db"
+  environment:
+    name: production
+    url: http://134.122.86.52
+

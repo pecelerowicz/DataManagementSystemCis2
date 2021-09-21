@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class AttachUserToProjectResponse {
-    private String anotherUserName;
-    private String projectName;
+public class AddMyInfoToOwnedProjectRequest {
+    private String infoName;
+    private Long projectId;
 }

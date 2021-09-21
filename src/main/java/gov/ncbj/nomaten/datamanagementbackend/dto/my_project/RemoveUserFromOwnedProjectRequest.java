@@ -6,9 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class GiveUpProjectResponse {
-    private String projectName;
+public class RemoveUserFromOwnedProjectRequest {
+    private Long projectId;
+    private String userName;
 }
