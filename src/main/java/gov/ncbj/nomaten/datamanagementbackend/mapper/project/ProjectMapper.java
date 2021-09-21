@@ -92,4 +92,37 @@ public class ProjectMapper {
                 .projectInfoResponseList(project.getInfoList().stream().map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
+
+    public static AddMyInfoToOtherProjectResponse projectToAddMyInfoToOtherProjectResponse(Project project) {
+        return AddMyInfoToOtherProjectResponse.builder()
+                .projectId(project.getId())
+                .name(project.getProjectName())
+                .description(project.getDescription())
+                .ownerName(project.getOwnerName())
+                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().map(ProjectInfoResponse::new).collect(toList()))
+                .build();
+    }
+
+    public static RemoveMyInfoFromOtherProjectResponse projectToRemoveMyInfoFromOtherProjectResponse(Project project) {
+        return RemoveMyInfoFromOtherProjectResponse.builder()
+                .projectId(project.getId())
+                .name(project.getProjectName())
+                .description(project.getDescription())
+                .ownerName(project.getOwnerName())
+                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().map(ProjectInfoResponse::new).collect(toList()))
+                .build();
+    }
+
+    public static RemoveMyFromOtherProjectResponse projectToRemoveMyFromOtherProjectResponse(Project project) {
+        return RemoveMyFromOtherProjectResponse.builder()
+                .projectId(project.getId())
+                .name(project.getProjectName())
+                .description(project.getDescription())
+                .ownerName(project.getOwnerName())
+                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().map(ProjectInfoResponse::new).collect(toList()))
+                .build();
+    }
 }

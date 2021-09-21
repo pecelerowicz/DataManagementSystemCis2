@@ -88,11 +88,24 @@ public class ProjectController {
         return ok(projectListToGetProjectsResponse(projectService.getProjects()));
     }
 
-    // TODO addMyInfoToOtherProject
+    @PostMapping("/project/all/info")
+    public ResponseEntity<AddMyInfoToOtherProjectResponse> addMyInfoToOtherProject(@RequestBody AddMyInfoToOtherProjectRequest addMyInfoToOtherProjectRequest) {
+        // TODO validation
+        return ok(projectToAddMyInfoToOtherProjectResponse(projectService.addMyInfoToOtherProject(addMyInfoToOtherProjectRequest)));
+    }
 
-    // TODO removeMyFromOtherProject
+    @DeleteMapping("/project/all/info")
+    // TODO check this method
+    public ResponseEntity<RemoveMyInfoFromOtherProjectResponse> removeMyInfoFromOtherProject(@RequestBody RemoveMyInfoFromOtherProjectRequest removeMyInfoFromOtherProjectRequest) {
+        // TODO validation
+        return ok(projectToRemoveMyInfoFromOtherProjectResponse(projectService.removeMyInfoFromOtherProject(removeMyInfoFromOtherProjectRequest)));
+    }
 
-    // TODO removeMyInfoFromOtherProject
+    @DeleteMapping("/project/all/user")
+    // TODO check this method
+    public ResponseEntity<RemoveMyFromOtherProjectResponse> removeMyFromOtherProject(@RequestBody RemoveMyFromOtherProjectRequest removeMyFromOtherProjectRequest) {
+        return ok(projectToRemoveMyFromOtherProjectResponse(projectService.removeMyFromOtherProject(removeMyFromOtherProjectRequest)));
+    }
 
     // TODO check what happens if I delete Info which belongs to the project (my project, other project, multiple projects)
 }
