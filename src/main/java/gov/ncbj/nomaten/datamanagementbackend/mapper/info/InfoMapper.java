@@ -19,6 +19,7 @@ public class InfoMapper {
             .shortName(info.getShortName())
             .longName(info.getLongName())
             .description(info.getDescription())
+            .localDate(info.getLocalDateTime().toLocalDate())
             .getDifrInfoResponse(difrInfoToGetDifrInfoResponse(info.getDifrInfo()))
             .getTestInfoResponse(testInfoToGetTestInfoResponse(info.getTestInfo()))
             .build();
@@ -32,6 +33,7 @@ public class InfoMapper {
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
                 .description(info.getDescription())
+                .localDate(info.getLocalDateTime().toLocalDate())
                 .build();
     }
 
@@ -43,6 +45,7 @@ public class InfoMapper {
                 .shortName(info.getShortName())
                 .longName(info.getLongName())
                 .description(info.getDescription())
+                .localDate(info.getLocalDateTime().toLocalDate())
                 .updateDifrInfoResponse(difrInfoToUpdateDifrInfoResponse(info.getDifrInfo()))
                 .updateTestInfoResponse(testInfoToUpdateTestInfoResponse(info.getTestInfo()))
                 .build();

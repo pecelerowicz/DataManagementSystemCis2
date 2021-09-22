@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,5 +15,6 @@ public class CreateProjectResponse {
     private Long id;
     private String projectName;
     private String description;
+    private LocalDate localDate;
     private String ownerName;
 }

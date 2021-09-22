@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class Project {
     @Column(name = "description")
     @NotBlank(message = "Project description is required")
     private String description;
+
+    @Column
+    LocalDateTime localDateTime;
 
     @Column(name = "owner_name")
     @NotBlank(message = "Project owner_id is required")

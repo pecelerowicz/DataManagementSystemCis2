@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.createDifrInfoRequestToDifrInfo;
@@ -59,6 +60,7 @@ public class InfoService {
             .shortName(createInfoRequest.getShortName())
             .longName(createInfoRequest.getLongName())
             .description(createInfoRequest.getDescription())
+            .localDateTime(LocalDateTime.now().plusHours(2)) // ?
             .user(user)
             .build();
         user.getInfoList().add(info);

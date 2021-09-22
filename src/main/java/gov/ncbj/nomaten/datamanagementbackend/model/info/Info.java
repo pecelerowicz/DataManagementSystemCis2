@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static javax.persistence.CascadeType.*;
@@ -53,6 +54,9 @@ public class Info {
 
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
+
+    @Column
+    private LocalDateTime localDateTime;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "info_difr_id", referencedColumnName = "id")
