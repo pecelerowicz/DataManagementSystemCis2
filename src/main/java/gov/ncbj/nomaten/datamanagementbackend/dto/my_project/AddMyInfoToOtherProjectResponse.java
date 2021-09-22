@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,6 +17,7 @@ public class AddMyInfoToOtherProjectResponse {
     private String name;
     private String description;
     private String ownerName;
+    private LocalDate localDate;
     private List<String> memberNames;
     private List<ProjectInfoResponse> projectInfoResponseList;
 }

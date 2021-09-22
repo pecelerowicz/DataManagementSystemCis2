@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class UpdateInfoResponse {
     private String shortName;
     private String longName;
     private String description;
+    private LocalDate localDate;
     private UpdateDifrInfoResponse updateDifrInfoResponse;
     private UpdateTestInfoResponse updateTestInfoResponse;
 }
