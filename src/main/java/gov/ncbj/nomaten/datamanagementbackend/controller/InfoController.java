@@ -8,6 +8,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.DeleteInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetInfoListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.CreateInfoRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.UpdateInfoRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.DeleteInfoRequestValidator;
@@ -47,12 +48,12 @@ public class InfoController {
         return ok(infoToGetInfoResponse(infoService.getInfo(infoName)));
     }
 
-//    @GetMapping("/{userName}/{infoName}")
-//    public ResponseEntity<GetInfoResponse> getInfoOfUser(@PathVariable String userName, @PathVariable String infoName) {
-//        UserNameValidator.builder().build().validate(userName);
-//        NameValidator.builder().build().validate(infoName);
-//        return ok(infoToGetInfoResponse(infoService.getInfoOfUser(userName, infoName)));
-//    }
+    @GetMapping("/{userName}/{infoName}") // używane w search
+    public ResponseEntity<GetInfoResponse> getInfoOfUser(@PathVariable String userName, @PathVariable String infoName) {
+        UserNameValidator.builder().build().validate(userName);
+        NameValidator.builder().build().validate(infoName);
+        return ok(infoToGetInfoResponse(infoService.getInfoOfUser(userName, infoName)));
+    }
 
     @GetMapping
     public ResponseEntity<GetInfoListResponse> getInfoList() {
