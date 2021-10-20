@@ -18,7 +18,7 @@ maven-build:
       - target/*.jar
   only:
     - master_new
-
+    - master_new_recreate_db
 docker-build:
   stage: package
   tags:
@@ -30,8 +30,8 @@ docker-build:
     - docker push $TAG_LATEST
   only:
     - master_new
-      
-
+    - recreate_db
+    - master_new_recreate_db
       #server-deploy:
       #image: alpine:latest
       #stage: deploy
