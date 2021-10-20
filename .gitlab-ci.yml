@@ -1,7 +1,3 @@
-#image: docker:latest
-#services:
-#  - docker:dind
-
 variables:
   DOCKER_DRIVER: overlay
   SPRING_PROFILES_ACTIVE: gitlab-ci
@@ -11,19 +7,17 @@ variables:
 stages:
   - build
   - package
-    #  - deploy
 
 maven-build:
   image: maven:3-jdk-8
   stage: build
   script:
-    #- mkdir /downloads
-    #- cd /builds/nomaten/DataManagementBackend
-    #- ls
-    - mvn package -B -DskipTests 
+    - mvn package -B -DskipTests
   artifacts:
     paths:
       - target/*.jar
+  only:
+    - master
 
 docker-build:
   stage: package
@@ -34,7 +28,8 @@ docker-build:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
-
+  only:
+    - master
 
       #server-deploy:
       #image: alpine:latest
