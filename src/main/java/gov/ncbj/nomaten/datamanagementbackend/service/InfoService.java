@@ -187,7 +187,7 @@ public class InfoService {
         }
     }
 
-    @Transactional
+    @Transactional // not needed ?
     public Info getInfoOfUser(String userName, String infoName) {
         return authService
                 .getUserByName(userName)
