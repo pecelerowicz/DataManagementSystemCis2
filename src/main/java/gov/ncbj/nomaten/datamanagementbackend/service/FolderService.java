@@ -1,8 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.DownloadFileRequest;
-import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,9 @@ public class FolderService {
 
     @Autowired
     private InfoRepository infoRepository;
+
+    @Autowired
+    private ProjectService projectService;
 
     public PathNode getPackageFolderStructure(String storageName) {
         return readFolderStructure(authService.getCurrentUser(), storageName);
@@ -113,6 +114,24 @@ public class FolderService {
         } catch (MalformedURLException ex) {
             throw new RuntimeException("File not found " + fileNameWithPath, ex);
         }
+    }
+
+    public Resource downloadFileOfProject(String projectId, String userName, String infoName, String fileNameWithPath) {
+        Info info = projectService.getInfoOfUserAndProject(Long.parseLong(projectId), userName, infoName); // ugly
+        // This particular project contains this particular info of this particular user, and the logged in user
+        // is allowed to access, otherwise an exception will be thrown
+        try {
+            Path filePath = getDefault().getPath(STORAGE, userName, infoName, fileNameWithPath);
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileNameWithPath);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileNameWithPath, ex);
+        }
+
     }
 
 }

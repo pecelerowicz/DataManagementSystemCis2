@@ -95,4 +95,16 @@ public class FolderController {
                 .body(resource);
     }
 
+    @GetMapping("/download/project")
+    public ResponseEntity<Resource> downloadFileOfProject(@RequestParam String projectId, @RequestParam String userName, @RequestParam String infoName, @RequestParam String fileNameWithPath) {
+        UserNameValidator.builder().build().validate(userName);
+        NameValidator.builder().build().validate(infoName);
+        // TODO validate remaining request params
+        Resource resource = folderService.downloadFileOfProject(projectId, userName, infoName, fileNameWithPath);
+        return ok()
+//                .contentType(MediaType.parseMediaType(Files.probeContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                .body(resource);
+    }
 }

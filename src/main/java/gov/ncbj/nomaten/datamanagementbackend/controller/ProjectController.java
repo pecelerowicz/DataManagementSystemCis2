@@ -1,11 +1,16 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.ProjectService;
+import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.InfoMapper.infoToGetInfoResponse;
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.project.ProjectMapper.*;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -108,4 +113,24 @@ public class ProjectController {
     }
 
     // TODO check what happens if I delete Info which belongs to the project (my project, other project, multiple projects)
+
+    // PACKAGES IN PROJECTS
+    @GetMapping("/project/packages/info/{projectId}/{userName}/{infoName}") // response type is borrowed for now
+    public ResponseEntity<GetInfoResponse> getInfoOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
+        // TODO VALIDATION
+        UserNameValidator.builder().build().validate(userName);
+        NameValidator.builder().build().validate(infoName);
+        return ok(infoToGetInfoResponse(projectService.getInfoOfUserAndProject(projectId, userName, infoName)));
+    }
+
+    @GetMapping("/project/packages/folder/{projectId}/{userName}/{infoName}")
+    public PathNode getPackageFolderStructureOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
+        // TODO VALIDATION
+        UserNameValidator.builder().build().validate(userName);
+        NameValidator.builder().build().validate(infoName);
+        return projectService.getPackageFolderStructureOfUserAndProject(projectId, userName, infoName);
+    }
+
+    // downloading files in FolderController
+
 }
