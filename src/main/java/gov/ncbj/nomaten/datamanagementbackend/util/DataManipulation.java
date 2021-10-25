@@ -6,10 +6,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.nio.file.FileSystems.getDefault;
@@ -97,6 +94,46 @@ public class DataManipulation {
                     return super.postVisitDirectory(dir, exc);
                 }
             });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<Path> pathList = new LinkedList<>();
+        paths.forEach(p -> {
+            pathList.add(p);
+        });
+
+        return pathList;
+    }
+
+    public static List<Path> createSortedPathsLevelOne(Path rootPath) {
+        Set<Path> paths = new TreeSet<>();
+
+        try {
+            Files.walkFileTree(rootPath, EnumSet.noneOf(FileVisitOption.class),1, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    paths.add(dir);
+                    return super.preVisitDirectory(dir, attrs);
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    paths.add(file);
+                    return super.visitFile(file, attrs);
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return super.visitFileFailed(file, exc);
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    return super.postVisitDirectory(dir, exc);
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }

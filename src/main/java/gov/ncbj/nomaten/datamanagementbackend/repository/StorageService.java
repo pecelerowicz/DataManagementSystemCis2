@@ -1,34 +1,31 @@
-package gov.ncbj.nomaten.datamanagementbackend.service;
+package gov.ncbj.nomaten.datamanagementbackend.repository;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
+import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.createSortedPathsLevelOne;
 import static java.nio.file.FileSystems.getDefault;
 import static java.nio.file.Files.walk;
 
 @Service
-public class StorageService {
+@AllArgsConstructor
+public class StorageService { // FolderService will be probably merged with this except for download upload
 
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    public StorageService(AuthService authService) {
-        this.authService = authService;
-    }
-
-    public PathNode getStorageList() {
+    public PathNode getInfoListOfUser() {
         String userName = authService.getCurrentUser().getUsername();
         Path rootPath = getDefault().getPath(STORAGE, userName);
-        List<Path> paths = createSortedPathsLevelOne();
+        List<Path> paths = createSortedPathsOfUser();
         PathNode root = new PathNode(paths.remove(0), rootPath);
         for(Path path: paths) {
             root = addNode(root, path, rootPath);
@@ -79,47 +76,15 @@ public class StorageService {
         return where;
     }
 
-    private List<Path> createSortedPathsLevelOne() {
+    private List<Path> createSortedPathsOfStorage() {
+        Path rootPathStorage = getDefault().getPath("storage");
+        return createSortedPathsLevelOne(rootPathStorage);
+    }
 
+    private List<Path> createSortedPathsOfUser() {
         String userName = authService.getCurrentUser().getUsername();
         Path rootPathStorage = getDefault().getPath("storage", userName);
-
-        Set<Path> paths = new TreeSet<>();
-
-        try {
-            Files.walkFileTree(rootPathStorage, EnumSet.noneOf(FileVisitOption.class),1, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    paths.add(dir);
-                    return super.preVisitDirectory(dir, attrs);
-                }
-
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    paths.add(file);
-                    return super.visitFile(file, attrs);
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return super.visitFileFailed(file, exc);
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return super.postVisitDirectory(dir, exc);
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        List<Path> pathList = new LinkedList<>();
-        paths.forEach(p -> {
-            pathList.add(p);
-        });
-
-        return pathList;
+        return createSortedPathsLevelOne(rootPathStorage);
     }
+
 }

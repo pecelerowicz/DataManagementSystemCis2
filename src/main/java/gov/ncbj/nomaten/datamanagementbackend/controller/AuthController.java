@@ -25,17 +25,17 @@ public class AuthController {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signup(registerRequest);
-        return new ResponseEntity<>("User registration successful.", OK);
-    }
+//    @PostMapping("/signup")
+//    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
+//        authService.signup(registerRequest);
+//        return new ResponseEntity<>("User registration successful.", OK);
+//    }
 
-    @GetMapping("accountVerification/{token}")
-    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
-        authService.verifyAccount(token);
-        return new ResponseEntity<>("Account activated successfully.", OK);
-    }
+//    @GetMapping("accountVerification/{token}")
+//    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+//        authService.verifyAccount(token);
+//        return new ResponseEntity<>("Account activated successfully.", OK);
+//    }
 
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
