@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateDbUserRequest {
-    private String email;
+public class ResetPasswordRequest {
     private String userName;
-    private String password;
-    private String role;
-
+    private String newPassword;
 }

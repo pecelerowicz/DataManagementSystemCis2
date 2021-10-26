@@ -9,10 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateDbUserRequest {
-    private String email;
-    private String userName;
-    private String password;
-    private String role;
-
+public class ResetPasswordResponse {
+    private String message;
 }
