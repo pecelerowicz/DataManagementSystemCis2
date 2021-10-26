@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.AuthenticationResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.LoginRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RefreshTokenRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RegisterRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.exception.CustomException;
 import gov.ncbj.nomaten.datamanagementbackend.model.NotificationEmail;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -122,6 +119,12 @@ public class AuthService {
                 .expiresAt(now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(refreshTokenRequest.getUsername())
                 .build();
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+        User user = getCurrentUser();
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
     }
 
     @Transactional

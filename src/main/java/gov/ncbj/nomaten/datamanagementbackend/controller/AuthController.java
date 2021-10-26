@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.AuthenticationResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.LoginRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RefreshTokenRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RegisterRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
@@ -51,6 +48,12 @@ public class AuthController {
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
         return ResponseEntity.status(OK).body("Refresh Token deleted successfully.");
+    }
+
+    @PutMapping("/newpass")
+    public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        authService.changePassword(changePasswordRequest);
+        return ResponseEntity.status(OK).body(ChangePasswordResponse.builder().message("Password changed").build());
     }
 
     // TODO zrobić porządne dto
