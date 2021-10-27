@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.AuthenticationResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.LoginRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RefreshTokenRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.RegisterRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.exception.CustomException;
 import gov.ncbj.nomaten.datamanagementbackend.model.NotificationEmail;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -44,54 +41,54 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    @Transactional
-    public void signup(RegisterRequest registerRequest) {
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setCreated(now());
-        user.setEnabled(true);
-        userRepository.save(user);
+//    @Transactional
+//    public void signup(RegisterRequest registerRequest) {
+//        User user = new User();
+//        user.setUsername(registerRequest.getUsername());
+//        user.setEmail(registerRequest.getEmail());
+//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+//        user.setCreated(now());
+//        user.setEnabled(true);
+//        userRepository.save(user);
+//
+//        String token = generateVerificationToken(user);
+//
+////        mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
+////                "Thank you for signing up to NomatenData. Please click on the below url to activate your account http://localhost:8080/api/auth/accountVerification/" +
+////                token));
+//
+//        createFolderInStorage(user);
+//    }
 
-        String token = generateVerificationToken(user);
+//    private void createFolderInStorage(User user) {
+//        Path path = FileSystems.getDefault().getPath("storage", user.getUsername());
+//        try {
+//            Files.createDirectory(path);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-//        mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
-//                "Thank you for signing up to NomatenData. Please click on the below url to activate your account http://localhost:8080/api/auth/accountVerification/" +
-//                token));
+//    private String generateVerificationToken(User user) {
+//        String token = UUID.randomUUID().toString();
+//        VerificationToken verificationToken = new VerificationToken();
+//        verificationToken.setToken(token);
+//        verificationToken.setUser(user);
+//        verificationTokenRepository.save(verificationToken);
+//        return token;
+//    }
 
-        createFolderInStorage(user);
-    }
+//    public void verifyAccount(String token) {
+//        Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
+//        verificationTokenOptional.orElseThrow(() -> new CustomException("Invalid Token"));
+//        fetchUserAndEnable(verificationTokenOptional.get());
+//    }
 
-    private void createFolderInStorage(User user) {
-        Path path = FileSystems.getDefault().getPath("storage", user.getUsername());
-        try {
-            Files.createDirectory(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String generateVerificationToken(User user) {
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationTokenRepository.save(verificationToken);
-        return token;
-    }
-
-    public void verifyAccount(String token) {
-        Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
-        verificationTokenOptional.orElseThrow(() -> new CustomException("Invalid Token"));
-        fetchUserAndEnable(verificationTokenOptional.get());
-    }
-
-    @Transactional // this is done differently
-    private void fetchUserAndEnable(VerificationToken verificationToken) {
-        verificationToken.getUser().setEnabled(true);
-        verificationTokenRepository.save(verificationToken);
-    }
+//    @Transactional // this is done differently
+//    private void fetchUserAndEnable(VerificationToken verificationToken) {
+//        verificationToken.getUser().setEnabled(true);
+//        verificationTokenRepository.save(verificationToken);
+//    }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -122,6 +119,12 @@ public class AuthService {
                 .expiresAt(now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(refreshTokenRequest.getUsername())
                 .build();
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+        User user = getCurrentUser();
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
     }
 
     @Transactional

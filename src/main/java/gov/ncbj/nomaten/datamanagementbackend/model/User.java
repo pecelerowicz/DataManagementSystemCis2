@@ -2,6 +2,7 @@ package gov.ncbj.nomaten.datamanagementbackend.model;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class User {
 
     @Id
@@ -42,6 +44,8 @@ public class User {
     private Instant created;
 
     private boolean enabled;
+
+    private String roles;
 
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private List<Info> infoList = new LinkedList<>();
