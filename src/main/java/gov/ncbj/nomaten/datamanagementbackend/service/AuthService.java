@@ -30,24 +30,30 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-//    @Transactional
-//    public void signup(RegisterRequest registerRequest) {
-//        User user = new User();
-//        user.setUsername(registerRequest.getUsername());
-//        user.setEmail(registerRequest.getEmail());
-//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-//        user.setCreated(now());
-//        user.setEnabled(true);
-//        userRepository.save(user);
-//
+    @Transactional
+    public void signup(RegisterRequest registerRequest) {
+
+        if(userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            throw new RuntimeException("User " + registerRequest.getUsername() + " already exists");
+        }
+
+        User user = new User();
+        user.setUsername(registerRequest.getUsername());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRoles("ADMIN_ROLE");
+        user.setCreated(now());
+        user.setEnabled(true);
+        userRepository.save(user);
+
 //        String token = generateVerificationToken(user);
-//
-////        mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
-////                "Thank you for signing up to NomatenData. Please click on the below url to activate your account http://localhost:8080/api/auth/accountVerification/" +
-////                token));
-//
+
+//        mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
+//                "Thank you for signing up to NomatenData. Please click on the below url to activate your account http://localhost:8080/api/auth/accountVerification/" +
+//                token));
+
 //        createFolderInStorage(user);
-//    }
+    }
 
 //    private void createFolderInStorage(User user) {
 //        Path path = FileSystems.getDefault().getPath("storage", user.getUsername());
