@@ -9,8 +9,8 @@ public class DescriptionValidator implements Validator<String> {
     public void validate(String description) {
         notNullValidate(description);
 
-        if(description.length()<1 || description.length()>500) {
-            throw new RuntimeException("Description cannot be empty or exceed 500 characters");
+        if(description.length()<1 || description.length()>1000) {
+            throw new RuntimeException("Description cannot be empty or exceed 1000 characters");
         }
     }
 }

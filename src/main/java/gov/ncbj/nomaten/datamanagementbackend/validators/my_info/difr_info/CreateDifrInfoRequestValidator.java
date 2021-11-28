@@ -13,11 +13,12 @@ public class CreateDifrInfoRequestValidator implements Validator<CreateDifrInfoR
         notNullValidate(createDifrInfoRequest);
         NameValidator.builder().build().validate(createDifrInfoRequest.getInfoName());
 
-        // name
+        // geometry
         if(createDifrInfoRequest.getGeometry() == null) {
             throw new RuntimeException("Geometry cannot be null");
         }
-        if(createDifrInfoRequest.getGeometry() != DifrInfo.Geometry.BB && createDifrInfoRequest.getGeometry() != DifrInfo.Geometry.Pb_GM) {
+        if(!createDifrInfoRequest.getGeometry().equals(DifrInfo.Geometry.BB.toString()) &&
+           !createDifrInfoRequest.getGeometry().equals(DifrInfo.Geometry.Pb_GM.toString())) {
             throw new RuntimeException("Illegal value of geometry");
         }
 
@@ -57,9 +58,9 @@ public class CreateDifrInfoRequestValidator implements Validator<CreateDifrInfoR
         if(createDifrInfoRequest.getDetectorAbsorber() == null) {
             throw new RuntimeException("Detector Absorber cannot be null");
         }
-        if(createDifrInfoRequest.getDetectorAbsorber() != DifrInfo.DetectorAbsorber.CU01 &&
-           createDifrInfoRequest.getDetectorAbsorber() != DifrInfo.DetectorAbsorber.CU02 &&
-           createDifrInfoRequest.getDetectorAbsorber() != DifrInfo.DetectorAbsorber.NI01) {
+        if(!createDifrInfoRequest.getDetectorAbsorber().equals(DifrInfo.DetectorAbsorber.CU01.toString()) &&
+           !createDifrInfoRequest.getDetectorAbsorber().equals(DifrInfo.DetectorAbsorber.CU02.toString()) &&
+           !createDifrInfoRequest.getDetectorAbsorber().equals(DifrInfo.DetectorAbsorber.NI01.toString())) {
             throw new RuntimeException("Illegal value of Detector Absorber");
         }
 
@@ -69,14 +70,6 @@ public class CreateDifrInfoRequestValidator implements Validator<CreateDifrInfoR
         }
         if(createDifrInfoRequest.getGeneratorVoltage()<0 || createDifrInfoRequest.getGeneratorVoltage()>100) {
             throw new RuntimeException("Illegal value of Generator Voltage");
-        }
-
-        // generator current
-        if(createDifrInfoRequest.getGeneratorCurrent() == null) {
-            throw new RuntimeException("Generator Current cannot be null");
-        }
-        if(createDifrInfoRequest.getGeneratorCurrent()<0 || createDifrInfoRequest.getGeneratorCurrent()>100) {
-            throw new RuntimeException("Illegal value of Generator Current");
         }
 
         // generator current
@@ -123,8 +116,8 @@ public class CreateDifrInfoRequestValidator implements Validator<CreateDifrInfoR
         if(createDifrInfoRequest.getStage() == null) {
             throw new RuntimeException("Stage cannot be null");
         }
-        if(createDifrInfoRequest.getStage()!= DifrInfo.Stage.SPINNER &&
-           createDifrInfoRequest.getStage() != DifrInfo.Stage.HTK1200N) {
+        if(!createDifrInfoRequest.getStage().equals(DifrInfo.Stage.SPINNER.toString()) &&
+           !createDifrInfoRequest.getStage().equals(DifrInfo.Stage.HTK1200N.toString())) {
             throw new RuntimeException("Illegal value of Stage");
         }
 
