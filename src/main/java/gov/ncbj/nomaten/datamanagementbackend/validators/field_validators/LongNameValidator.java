@@ -9,7 +9,7 @@ public class LongNameValidator implements Validator<String> {
     public void validate(String longName) {
         notNullValidate(longName);
 
-        if(longName.length()<1 || longName.length()>50) {
+        if(longName.length()<1 || longName.length()>80) {
             throw new RuntimeException("Long name cannot be empty or exceed 50 characters");
         }
     }

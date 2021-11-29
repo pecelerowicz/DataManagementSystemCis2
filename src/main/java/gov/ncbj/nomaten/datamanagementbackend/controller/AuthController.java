@@ -3,6 +3,7 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.RefreshTokenService;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_auth.ChangePasswordRequestValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 @AllArgsConstructor
 @CrossOrigin
 public class AuthController {
@@ -22,29 +23,17 @@ public class AuthController {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-//        authService.signup(registerRequest);
-//        return new ResponseEntity<>("User registration successful.", OK);
-//    }
-
-//    @GetMapping("accountVerification/{token}")
-//    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
-//        authService.verifyAccount(token);
-//        return new ResponseEntity<>("Account activated successfully.", OK);
-//    }
-
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
 
-    @PostMapping("refresh/token")
+    @PostMapping("/auth/refresh/token")
     public AuthenticationResponse refreshTokens(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return authService.refreshToken(refreshTokenRequest);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
         return ResponseEntity.status(OK).body("Refresh Token deleted successfully.");
@@ -52,12 +41,13 @@ public class AuthController {
 
     @PutMapping("/newpass")
     public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordRequestValidator.builder().build().validate(changePasswordRequest);
         authService.changePassword(changePasswordRequest);
         return ResponseEntity.status(OK).body(ChangePasswordResponse.builder().message("Password changed").build());
     }
 
     // TODO zrobić porządne dto
-    @GetMapping("/users")
+    @GetMapping("/auth/users")
     public ResponseEntity<List<String>> getUsers() {
         return ResponseEntity.status(OK).body(authService.getUsers());
     }

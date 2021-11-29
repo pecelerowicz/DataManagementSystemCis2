@@ -9,7 +9,7 @@ public class ShortNameValidator implements Validator<String> {
     public void validate(String shortName) {
         notNullValidate(shortName);
 
-        if(shortName.length()<1 || shortName.length()>30) {
+        if(shortName.length()<1 || shortName.length()>50) {
             throw new RuntimeException("Short name cannot be empty or exceed 30 characters");
         }
     }

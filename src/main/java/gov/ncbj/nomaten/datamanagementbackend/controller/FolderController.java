@@ -1,9 +1,12 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import com.google.gson.Gson;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.ChangePasswordRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.ChangePasswordResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 
+import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.FileNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
