@@ -3,6 +3,7 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.RefreshTokenService;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_auth.ChangePasswordRequestValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class AuthController {
 
     @PutMapping("/newpass")
     public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordRequestValidator.builder().build().validate(changePasswordRequest);
         authService.changePassword(changePasswordRequest);
         return ResponseEntity.status(OK).body(ChangePasswordResponse.builder().message("Password changed").build());
     }
