@@ -33,7 +33,7 @@ public class Project {
     @NotBlank(message = "Project name is required!")
     private String projectName;
 
-    @Column(name = "description", length = 500) // to be decided later
+    @Column(name = "description", length = 1024) // to be decided later
     @NotBlank(message = "Project description is required")
     private String description;
 
