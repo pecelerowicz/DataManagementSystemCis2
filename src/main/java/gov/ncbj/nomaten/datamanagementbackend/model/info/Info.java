@@ -39,7 +39,7 @@ public class Info {
 
     @NotBlank(message = "Info name cannot be blank")
     @Column(name = "info_name")
-    @Length(min = 1, max = 20)
+    @Length(min = 1, max = 40)
     private String infoName;
 
     @Column(name = "access")
