@@ -27,8 +27,8 @@ docker-build:
     - apt-get update
     - apt-get -qq -y install curl
     - apt-get -qq install docker.io
-    - systemctl start docker
-    - systemctl enable docker
+      #- systemctl start docker
+      #- systemctl enable docker
     - docker -v
     - docker build -t backend -t $TAG_COMMIT -t $TAG_LATEST .
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
