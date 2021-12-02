@@ -24,6 +24,8 @@ docker-build:
   tags:
     - k8s
   script:
+    - apt-get update
+    - apt-get -y install curl
     - apt install docker.io
     - systemctl start docker
     - systemctl enable docker
