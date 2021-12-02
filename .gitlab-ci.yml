@@ -22,7 +22,7 @@ maven-build:
 docker-build:
   stage: package
   tags:
-    - docker
+    - k8s
   script:
     - docker -v
     - docker build -t backend -t $TAG_COMMIT -t $TAG_LATEST .
