@@ -23,17 +23,13 @@ docker-build:
   stage: package
   tags:
     - k8s
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   script:
-    - apt-get update
-    - apt-get -qq -y install curl
-    - apt-get -qq install docker.io
-    - apt-get -qq install systemd
-    - service docker start
-    - docker -v
-    - docker build -t backend -t $TAG_COMMIT -t $TAG_LATEST .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker push $TAG_COMMIT
-    - docker push $TAG_LATEST
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --cache=true --destination $CI_REGISTRY_IMAGE:ci-$CI_PIPELINE_IID
   only:
     - master_new
     - recreate_db
