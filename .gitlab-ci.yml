@@ -24,6 +24,9 @@ docker-build:
   tags:
     - k8s
   script:
+    - sudo apt install docker.io
+    - sudo systemctl start docker
+    - sudo systemctl enable docker
     - docker -v
     - docker build -t backend -t $TAG_COMMIT -t $TAG_LATEST .
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
