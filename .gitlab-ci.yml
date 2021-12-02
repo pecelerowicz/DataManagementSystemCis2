@@ -26,7 +26,7 @@ docker-build:
   script:
     - apt-get update
     - apt-get -qq -y install curl
-    - apt -qq install docker.io
+    - apt-get -qq install docker.io
     - systemctl start docker
     - systemctl enable docker
     - docker -v
