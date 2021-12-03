@@ -35,7 +35,7 @@ docker-build:
     - echo $CI_REGISTRY_PASSWORD
     - echo $CI_PROJECT_DIR
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --cache=true --destination $CI_REGISTRY_IMAGE:ci-$CI_PIPELINE_IID
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --cache=true --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   only:
     - master_new
     - recreate_db
