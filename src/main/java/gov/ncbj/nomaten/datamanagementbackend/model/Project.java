@@ -38,7 +38,10 @@ public class Project {
     private String description;
 
     @Column
-    LocalDateTime localDateTime;
+    private LocalDateTime localDateTime;
+
+    @Column
+    private Boolean archived;
 
     @Column(name = "owner_name")
     @NotBlank(message = "Project owner_id is required")

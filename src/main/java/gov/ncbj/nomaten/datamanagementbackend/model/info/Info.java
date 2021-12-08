@@ -58,6 +58,9 @@ public class Info {
     @Column
     private LocalDateTime localDateTime;
 
+    @Column
+    private Boolean archived;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "info_difr_id", referencedColumnName = "id")
     private DifrInfo difrInfo;
