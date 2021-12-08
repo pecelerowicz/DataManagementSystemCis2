@@ -6,6 +6,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.ProjectService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_project.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,31 +37,31 @@ public class ProjectController {
 
     @PostMapping("/project")
     public ResponseEntity<CreateProjectResponse> createOwnedProject(@RequestBody CreateProjectRequest createProjectRequest) {
-        // TODO validation
+        CreateProjectRequestValidator.builder().build().validate(createProjectRequest);
         return ok(projectToCreateProjectResponse(projectService.createOwnedProject(createProjectRequest)));
     }
 
     @PutMapping("/project")
     public ResponseEntity<UpdateProjectResponse> updateOwnedProject(@RequestBody UpdateProjectRequest updateProjectRequest) {
-        // TODO validation
+        UpdateProjectRequestValidator.builder().build().validate(updateProjectRequest);
         return ok(projectToUpdateProjectResponse(projectService.updateOwnedProject(updateProjectRequest)));
     }
 
     @PostMapping("/project/user")
     public ResponseEntity<AddUserResponse> addUserToOwnedProject(@RequestBody AddUserRequest addUserRequest) {
-        // TODO validation
+        AddUserRequestValidator.builder().build().validate(addUserRequest);
         return ok(projectToAddUserResponse(projectService.addUserToOwnedProject(addUserRequest)));
     }
 
     @PostMapping("/project/info")
     public ResponseEntity<AddMyInfoToOwnedProjectResponse> addMyInfoToOwnedProject(@RequestBody AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
-        // TODO validation
+        AddMyInfoToOwnedProjectRequestValidator.builder().build().validate(addMyInfoToOwnedProjectRequest);
         return ok(projectToAddInfoToOwnedProjectResponse(projectService.addMyInfoToOwnedProject(addMyInfoToOwnedProjectRequest)));
     }
 
     @DeleteMapping("/project/info")
     public ResponseEntity<RemoveInfoFromOwnedProjectResponse> removeInfoFromOwnedProject(@RequestBody RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
-        // TODO validation
+        RemoveInfoFromOwnedProjectRequestValidator.builder().build().validate(removeInfoFromOwnedProjectRequest);
         // TODO check if it correctly removes other ppl's Infos from the Project owned by me
         return ok(projectToRemoveInfoFromOwnedProjectResponse(projectService.removeInfoFromOwnedProject(removeInfoFromOwnedProjectRequest)));
     }
@@ -68,14 +69,14 @@ public class ProjectController {
     @DeleteMapping("/project/user")
     // TODO check this method
     public ResponseEntity<RemoveUserFromOwnedProjectResponse> removeUserFromOwnedProject(@RequestBody RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
-        // TODO validation
+        RemoveUserFromOwnedProjectRequestValidator.builder().build().validate(removeUserFromOwnedProjectRequest);
         return ok(projectToRemoveUserFromOwnedProjectResponse(projectService.removeUserFromOwnedProject(removeUserFromOwnedProjectRequest)));
     }
 
     @DeleteMapping("/project")
     // TODO check this method (there was no transactional and it seemed to have worked correctly nevertheless)
     public ResponseEntity<GetProjectsResponse> deleteOwnedProject(@RequestBody DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
-        // TODO validation
+        DeleteOwnedProjectRequestValidator.builder().build().validate(deleteOwnedProjectRequest);
         return ok(projectListToGetProjectsResponse(projectService.deleteOwnedProject(deleteOwnedProjectRequest)));
     }
 
@@ -83,7 +84,7 @@ public class ProjectController {
     @GetMapping("/project/all/{projectId}")
     // TODO check this method
     public ResponseEntity<GetProjectResponse> getProject(@PathVariable Long projectId) {
-        // TODO validation
+        // TODO idValidation (?)
         return ok(projectToGetProjectResponse(projectService.getProject(projectId)));
     }
 
@@ -95,20 +96,21 @@ public class ProjectController {
 
     @PostMapping("/project/all/info")
     public ResponseEntity<AddMyInfoToOtherProjectResponse> addMyInfoToOtherProject(@RequestBody AddMyInfoToOtherProjectRequest addMyInfoToOtherProjectRequest) {
-        // TODO validation
+        AddMyInfoToOtherProjectRequestValidator.builder().build().validate(addMyInfoToOtherProjectRequest);
         return ok(projectToAddMyInfoToOtherProjectResponse(projectService.addMyInfoToOtherProject(addMyInfoToOtherProjectRequest)));
     }
 
     @DeleteMapping("/project/all/info")
     // TODO check this method
     public ResponseEntity<RemoveMyInfoFromOtherProjectResponse> removeMyInfoFromOtherProject(@RequestBody RemoveMyInfoFromOtherProjectRequest removeMyInfoFromOtherProjectRequest) {
-        // TODO validation
+        RemoveMyInfoFromOtherProjectRequestValidator.builder().build().validate(removeMyInfoFromOtherProjectRequest);
         return ok(projectToRemoveMyInfoFromOtherProjectResponse(projectService.removeMyInfoFromOtherProject(removeMyInfoFromOtherProjectRequest)));
     }
 
     @DeleteMapping("/project/all/user")
     // TODO check this method
     public ResponseEntity<RemoveMyFromOtherProjectResponse> removeMyFromOtherProject(@RequestBody RemoveMyFromOtherProjectRequest removeMyFromOtherProjectRequest) {
+        RemoveMyFromOtherProjectRequestValidator.builder().build().validate(removeMyFromOtherProjectRequest);
         return ok(projectToRemoveMyFromOtherProjectResponse(projectService.removeMyFromOtherProject(removeMyFromOtherProjectRequest)));
     }
 
@@ -117,7 +119,7 @@ public class ProjectController {
     // PACKAGES IN PROJECTS
     @GetMapping("/project/packages/info/{projectId}/{userName}/{infoName}") // response type is borrowed for now
     public ResponseEntity<GetInfoResponse> getInfoOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
-        // TODO VALIDATION
+        // TODO id validation (?)
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
         return ok(infoToGetInfoResponse(projectService.getInfoOfUserAndProject(projectId, userName, infoName)));
@@ -125,7 +127,7 @@ public class ProjectController {
 
     @GetMapping("/project/packages/folder/{projectId}/{userName}/{infoName}")
     public PathNode getPackageFolderStructureOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
-        // TODO VALIDATION
+        // TODO id validation (?)
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
         return projectService.getPackageFolderStructureOfUserAndProject(projectId, userName, infoName);
