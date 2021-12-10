@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.*;
 import static java.nio.file.FileSystems.getDefault;
@@ -32,9 +33,9 @@ public class PackageService {
 
     public List<Package> getPackages() throws IOException {
         User user = authService.getCurrentUser();
-        List<String> metadataNames = metadataNamesOfUser(user);
+        List<Info> infoList = user.getInfoList();
         List<String> storageNames = storageNamesOfUser(user);
-        return combineStorageWithMetadata(metadataNames, storageNames);
+        return combineStorageWithMetadata(infoList, storageNames);
     }
 
     public String createPackage(String packageName) throws IOException {
@@ -80,22 +81,19 @@ public class PackageService {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-    private List<Package> combineStorageWithMetadata(List<String> metadataNames, List<String> storageNames) {
-        Set<String> metadata = new HashSet<>(metadataNames);
-        Set<String> storage = new HashSet<>(storageNames);
+    private List<Package> combineStorageWithMetadata(List<Info> infoList, List<String> storageNames) {
         List<Package> packageList = new LinkedList<>();
-        for(String matadataName: metadata) {
-            if(storage.contains(matadataName)) {
-                packageList.add(new Package(matadataName, true, true));
+        for(Info info: infoList) {
+            if(storageNames.contains(info.getInfoName())) {
+                packageList.add(new Package(info.getInfoName(), true, true, info.getLocalDateTime()));
             } else {
-                packageList.add(new Package(matadataName, false, true));
+                packageList.add(new Package(info.getInfoName(), false, true, info.getLocalDateTime()));
             }
         }
-        for(String storageName: storage) {
-            if(!metadata.contains(storageName)) {
-                packageList.add(new Package(storageName, true, false));
+        Set<String> infoNameSet = infoList.stream().map(Info::getInfoName).collect(Collectors.toSet());
+        for(String storageName: storageNames) {
+            if(!infoNameSet.contains(storageName)) {
+                packageList.add(new Package(storageName, true, false, null));
             }
         }
         Collections.sort(packageList);
