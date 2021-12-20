@@ -17,6 +17,14 @@ public class Package implements Comparable<Package>{ // TODO hasStorage = false;
 
     @Override
     public int compareTo(Package that) {
-        return this.name.compareTo(that.name);
+        if(!this.hasMetadata && !that.hasMetadata) {
+            return this.name.compareTo(that.name);
+        } else if(this.hasMetadata && that.hasMetadata) {
+            return -this.localDateTime.compareTo(that.localDateTime);
+        } else if(this.hasMetadata && !that.hasMetadata) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }
