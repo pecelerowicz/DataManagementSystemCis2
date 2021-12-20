@@ -15,7 +15,10 @@ public class GetPackageListResponse {
 
     public GetPackageListResponse(List<Package> packageList) {
         this.packageResponseList = packageList.stream()
-                .map(s -> new PackageResponse(s.getName(), s.isHasStorage(), s.isHasMetadata()))
+                .map(s -> new PackageResponse(s.getName(),
+                        s.isHasStorage(),
+                        s.isHasMetadata(),
+                        s.getLocalDateTime() != null ? s.getLocalDateTime().toLocalDate() : null))
                 .collect(Collectors.toList());
     }
 

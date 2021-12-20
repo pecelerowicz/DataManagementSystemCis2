@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class SearchResponse {
     private String name;
     private String username;
     private boolean hasStorage;
+    private LocalDate localDate;
 }

@@ -18,6 +18,7 @@ public class GetSearchListResponse {
                     .name(s.getName())
                     .username(s.getUsername())
                     .hasStorage(s.isHasStorage())
+                    .localDate(s.getLocalDateTime().toLocalDate())
                     .build())
                 .collect(Collectors.toList());
     }

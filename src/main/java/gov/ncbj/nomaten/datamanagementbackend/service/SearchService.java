@@ -54,6 +54,7 @@ public class SearchService {
                         .name(i.getInfoName())
                         .username(i.getUser().getUsername())
                         .hasStorage(Files.exists(getPackagePath(i)) && Files.isDirectory(getPackagePath(i)))
+                        .localDateTime(i.getLocalDateTime())
                         .build())
                 .sorted()
                 .collect(toList());

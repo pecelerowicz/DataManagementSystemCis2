@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,6 +13,7 @@ public class Package implements Comparable<Package>{ // TODO hasStorage = false;
     private String name;
     private boolean hasStorage;
     private boolean hasMetadata;
+    private LocalDateTime localDateTime;
 
     @Override
     public int compareTo(Package that) {
