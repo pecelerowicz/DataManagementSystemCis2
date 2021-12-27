@@ -123,7 +123,7 @@ public class AuthService {
     }
 
     public List<String> getUsers() {
-        return userRepository.findAll().stream().map(User::getUsername).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(User::getUsername).sorted().collect(Collectors.toList());
     }
 
 }

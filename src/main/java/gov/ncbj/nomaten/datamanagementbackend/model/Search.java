@@ -19,9 +19,6 @@ public class Search implements Comparable<Search> {
 
     @Override
     public int compareTo(Search that) {
-        if(this.username.equals(that.username)) {
-            return -this.localDateTime.compareTo(that.localDateTime);
-        }
-        return this.username.compareTo(that.username);
+        return -this.localDateTime.compareTo(that.localDateTime);
     }
 }

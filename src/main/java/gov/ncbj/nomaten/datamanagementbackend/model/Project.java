@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Project {
+public class Project implements Comparable<Project> {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
@@ -52,4 +52,9 @@ public class Project {
 
     @ManyToMany(mappedBy = "projects", fetch = LAZY, cascade = {PERSIST, MERGE, DETACH, REFRESH})
     private List<Info> infoList = new LinkedList<>();
+
+    @Override
+    public int compareTo(Project that) {
+        return -this.localDateTime.compareTo(that.localDateTime);
+    }
 }

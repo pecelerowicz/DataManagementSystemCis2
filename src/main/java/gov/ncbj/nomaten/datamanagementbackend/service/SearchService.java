@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
@@ -34,17 +35,20 @@ public class SearchService {
             infoList = this.infoRepository.findByUserUsername(userName);
         }
 
+        List<Search> searchList;
         if(!hasInfo) {
-            return infoListToSearchList(infoList);
+            searchList = infoListToSearchList(infoList);
         } else {
             if(hasDifrInfo) {
-                return infoListToSearchList(infoList.stream().filter(i -> i.getDifrInfo() != null).collect(toList()));
+                searchList = infoListToSearchList(infoList.stream().filter(i -> i.getDifrInfo() != null).collect(toList()));
             } else if(hasTestInfo) {
-                return infoListToSearchList(infoList.stream().filter(i -> i.getTestInfo() != null).collect(toList()));
+                searchList =  infoListToSearchList(infoList.stream().filter(i -> i.getTestInfo() != null).collect(toList()));
             } else {
-                return infoListToSearchList(infoList.stream().filter(i -> i.getTestInfo() == null && i.getDifrInfo() == null).collect(toList()));
+                searchList = infoListToSearchList(infoList.stream().filter(i -> i.getTestInfo() == null && i.getDifrInfo() == null).collect(toList()));
             }
         }
+        Collections.sort(searchList);
+        return searchList;
     }
 
     private List<Search> infoListToSearchList(List<Info> infoList) {

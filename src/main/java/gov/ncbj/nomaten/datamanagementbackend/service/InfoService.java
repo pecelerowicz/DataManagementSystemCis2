@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.createDifrInfoRequestToDifrInfo;
@@ -37,7 +38,9 @@ public class InfoService {
 
     // info
     public List<Info> getInfoList() {
-        return authService.getCurrentUser().getInfoList();
+        List<Info> infoList = authService.getCurrentUser().getInfoList();
+        infoList.sort(new InfoComparator());
+        return infoList;
     }
 
     public Info getInfo(String infoName) {
@@ -196,6 +199,13 @@ public class InfoService {
                 .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User " + userName + " does not have public package " + infoName));
+    }
+
+    class InfoComparator implements Comparator<Info> {
+        @Override
+        public int compare(Info info1, Info info2) {
+            return info1.getInfoName().compareTo(info2.getInfoName());
+        }
     }
 }
 

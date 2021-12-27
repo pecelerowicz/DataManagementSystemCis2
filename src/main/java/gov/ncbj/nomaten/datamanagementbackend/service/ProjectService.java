@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.readFolderStructure;
@@ -45,7 +46,9 @@ public class ProjectService {
 
     public List<Project> getOwnedProjects() {
         User user = authService.getCurrentUser();
-        return user.getProjects().stream().filter(p -> p.getOwnerName().equals(user.getUsername())).collect(toList());
+        List<Project> projectList = user.getProjects().stream().filter(p -> p.getOwnerName().equals(user.getUsername())).collect(toList());
+        Collections.sort(projectList);
+        return projectList;
     }
 
     @Transactional
@@ -208,10 +211,12 @@ public class ProjectService {
     }
 
     public List<Project> getProjects() {
-        // changed to returns all project of a logged-in user which he does not own
         User user = authService.getCurrentUser();
-        return user.getProjects().stream().filter(p -> !p.getOwnerName().equals(user.getUsername())).collect(toList());
-//        return authService.getCurrentUser().getProjects();
+        return user.getProjects()
+                .stream()
+                .filter(p -> !p.getOwnerName().equals(user.getUsername()))
+                .sorted()
+                .collect(toList());
     }
 
     @Transactional
