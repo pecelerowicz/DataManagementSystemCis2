@@ -19,8 +19,8 @@ import java.time.LocalDate;
 public class UpdateInfoResponse {
     private String infoName;
     private Info.Access access;
-    private String shortName;
-    private String longName;
+    private String title;
+    private String shortDescription;
     private String description;
     private LocalDate localDate;
     private UpdateDifrInfoResponse updateDifrInfoResponse;

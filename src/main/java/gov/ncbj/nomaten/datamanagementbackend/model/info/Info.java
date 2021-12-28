@@ -46,11 +46,11 @@ public class Info {
     @Enumerated(EnumType.STRING)
     private Access access;
 
-    @Column(name = "short_name")
-    private String shortName;
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "long_name")
-    private String longName;
+    @Column(name = "short_description")
+    private String shortDescription;
 
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
@@ -88,8 +88,8 @@ public class Info {
                 "id=" + id +
                 ", infoName='" + infoName + '\'' +
                 ", access=" + access +
-                ", shortName='" + shortName + '\'' +
-                ", longName='" + longName + '\'' +
+                ", title='" + title + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
                 ", description='" + description + '\'' +
                 ", user=" + user +
                 '}';

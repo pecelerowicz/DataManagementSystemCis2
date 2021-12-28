@@ -60,8 +60,8 @@ public class InfoService {
             .builder()
             .infoName(createInfoRequest.getInfoName())
             .access(createInfoRequest.getAccess())
-            .shortName(createInfoRequest.getShortName())
-            .longName(createInfoRequest.getLongName())
+            .title(createInfoRequest.getTitle())
+            .shortDescription(createInfoRequest.getShortDescription())
             .description(createInfoRequest.getDescription())
             .localDateTime(LocalDateTime.now().plusHours(2)) // ?
             .user(user)
@@ -74,8 +74,8 @@ public class InfoService {
     public Info updateInfo(UpdateInfoRequest updateInfoRequest) {
         Info info = getInfo(updateInfoRequest.getInfoName());
         info.setAccess(updateInfoRequest.getAccess());
-        info.setShortName(updateInfoRequest.getShortName());
-        info.setLongName(updateInfoRequest.getLongName());
+        info.setTitle(updateInfoRequest.getTitle());
+        info.setShortDescription(updateInfoRequest.getShortDescription());
         info.setDescription(updateInfoRequest.getDescription());
 
         info.setDifrInfo(null);
@@ -208,4 +208,3 @@ public class InfoService {
         }
     }
 }
-

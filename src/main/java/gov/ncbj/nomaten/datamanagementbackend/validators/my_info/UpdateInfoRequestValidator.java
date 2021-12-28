@@ -17,8 +17,8 @@ public class UpdateInfoRequestValidator implements Validator<UpdateInfoRequest> 
         notNullValidate(updateInfoRequest);
         NameValidator.builder().build().validate(updateInfoRequest.getInfoName());
         AccessValidator.builder().build().validate(updateInfoRequest.getAccess());
-        ShortNameValidator.builder().build().validate(updateInfoRequest.getShortName());
-        LongNameValidator.builder().build().validate(updateInfoRequest.getLongName());
+        TitleValidator.builder().build().validate(updateInfoRequest.getTitle());
+        ShortDescriptionValidator.builder().build().validate(updateInfoRequest.getShortDescription());
         DescriptionValidator.builder().build().validate(updateInfoRequest.getDescription());
 
         int numberOfSubinfos = 0;

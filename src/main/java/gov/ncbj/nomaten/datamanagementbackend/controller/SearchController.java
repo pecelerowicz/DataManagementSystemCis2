@@ -30,7 +30,7 @@ public class SearchController {
     // TODO it might be better not to hardcode it ...
     @GetMapping("/types")
     public ResponseEntity<List<String>> getTypeList() {
-        return ok(Arrays.asList("General", "Difrractometer", "Test"));
+        return ok(Arrays.asList("General", "Difrractometer"/*, "Test"*/));
     }
 
 }

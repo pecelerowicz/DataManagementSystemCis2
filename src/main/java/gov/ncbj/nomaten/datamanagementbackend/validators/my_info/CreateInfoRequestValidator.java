@@ -13,8 +13,8 @@ public class CreateInfoRequestValidator implements Validator<CreateInfoRequest> 
         notNullValidate(createInfoRequest);
         NameValidator.builder().build().validate(createInfoRequest.getInfoName());
         AccessValidator.builder().build().validate(createInfoRequest.getAccess());
-        ShortNameValidator.builder().build().validate(createInfoRequest.getShortName());
-        LongNameValidator.builder().build().validate(createInfoRequest.getLongName());
+        TitleValidator.builder().build().validate(createInfoRequest.getTitle());
+        ShortDescriptionValidator.builder().build().validate(createInfoRequest.getShortDescription());
         DescriptionValidator.builder().build().validate(createInfoRequest.getDescription());
     }
 }
