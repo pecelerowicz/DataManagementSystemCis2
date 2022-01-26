@@ -18,6 +18,7 @@ public class GetPackageListResponse {
                 .map(s -> new PackageResponse(s.getName(),
                         s.isHasStorage(),
                         s.isHasMetadata(),
+                        s.getShortDescription() != null ? s.getShortDescription() : null,
                         s.getLocalDateTime() != null ? s.getLocalDateTime().toLocalDate() : null))
                 .collect(Collectors.toList());
     }
