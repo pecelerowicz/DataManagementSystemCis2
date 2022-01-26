@@ -85,15 +85,15 @@ public class PackageService {
         List<Package> packageList = new LinkedList<>();
         for(Info info: infoList) {
             if(storageNames.contains(info.getInfoName())) {
-                packageList.add(new Package(info.getInfoName(), true, true, info.getShortDescription(), info.getLocalDateTime()));
+                packageList.add(new Package(info.getInfoName(), true, true, info.getTitle(), info.getShortDescription(), info.getLocalDateTime()));
             } else {
-                packageList.add(new Package(info.getInfoName(), false, true, info.getShortDescription(), info.getLocalDateTime()));
+                packageList.add(new Package(info.getInfoName(), false, true, info.getTitle(), info.getShortDescription(), info.getLocalDateTime()));
             }
         }
         Set<String> infoNameSet = infoList.stream().map(Info::getInfoName).collect(Collectors.toSet());
         for(String storageName: storageNames) {
             if(!infoNameSet.contains(storageName)) {
-                packageList.add(new Package(storageName, true, false, null, null));
+                packageList.add(new Package(storageName, true, false, null, null, null));
             }
         }
         Collections.sort(packageList);

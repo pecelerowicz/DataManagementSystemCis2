@@ -13,6 +13,7 @@ public class Package implements Comparable<Package>{ // TODO hasStorage = false;
     private String name;
     private boolean hasStorage;
     private boolean hasMetadata;
+    private String title;
     private String shortDescription;
     private LocalDateTime localDateTime;
 
