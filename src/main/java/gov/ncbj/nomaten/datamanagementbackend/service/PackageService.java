@@ -4,7 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeletePackageReques
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.repository.StorageService;
+import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,33 +15,37 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.*;
 import static java.nio.file.FileSystems.getDefault;
 import static java.util.stream.Collectors.toList;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
 public class PackageService {
 
-    private AuthService authService;
-    private StorageService storageService;
+    private final AuthService authService;
+    private final StorageService storageService;
+    private final StorageRepository storageRepository;
 
     @Autowired
-    public PackageService(AuthService authService, StorageService storageService) {
+    public PackageService(AuthService authService, StorageService storageService, StorageRepository storageRepository) {
         this.authService = authService;
         this.storageService = storageService;
+        this.storageRepository = storageRepository;
     }
 
     public List<Package> getPackages() throws IOException {
+        System.out.println("Case 6");
         User user = authService.getCurrentUser();
         List<Info> infoList = user.getInfoList();
-        List<String> storageNames = storageNamesOfUser(user);
+        List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
         return combineStorageWithMetadata(infoList, storageNames);
     }
 
     public String createPackage(String packageName) throws IOException {
+        System.out.println("case 4");
         User user = authService.getCurrentUser();
-        List<String> metadataNames = metadataNamesOfUser(user);
-        List<String> storageNames = storageNamesOfUser(user);
+        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
         if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
             throw new RuntimeException("Package " + packageName + " already exists");
         }

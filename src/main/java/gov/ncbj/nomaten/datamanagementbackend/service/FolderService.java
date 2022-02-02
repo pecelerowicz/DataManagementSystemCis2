@@ -3,6 +3,7 @@ package gov.ncbj.nomaten.datamanagementbackend.service;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
+import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -16,9 +17,8 @@ import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.*;
 
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.readFolderStructure;
 import static java.nio.file.FileSystems.getDefault;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
 public class FolderService {
@@ -32,8 +32,11 @@ public class FolderService {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private StorageRepository storageRepository;
+
     public PathNode getPackageFolderStructure(String storageName) {
-        return readFolderStructure(authService.getCurrentUser(), storageName);
+        return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, authService.getCurrentUser().getUsername(), storageName));
     }
 
     public PathNode getPackageFolderStructureOfUser(String userName, String storageName) {
@@ -42,11 +45,7 @@ public class FolderService {
                 && info.getAccess().equals(Info.Access.PUBLIC))) {
             throw new RuntimeException("User " + userName + " does not have public package " + storageName);
         }
-        return readFolderStructure(authService.getUserByName(userName), storageName);
-    }
-
-    public PathNode getFullFolderStructure() {
-        return readFolderStructure(authService.getCurrentUser());
+        return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, userName, storageName));
     }
 
     public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {

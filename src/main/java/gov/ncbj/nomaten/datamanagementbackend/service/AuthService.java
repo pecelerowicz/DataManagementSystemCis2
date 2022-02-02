@@ -30,55 +30,6 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-//    @Transactional
-//    public void signup(RegisterRequest registerRequest) {
-//        User user = new User();
-//        user.setUsername(registerRequest.getUsername());
-//        user.setEmail(registerRequest.getEmail());
-//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-//        user.setCreated(now());
-//        user.setEnabled(true);
-//        userRepository.save(user);
-//
-//        String token = generateVerificationToken(user);
-//
-////        mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
-////                "Thank you for signing up to NomatenData. Please click on the below url to activate your account http://localhost:8080/api/auth/accountVerification/" +
-////                token));
-//
-//        createFolderInStorage(user);
-//    }
-
-//    private void createFolderInStorage(User user) {
-//        Path path = FileSystems.getDefault().getPath("storage", user.getUsername());
-//        try {
-//            Files.createDirectory(path);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private String generateVerificationToken(User user) {
-//        String token = UUID.randomUUID().toString();
-//        VerificationToken verificationToken = new VerificationToken();
-//        verificationToken.setToken(token);
-//        verificationToken.setUser(user);
-//        verificationTokenRepository.save(verificationToken);
-//        return token;
-//    }
-
-//    public void verifyAccount(String token) {
-//        Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
-//        verificationTokenOptional.orElseThrow(() -> new CustomException("Invalid Token"));
-//        fetchUserAndEnable(verificationTokenOptional.get());
-//    }
-
-//    @Transactional // this is done differently
-//    private void fetchUserAndEnable(VerificationToken verificationToken) {
-//        verificationToken.getUser().setEnabled(true);
-//        verificationTokenRepository.save(verificationToken);
-//    }
-
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(), loginRequest.getPassword()));

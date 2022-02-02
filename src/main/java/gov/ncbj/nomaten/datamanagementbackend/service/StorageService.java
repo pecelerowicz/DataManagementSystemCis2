@@ -1,7 +1,8 @@
-package gov.ncbj.nomaten.datamanagementbackend.repository;
+package gov.ncbj.nomaten.datamanagementbackend.service;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
+import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,15 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.createSortedPathsLevelOne;
 import static java.nio.file.FileSystems.getDefault;
 import static java.nio.file.Files.walk;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
 @AllArgsConstructor
 public class StorageService { // FolderService will be probably merged with this except for download upload
+
+    private final StorageRepository storageRepository;
 
     private final AuthService authService;
 
@@ -77,14 +79,14 @@ public class StorageService { // FolderService will be probably merged with this
     }
 
     private List<Path> createSortedPathsOfStorage() {
-        Path rootPathStorage = getDefault().getPath("storage");
-        return createSortedPathsLevelOne(rootPathStorage);
+        Path rootPathStorage = getDefault().getPath(STORAGE);
+        return storageRepository.createSortedPathsLevelOne(rootPathStorage);
     }
 
     private List<Path> createSortedPathsOfUser() {
         String userName = authService.getCurrentUser().getUsername();
-        Path rootPathStorage = getDefault().getPath("storage", userName);
-        return createSortedPathsLevelOne(rootPathStorage);
+        Path rootPathStorage = getDefault().getPath(STORAGE, userName);
+        return storageRepository.createSortedPathsLevelOne(rootPathStorage);
     }
 
 }

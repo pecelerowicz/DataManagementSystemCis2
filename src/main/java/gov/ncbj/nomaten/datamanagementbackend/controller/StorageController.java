@@ -1,7 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.*;
-import gov.ncbj.nomaten.datamanagementbackend.repository.StorageService;
+import gov.ncbj.nomaten.datamanagementbackend.service.StorageService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_storage.CreateStorageRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_storage.DeleteStorageRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_storage.UpdateStorageRequestValidator;

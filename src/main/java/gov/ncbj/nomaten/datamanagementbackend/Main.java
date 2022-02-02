@@ -5,6 +5,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -42,7 +44,7 @@ public class Main {
 
     private static Set<Path> createSortedPaths() {
         Set<Path> paths = new TreeSet<>();
-        Path rootPathStorage = FileSystems.getDefault().getPath("storage");
+        Path rootPathStorage = FileSystems.getDefault().getPath(STORAGE);
         try {
             Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<Path>() {
                 @Override

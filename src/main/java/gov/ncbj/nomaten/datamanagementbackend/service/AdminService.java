@@ -2,26 +2,21 @@ package gov.ncbj.nomaten.datamanagementbackend.service;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_admin.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.model.VerificationToken;
 import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
-import gov.ncbj.nomaten.datamanagementbackend.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
 import static java.time.Instant.now;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
 @AllArgsConstructor

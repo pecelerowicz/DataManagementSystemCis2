@@ -7,17 +7,18 @@ import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
+import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.readFolderStructure;
+import static java.nio.file.FileSystems.getDefault;
 import static java.util.stream.Collectors.toList;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
 public class ProjectService {
@@ -34,6 +35,9 @@ public class ProjectService {
     @Autowired
     InfoRepository infoRepository;
 
+    @Autowired
+    StorageRepository storageRepository;
+
     // OWNED PROJECTS
     public Project getOwnedProject(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(
@@ -46,9 +50,11 @@ public class ProjectService {
 
     public List<Project> getOwnedProjects() {
         User user = authService.getCurrentUser();
-        List<Project> projectList = user.getProjects().stream().filter(p -> p.getOwnerName().equals(user.getUsername())).collect(toList());
-        Collections.sort(projectList);
-        return projectList;
+        return user.getProjects()
+                .stream()
+                .filter(p -> p.getOwnerName().equals(user.getUsername()))
+                .sorted()
+                .collect(toList());
     }
 
     @Transactional
@@ -322,7 +328,8 @@ public class ProjectService {
         if (project.getInfoList().stream().noneMatch(i -> i.getInfoName().equals(infoName) && i.getUser().getUsername().equals(userName))) {
             throw new RuntimeException("No info " + infoName + " of user " + userName + " in the project with id " + projectId);
         }
-        return readFolderStructure(authService.getUserByName(userName), infoName);
+        System.out.println("case 5");
+        return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
     }
 
     // downloading files is in FolderService

@@ -12,9 +12,9 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-import static gov.ncbj.nomaten.datamanagementbackend.util.DataManipulation.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
 import static java.util.stream.Collectors.toList;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
 public class SearchService {
