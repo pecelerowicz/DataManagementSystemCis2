@@ -3,7 +3,6 @@ package gov.ncbj.nomaten.datamanagementbackend.service;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
-import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

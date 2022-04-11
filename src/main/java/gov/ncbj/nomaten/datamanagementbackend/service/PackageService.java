@@ -4,6 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeletePackageReques
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
+import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,20 +24,22 @@ import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE
 public class PackageService {
 
     private final AuthService authService;
-    private final StorageService storageService;
     private final StorageRepository storageRepository;
+    // test
+    private final InfoRepository infoRepository;
 
     @Autowired
-    public PackageService(AuthService authService, StorageService storageService, StorageRepository storageRepository) {
+    public PackageService(AuthService authService, StorageRepository storageRepository, InfoRepository infoRepository) {
         this.authService = authService;
-        this.storageService = storageService;
         this.storageRepository = storageRepository;
+        this.infoRepository = infoRepository;
     }
 
     public List<Package> getPackages() throws IOException {
         System.out.println("Case 6");
         User user = authService.getCurrentUser();
-        List<Info> infoList = user.getInfoList();
+        List<Info> infoList = infoRepository.findByUser(user);
+        //List<Info> infoList = user.getInfoList();
         List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
         return combineStorageWithMetadata(infoList, storageNames);
     }
@@ -49,7 +52,8 @@ public class PackageService {
         if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
             throw new RuntimeException("Package " + packageName + " already exists");
         }
-        return storageService.createStorage(packageName);
+        storageRepository.createSubfolder(getDefault().getPath(STORAGE, user.getUsername()), packageName);
+        return packageName; // do poprawy
     }
 
     @Transactional
