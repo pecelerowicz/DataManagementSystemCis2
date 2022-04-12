@@ -1,12 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import com.google.gson.Gson;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.ChangePasswordRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.ChangePasswordResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 
-import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.FileNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
@@ -34,12 +31,6 @@ public class FolderController {
     @Autowired
     private FolderService folderService;
 
-    @GetMapping("/folders/{storageName}")
-    public PathNode getPackageFolderStructure(@PathVariable String storageName) {
-        NameValidator.builder().build().validate(storageName);
-        return folderService.getPackageFolderStructure(storageName);
-    }
-
     @GetMapping("/folders/{userName}/{storageName}")
     public PathNode getPackageFolderStructureOfUser(@PathVariable String userName, @PathVariable String storageName) {
         NameValidator.builder().build().validate(storageName);
@@ -47,14 +38,9 @@ public class FolderController {
         return folderService.getPackageFolderStructureOfUser(userName, storageName);
     }
 
-    @PostMapping("/folders")
-    public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
-        CreateFolderRequestValidator.builder().build().validate(createFolderRequest);
-        return ResponseEntity
-                .status(OK)
-                .body(new CreateFolderResponse(folderService.createFolder(createFolderRequest)));
-    }
 
+
+    // todo delete
     @DeleteMapping("/folders")
     public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
         DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
