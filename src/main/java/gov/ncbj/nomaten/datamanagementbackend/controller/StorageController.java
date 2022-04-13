@@ -26,31 +26,31 @@ public class StorageController {
         this.storageService = storageService;
     }
 
-    @GetMapping
-    public ResponseEntity<GetStorageListResponse> getStorageList() {
-        return ResponseEntity.status(OK).body(pathNodeToPackagesResponse(storageService.getInfoListOfUser()));
-    }
-
-    @PostMapping
-    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
-        CreateStorageRequestValidator.builder().build().validate(createStorageRequest);
-        String createdStorageName = storageService.createStorage(createStorageRequest.getStorageName());
-        return ResponseEntity.status(CREATED).body(CreateStorageResponse.builder().createStorageMessage("Storage " + createdStorageName + " was created").build());
-    }
-
-    @PutMapping
-    public ResponseEntity<UpdateStorageResponse> updateStorage(@RequestBody UpdateStorageRequest updateStorageRequest) throws IOException {
-        UpdateStorageRequestValidator.builder().build().validate(updateStorageRequest);
-        String newName = storageService.updateStorage(updateStorageRequest.getOldName(), updateStorageRequest.getNewName());
-        return ResponseEntity.status(ACCEPTED).body(UpdateStorageResponse.builder().updateStorageMessage("Storage " + updateStorageRequest.getOldName() + " was renamed to " + newName).build());
-    }
-
-    @DeleteMapping
-    public ResponseEntity<DeleteStorageResponse> deleteStorage(@RequestBody DeleteStorageRequest deleteStorageRequest) throws IOException {
-        DeleteStorageRequestValidator.builder().build().validate(deleteStorageRequest);
-        storageService.deleteStorage(deleteStorageRequest.getStorageName());
-        return ResponseEntity.status(OK)
-                .body(new DeleteStorageResponse("The storage " + deleteStorageRequest.getStorageName() + " was deleted"));
-    }
+//    @GetMapping
+//    public ResponseEntity<GetStorageListResponse> getStorageList() {
+//        return ResponseEntity.status(OK).body(pathNodeToPackagesResponse(storageService.getInfoListOfUser()));
+//    }
+//
+//    @PostMapping
+//    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
+//        CreateStorageRequestValidator.builder().build().validate(createStorageRequest);
+//        String createdStorageName = storageService.createStorage(createStorageRequest.getStorageName());
+//        return ResponseEntity.status(CREATED).body(CreateStorageResponse.builder().createStorageMessage("Storage " + createdStorageName + " was created").build());
+//    }
+//
+//    @PutMapping
+//    public ResponseEntity<UpdateStorageResponse> updateStorage(@RequestBody UpdateStorageRequest updateStorageRequest) throws IOException {
+//        UpdateStorageRequestValidator.builder().build().validate(updateStorageRequest);
+//        String newName = storageService.updateStorage(updateStorageRequest.getOldName(), updateStorageRequest.getNewName());
+//        return ResponseEntity.status(ACCEPTED).body(UpdateStorageResponse.builder().updateStorageMessage("Storage " + updateStorageRequest.getOldName() + " was renamed to " + newName).build());
+//    }
+//
+//    @DeleteMapping
+//    public ResponseEntity<DeleteStorageResponse> deleteStorage(@RequestBody DeleteStorageRequest deleteStorageRequest) throws IOException {
+//        DeleteStorageRequestValidator.builder().build().validate(deleteStorageRequest);
+//        storageService.deleteStorage(deleteStorageRequest.getStorageName());
+//        return ResponseEntity.status(OK)
+//                .body(new DeleteStorageResponse("The storage " + deleteStorageRequest.getStorageName() + " was deleted"));
+//    }
 
 }

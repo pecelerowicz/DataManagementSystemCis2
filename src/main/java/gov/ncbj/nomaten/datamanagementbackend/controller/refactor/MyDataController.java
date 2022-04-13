@@ -86,12 +86,6 @@ public class MyDataController {
         return ok(infoToUpdateInfoResponse(infoService.updateInfo(updateInfoRequest)));
     }
 
-    // create folder for a given package
-    @PostMapping("/folder")
-    public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
-        return null;
-    }
-
     // get folder structure for a given package
     @GetMapping("/folders/{storageName}")
     public PathNode getPackageFolderStructure(@PathVariable String storageName) {
@@ -106,6 +100,16 @@ public class MyDataController {
         return ResponseEntity
                 .status(OK)
                 .body(new CreateFolderResponse(folderService.createFolder(createFolderRequest)));
+    }
+
+    // delete storage/file
+    @DeleteMapping("/folders")
+    public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
+        DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
+        folderService.deleteFolder(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
+        return ResponseEntity
+                .status(OK)
+                .body(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
     }
 
 
@@ -129,16 +133,6 @@ public class MyDataController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
                 .body(resource);
-    }
-
-    // delete storage/file
-    @DeleteMapping("/folders")
-    public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
-        DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
-        folderService.deleteFolder(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
-        return ResponseEntity
-                .status(OK)
-                .body(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
     }
 
 
