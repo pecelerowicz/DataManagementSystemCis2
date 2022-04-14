@@ -23,62 +23,6 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    // OWNED PROJECTS
-    @GetMapping("/project/{projectId}")
-    public ResponseEntity<GetProjectResponse> getOwnedProject(@PathVariable Long projectId) {
-        // TODO validation
-        return ok(projectToGetProjectResponse(projectService.getOwnedProject(projectId)));
-    }
-
-    @GetMapping("/project")
-    public ResponseEntity<GetProjectsResponse> getOwnedProjects() {
-        return ok(projectListToGetProjectsResponse(projectService.getOwnedProjects()));
-    }
-
-    @PostMapping("/project")
-    public ResponseEntity<CreateProjectResponse> createOwnedProject(@RequestBody CreateProjectRequest createProjectRequest) {
-        CreateProjectRequestValidator.builder().build().validate(createProjectRequest);
-        return ok(projectToCreateProjectResponse(projectService.createOwnedProject(createProjectRequest)));
-    }
-
-    @PutMapping("/project")
-    public ResponseEntity<UpdateProjectResponse> updateOwnedProject(@RequestBody UpdateProjectRequest updateProjectRequest) {
-        UpdateProjectRequestValidator.builder().build().validate(updateProjectRequest);
-        return ok(projectToUpdateProjectResponse(projectService.updateOwnedProject(updateProjectRequest)));
-    }
-
-    @PostMapping("/project/user")
-    public ResponseEntity<AddUserResponse> addUserToOwnedProject(@RequestBody AddUserRequest addUserRequest) {
-        AddUserRequestValidator.builder().build().validate(addUserRequest);
-        return ok(projectToAddUserResponse(projectService.addUserToOwnedProject(addUserRequest)));
-    }
-
-    @PostMapping("/project/info")
-    public ResponseEntity<AddMyInfoToOwnedProjectResponse> addMyInfoToOwnedProject(@RequestBody AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
-        AddMyInfoToOwnedProjectRequestValidator.builder().build().validate(addMyInfoToOwnedProjectRequest);
-        return ok(projectToAddInfoToOwnedProjectResponse(projectService.addMyInfoToOwnedProject(addMyInfoToOwnedProjectRequest)));
-    }
-
-    @DeleteMapping("/project/info")
-    public ResponseEntity<RemoveInfoFromOwnedProjectResponse> removeInfoFromOwnedProject(@RequestBody RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
-        RemoveInfoFromOwnedProjectRequestValidator.builder().build().validate(removeInfoFromOwnedProjectRequest);
-        // TODO check if it correctly removes other ppl's Infos from the Project owned by me
-        return ok(projectToRemoveInfoFromOwnedProjectResponse(projectService.removeInfoFromOwnedProject(removeInfoFromOwnedProjectRequest)));
-    }
-
-    @DeleteMapping("/project/user")
-    // TODO check this method
-    public ResponseEntity<RemoveUserFromOwnedProjectResponse> removeUserFromOwnedProject(@RequestBody RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
-        RemoveUserFromOwnedProjectRequestValidator.builder().build().validate(removeUserFromOwnedProjectRequest);
-        return ok(projectToRemoveUserFromOwnedProjectResponse(projectService.removeUserFromOwnedProject(removeUserFromOwnedProjectRequest)));
-    }
-
-    @DeleteMapping("/project")
-    // TODO check this method (there was no transactional and it seemed to have worked correctly nevertheless)
-    public ResponseEntity<GetProjectsResponse> deleteOwnedProject(@RequestBody DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
-        DeleteOwnedProjectRequestValidator.builder().build().validate(deleteOwnedProjectRequest);
-        return ok(projectListToGetProjectsResponse(projectService.deleteOwnedProject(deleteOwnedProjectRequest)));
-    }
 
     // OTHER PROJECTS
     @GetMapping("/project/all/{projectId}")
