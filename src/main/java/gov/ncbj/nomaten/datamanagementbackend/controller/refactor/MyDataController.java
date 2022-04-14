@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.*;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.*;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
@@ -16,6 +18,7 @@ import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.CreateInfoReque
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_info.UpdateInfoRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.CreatePackageRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_package.DeletePackageRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.my_storage.CreateStorageRequestValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -42,13 +45,11 @@ public class MyDataController {
     private final PackageService packageService;
     private final StorageService storageService;
 
-    // get all packages
     @GetMapping("/package")
     public ResponseEntity<GetPackageListResponse> getPackageList() throws IOException {
         return ResponseEntity.status(OK).body(new GetPackageListResponse(packageService.getPackages()));
     }
 
-    // create package
     @PostMapping("/package")
     public ResponseEntity<CreatePackageResponse> createPackage(@RequestBody CreatePackageRequest createPackageRequest) throws IOException {
         CreatePackageRequestValidator.builder().build().validate(createPackageRequest);
@@ -56,7 +57,6 @@ public class MyDataController {
         return ResponseEntity.status(CREATED).body(CreatePackageResponse.builder().createPackageMessage("Package " + createdPackageName + " was created").build());
     }
 
-    // delete package (folder + metadata)
     @DeleteMapping("/package")
     public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
         DeletePackageRequestValidator.builder().build().validate(deletePackageRequest);
@@ -65,44 +65,45 @@ public class MyDataController {
                 "The package " + deletePackageRequest.getPackageName() + " was deleted").build());
     }
 
-    // get metadata for a given package
     @GetMapping("/info/{infoName}")
     public ResponseEntity<GetInfoResponse> getInfo(@PathVariable String infoName) {
         NameValidator.builder().build().validate(infoName);
         return ok(infoToGetInfoResponse(infoService.getInfo(infoName)));
     }
 
-    // create metadata for a given package
     @PostMapping("/info")
     public ResponseEntity<CreateInfoResponse> createInfo(@RequestBody CreateInfoRequest createInfoRequest) {
         CreateInfoRequestValidator.builder().build().validate(createInfoRequest);
         return ok(infoToCreateInfoResponse(infoService.createInfo(createInfoRequest)));
     }
 
-    // modify metadata
     @PutMapping("/info")
     public ResponseEntity<UpdateInfoResponse> updateInfo(@RequestBody UpdateInfoRequest updateInfoRequest) {
         UpdateInfoRequestValidator.builder().build().validate(updateInfoRequest);
         return ok(infoToUpdateInfoResponse(infoService.updateInfo(updateInfoRequest)));
     }
 
-    // get folder structure for a given package
+    @PostMapping("/storage")
+    public ResponseEntity<CreateStorageResponse> createStorage(@RequestBody CreateStorageRequest createStorageRequest) throws IOException {
+        CreateStorageRequestValidator.builder().build().validate(createStorageRequest);
+        String createdStorageName = storageService.createStorage(createStorageRequest.getStorageName());
+        return ResponseEntity.status(CREATED).body(CreateStorageResponse.builder().createStorageMessage("Storage " + createdStorageName + " was created").build());
+    }
+
     @GetMapping("/folders/{storageName}")
     public PathNode getPackageFolderStructure(@PathVariable String storageName) {
         NameValidator.builder().build().validate(storageName);
         return folderService.getPackageFolderStructure(storageName);
     }
 
-    // create nested folder
     @PostMapping("/folders")
-    public ResponseEntity<CreateFolderResponse> createNestedFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
+    public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
         CreateFolderRequestValidator.builder().build().validate(createFolderRequest);
         return ResponseEntity
                 .status(OK)
                 .body(new CreateFolderResponse(folderService.createFolder(createFolderRequest)));
     }
 
-    // delete storage/file
     @DeleteMapping("/folders")
     public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
         DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
@@ -122,7 +123,6 @@ public class MyDataController {
         return ResponseEntity.status(HttpStatus.OK).body(new UploadFileResponse("Successfully uploaded"));
     }
 
-    // download from storage
     @GetMapping("/download")
     public ResponseEntity<Resource> downloadFile(@RequestParam String packageName, @RequestParam String fileNameWithPath) {
         DownloadFilePackageNameValidator.builder().build().validate(packageName);

@@ -133,6 +133,5 @@ public class ProjectController {
         return projectService.getPackageFolderStructureOfUserAndProject(projectId, userName, infoName);
     }
 
-    // downloading files in FolderController
 
 }
