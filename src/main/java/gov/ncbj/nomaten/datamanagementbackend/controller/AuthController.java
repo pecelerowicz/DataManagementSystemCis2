@@ -46,10 +46,10 @@ public class AuthController {
         return ResponseEntity.status(OK).body(ChangePasswordResponse.builder().message("Password changed").build());
     }
 
-    // TODO zrobić porządne dto
-    @GetMapping("/auth/users")
-    public ResponseEntity<List<String>> getUsers() {
-        return ResponseEntity.status(OK).body(authService.getUsers());
-    }
+//    // TODO zrobić porządne dto
+//    @GetMapping("/auth/users")
+//    public ResponseEntity<List<String>> getUsers() {
+//        return ResponseEntity.status(OK).body(authService.getUsers());
+//    }
 
 }

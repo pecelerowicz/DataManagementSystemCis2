@@ -4,6 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
+import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.service.SearchService;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.InfoMapper.infoToGetInfoResponse;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -32,16 +34,24 @@ public class AllDataController {
     private final FolderService folderService;
     private final SearchService searchService;
 
-    @PostMapping("/search") // POST just to be able to send JSON. No content creation here!
-    public GetSearchListResponse getSearchList(@RequestBody GetSearchListRequest getSearchListRequest) {
-        GetSearchListRequestValidator.builder().build().validate(getSearchListRequest);
-        return new GetSearchListResponse(searchService.getSearchList(getSearchListRequest));
-    }
+    private final AuthService authService;
 
     // TODO it might be better not to hardcode it ...
     @GetMapping("/types")
     public ResponseEntity<List<String>> getTypeList() {
         return ok(Arrays.asList("General", "Difrractometer"/*, "Test"*/));
+    }
+
+    // TODO zrobić porządne dto
+    @GetMapping("/users")
+    public ResponseEntity<List<String>> getUsers() {
+        return ResponseEntity.status(OK).body(authService.getUsers());
+    }
+
+    @PostMapping("/search") // POST just to be able to send JSON. No content creation here!
+    public GetSearchListResponse getSearchList(@RequestBody GetSearchListRequest getSearchListRequest) {
+        GetSearchListRequestValidator.builder().build().validate(getSearchListRequest);
+        return new GetSearchListResponse(searchService.getSearchList(getSearchListRequest));
     }
 
     @GetMapping("/info/{userName}/{infoName}") // używane w search
