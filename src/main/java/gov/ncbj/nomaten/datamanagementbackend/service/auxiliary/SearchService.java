@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service;
+package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.Search;

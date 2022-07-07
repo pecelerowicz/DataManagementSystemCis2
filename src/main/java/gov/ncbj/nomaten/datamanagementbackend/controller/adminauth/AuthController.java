@@ -1,16 +1,14 @@
-package gov.ncbj.nomaten.datamanagementbackend.controller;
+package gov.ncbj.nomaten.datamanagementbackend.controller.adminauth;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
-import gov.ncbj.nomaten.datamanagementbackend.service.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.RefreshTokenService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.RefreshTokenService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_auth.ChangePasswordRequestValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
 

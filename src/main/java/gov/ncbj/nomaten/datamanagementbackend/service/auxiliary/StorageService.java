@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service;
+package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;

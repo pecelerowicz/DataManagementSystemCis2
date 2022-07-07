@@ -12,7 +12,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 
 /**
- * This is the new repository intended to perform all low-level operations on folder structure. All low-level folder
+ * This is the new repository intended to perform all low-level operations on the folder structure. All low-level folder
  * operations are meant to be single-threaded through this class.
  */
 @Repository

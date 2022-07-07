@@ -1,9 +1,10 @@
-package gov.ncbj.nomaten.datamanagementbackend.service;
+package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
+import gov.ncbj.nomaten.datamanagementbackend.service.main.AllProjectsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -30,7 +31,7 @@ public class FolderService {
     private InfoRepository infoRepository;
 
     @Autowired
-    private ProjectService projectService;
+    private AllProjectsService allProjectsService;
 
     @Autowired
     private StorageRepository storageRepository;
@@ -116,7 +117,7 @@ public class FolderService {
     }
 
     public Resource downloadFileOfProject(String projectId, String userName, String infoName, String fileNameWithPath) {
-        Info info = projectService.getInfoOfUserAndProject(Long.parseLong(projectId), userName, infoName); // ugly
+        Info info = allProjectsService.getInfoOfUserAndProject(Long.parseLong(projectId), userName, infoName); // ugly
         // This particular project contains this particular info of this particular user, and the logged in user
         // is allowed to access, otherwise an exception will be thrown
         try {
@@ -131,6 +132,13 @@ public class FolderService {
             throw new RuntimeException("File not found " + fileNameWithPath, ex);
         }
 
+    }
+
+    public String createStorage(String storageName) throws IOException {
+        String userName = authService.getCurrentUser().getUsername();
+        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
+        Path createdStoragePath = Files.createDirectory(newStoragePath);
+        return createdStoragePath.getFileName().toString();
     }
 
 }

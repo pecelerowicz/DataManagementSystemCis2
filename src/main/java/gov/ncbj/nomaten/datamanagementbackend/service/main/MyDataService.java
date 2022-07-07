@@ -1,14 +1,24 @@
-package gov.ncbj.nomaten.datamanagementbackend.service;
+package gov.ncbj.nomaten.datamanagementbackend.service.main;
 
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeletePackageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,31 +31,47 @@ import static java.util.stream.Collectors.toList;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
 @Service
-public class PackageService {
+public class MyDataService {
 
     private final AuthService authService;
     private final StorageRepository storageRepository;
-    // test
     private final InfoRepository infoRepository;
+    private final InfoService infoService;
+    private final FolderService folderService;
+//    private final StorageService storageService;
 
     @Autowired
-    public PackageService(AuthService authService, StorageRepository storageRepository, InfoRepository infoRepository) {
+    public MyDataService(AuthService authService, StorageRepository storageRepository, InfoRepository infoRepository,
+                         InfoService infoService, FolderService folderService/*, StorageService storageService*/) {
         this.authService = authService;
+        this.infoService = infoService;
+        this.folderService = folderService;
+
         this.storageRepository = storageRepository;
         this.infoRepository = infoRepository;
+//        this.storageService = storageService;
+    }
+
+    public Info getInfo(String infoName) {
+        return infoService.getInfo(infoName);
+    }
+
+    public Info createInfo(CreateInfoRequest createInfoRequest) {
+        return infoService.createInfo(createInfoRequest);
+    }
+
+    public Info updateInfo(UpdateInfoRequest updateInfoRequest) {
+        return infoService.updateInfo(updateInfoRequest);
     }
 
     public List<Package> getPackages() throws IOException {
-        System.out.println("Case 6");
         User user = authService.getCurrentUser();
         List<Info> infoList = infoRepository.findByUser(user);
-        //List<Info> infoList = user.getInfoList();
         List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
         return combineStorageWithMetadata(infoList, storageNames);
     }
 
     public String createPackage(String packageName) throws IOException {
-        System.out.println("case 4");
         User user = authService.getCurrentUser();
         List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
         List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
@@ -87,6 +113,29 @@ public class PackageService {
         }
     }
 
+    public PathNode getPackageFolderStructure(String storageName) {
+        return folderService.getPackageFolderStructure(storageName);
+    }
+
+    public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {
+        return folderService.createFolder(createFolderRequest);
+    }
+
+    public void deleteFolder(String packageName, String folderPathString) throws IOException {
+        folderService.deleteFolder(packageName, folderPathString);
+    }
+
+    public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
+        folderService.uploadFile(file, packageName, folderRelativePath);
+    }
+
+    public Resource downloadFile(String packageName, String fileNameWithPath) {
+        return folderService.downloadFile(packageName, fileNameWithPath);
+    }
+
+    public String createStorage(String storageName) throws IOException {
+        return /*storageService*/folderService.createStorage(storageName);
+    }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private List<Package> combineStorageWithMetadata(List<Info> infoList, List<String> storageNames) {
@@ -106,35 +155,6 @@ public class PackageService {
         }
         Collections.sort(packageList);
         return packageList;
-    }
-
-    @Transactional
-    public String createMetadata(String metadataName) throws IOException {
-        User user = authService.getCurrentUser();
-
-        List<Package> packageList = getPackages();
-        List<Package> filtered = packageList
-                .stream()
-                .filter(sm -> sm.getName().equals(metadataName))
-                .collect(toList());
-
-        if(filtered.size() == 0) {
-            throw new RuntimeException("No package " + metadataName);
-        } else if(filtered.size() > 1) {
-            throw new RuntimeException("Corrupted data");
-        } else {
-            Package aPackage = filtered.get(0);
-            if(aPackage.isHasMetadata()) {
-                throw new RuntimeException("Metadata " + metadataName + " already created!");
-            }
-        }
-
-        Info info = new Info();
-        info.setUser(user);
-        info.setInfoName(metadataName);
-        info.setAccess(Info.Access.PRIVATE);
-        user.getInfoList().add(info);
-        return metadataName;
     }
 
 }
