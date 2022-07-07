@@ -104,27 +104,33 @@ public class MyDataService {
     }
 
     public PathNode getPackageFolderStructure(String storageName) {
-        return folderService.getPackageFolderStructure(storageName);
+        String userName = authService.getCurrentUser().getUsername();
+        return folderService.getPackageFolderStructure(storageName, userName);
     }
 
     public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {
-        return folderService.createFolder(createFolderRequest);
+        String userName = authService.getCurrentUser().getUsername();
+        return folderService.createFolder(createFolderRequest, userName);
     }
 
     public void deleteFolder(String packageName, String folderPathString) throws IOException {
-        folderService.deleteFolder(packageName, folderPathString);
+        String userName = authService.getCurrentUser().getUsername();
+        folderService.deleteFolder(packageName, userName, folderPathString);
     }
 
     public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
-        folderService.uploadFile(file, packageName, folderRelativePath);
+        String userName = authService.getCurrentUser().getUsername();
+        folderService.uploadFile(file, packageName, userName, folderRelativePath);
     }
 
     public Resource downloadFile(String packageName, String fileNameWithPath) {
-        return folderService.downloadFile(packageName, fileNameWithPath);
+        String userName = authService.getCurrentUser().getUsername();
+        return folderService.downloadFile(packageName, userName, fileNameWithPath);
     }
 
     public String createStorage(String storageName) throws IOException {
-        return folderService.createStorage(storageName);
+        String userName = authService.getCurrentUser().getUsername();
+        return folderService.createStorage(storageName, userName);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

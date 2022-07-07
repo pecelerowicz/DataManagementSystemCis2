@@ -27,9 +27,6 @@ import static java.util.stream.Collectors.toList;
 public class FolderService {
 
     @Autowired
-    private AuthService authService;
-
-    @Autowired
     private InfoRepository infoRepository;
 
     @Autowired
@@ -38,12 +35,12 @@ public class FolderService {
     @Autowired
     private StorageRepository storageRepository;
 
-    public PathNode getPackageFolderStructure(String storageName) {
-        return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, authService.getCurrentUser().getUsername(), storageName));
+    public PathNode getPackageFolderStructure(String storageName, String userName) {
+        return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, userName, storageName));
     }
 
     public PathNode getPackageFolderStructureOfUser(String userName, String storageName) {
-        List<Info> infoList = infoRepository.findByUser(authService.getUserByName(userName));
+        List<Info> infoList = infoRepository.findByUserUsername(userName);
         if(infoList.stream().noneMatch(info -> info.getInfoName().equals(storageName)
                 && info.getAccess().equals(Info.Access.PUBLIC))) {
             throw new RuntimeException("User " + userName + " does not have public package " + storageName);
@@ -51,13 +48,12 @@ public class FolderService {
         return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, userName, storageName));
     }
 
-    public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {
+    public String createFolder(CreateFolderRequest createFolderRequest, String userName) throws IOException {
         String newFolderName = createFolderRequest.getNewFolderName();
         String packageName = createFolderRequest.getPackageName();
         String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath() == null
                 ? "" : createFolderRequest.getParentFolderRelativePath(); // todo this is probably redundant now
 
-        String userName = authService.getCurrentUser().getUsername();
         Path newFolderPath = getDefault().getPath(STORAGE, userName, packageName, parentFolderRelativePath, newFolderName);
         Path createdFolderPath = Files.createDirectory(newFolderPath);
         Path basePath = getDefault().getPath(STORAGE, userName, packageName);
@@ -65,8 +61,7 @@ public class FolderService {
         return subPath.toString();
     }
 
-    public void deleteFolder(String packageName, String folderPathString) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
+    public void deleteFolder(String packageName, String userName, String folderPathString) throws IOException {
         Path folderPath = getDefault().getPath(STORAGE, userName, packageName, folderPathString);
         Files.walk(folderPath)
                 .sorted(Comparator.reverseOrder())
@@ -75,15 +70,13 @@ public class FolderService {
     }
 
     // TODO validate (and then append) relativePath. We only want to place files/folders in already existing folders
-    public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
+    public void uploadFile(MultipartFile file, String packageName, String userName, String folderRelativePath) throws IOException {
         Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getOriginalFilename());
         file.transferTo(rootPathStorage);
     }
 
     // TODO download file
-    public Resource downloadFile(String packageName, String fileNameWithPath) {
-        String userName = authService.getCurrentUser().getUsername();
+    public Resource downloadFile(String packageName, String userName, String fileNameWithPath) {
         try {
             Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
             Resource resource = new UrlResource(filePath.toUri());
@@ -136,8 +129,7 @@ public class FolderService {
 
     }
 
-    public String createStorage(String storageName) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
+    public String createStorage(String storageName, String userName) throws IOException {
         Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
         Path createdStoragePath = Files.createDirectory(newStoragePath);
         return createdStoragePath.getFileName().toString();
