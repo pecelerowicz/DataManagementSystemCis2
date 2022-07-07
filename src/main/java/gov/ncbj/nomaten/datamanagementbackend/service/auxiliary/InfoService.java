@@ -13,6 +13,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
+import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +30,14 @@ import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.
 @Service
 public class InfoService {
 
-    private AuthService authService;
+    private final AuthService authService;
+
+    private final InfoRepository infoRepository;
 
     @Autowired
-    public InfoService(AuthService authService) {
+    public InfoService(AuthService authService, InfoRepository infoRepository) {
         this.authService = authService;
+        this.infoRepository = infoRepository;
     }
 
     // info
@@ -199,6 +203,10 @@ public class InfoService {
                 .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User " + userName + " does not have public package " + infoName));
+    }
+
+    public List<Info> findByUser(User user) {
+        return infoRepository.findByUser(user);
     }
 
     class InfoComparator implements Comparator<Info> {

@@ -8,8 +8,6 @@ import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
-import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
@@ -33,20 +31,15 @@ import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE
 public class MyDataService {
 
     private final AuthService authService;
-    private final StorageRepository storageRepository;
-    private final InfoRepository infoRepository;
     private final InfoService infoService;
     private final FolderService folderService;
 
     @Autowired
-    public MyDataService(AuthService authService, StorageRepository storageRepository, InfoRepository infoRepository,
+    public MyDataService(AuthService authService,
                          InfoService infoService, FolderService folderService) {
         this.authService = authService;
         this.infoService = infoService;
         this.folderService = folderService;
-
-        this.storageRepository = storageRepository;
-        this.infoRepository = infoRepository;
     }
 
     public Info getInfo(String infoName) {
@@ -63,19 +56,19 @@ public class MyDataService {
 
     public List<Package> getPackages() throws IOException {
         User user = authService.getCurrentUser();
-        List<Info> infoList = infoRepository.findByUser(user);
-        List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        List<Info> infoList = infoService.findByUser(user);
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
         return combineStorageWithMetadata(infoList, storageNames);
     }
 
     public String createPackage(String packageName) throws IOException {
         User user = authService.getCurrentUser();
         List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
-        List<String> storageNames = storageRepository.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
         if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
             throw new RuntimeException("Package " + packageName + " already exists");
         }
-        storageRepository.createSubfolder(getDefault().getPath(STORAGE, user.getUsername()), packageName);
+        folderService.createSubfolder(getDefault().getPath(STORAGE, user.getUsername()), packageName);
         return packageName; // do poprawy
     }
 
