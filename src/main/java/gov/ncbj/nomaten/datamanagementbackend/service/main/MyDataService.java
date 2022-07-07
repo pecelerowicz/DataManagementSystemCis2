@@ -43,15 +43,18 @@ public class MyDataService {
     }
 
     public Info getInfo(String infoName) {
-        return infoService.getInfo(infoName);
+        User user = authService.getCurrentUser();
+        return infoService.getInfo(infoName, user);
     }
 
     public Info createInfo(CreateInfoRequest createInfoRequest) {
-        return infoService.createInfo(createInfoRequest);
+        User user = authService.getCurrentUser();
+        return infoService.createInfo(createInfoRequest, user);
     }
 
     public Info updateInfo(UpdateInfoRequest updateInfoRequest) {
-        return infoService.updateInfo(updateInfoRequest);
+        User user = authService.getCurrentUser();
+        return infoService.updateInfo(updateInfoRequest, user);
     }
 
     public List<Package> getPackages() throws IOException {

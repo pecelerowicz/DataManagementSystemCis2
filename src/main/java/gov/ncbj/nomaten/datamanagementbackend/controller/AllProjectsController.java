@@ -4,6 +4,8 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetInfoListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.service.main.AllProjectsService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
@@ -27,6 +29,8 @@ public class AllProjectsController {
 
     private final AllProjectsService allProjectsService;
     private final InfoService infoService;
+
+    private final AuthService authService; // for now, to be removed later
 
     /**
      * LEFT PANEL
@@ -52,7 +56,8 @@ public class AllProjectsController {
      */
     @GetMapping("/info")
     public ResponseEntity<GetInfoListResponse> getInfoList() {
-        return ResponseEntity.status(OK).body(new GetInfoListResponse(infoService.getInfoList()));
+        User user = authService.getCurrentUser();
+        return ResponseEntity.status(OK).body(new GetInfoListResponse(infoService.getInfoList(user)));
     }
 
     /**

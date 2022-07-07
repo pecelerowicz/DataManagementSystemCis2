@@ -3,6 +3,8 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetInfoListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.service.main.MyProjectsService;
@@ -28,7 +30,9 @@ public class MyProjectsController {
 
     private final MyProjectsService myProjectsService;
     private final FolderService folderService;
-    private final InfoService infoService;
+    private final InfoService infoService; // to be removed from here
+
+    private final AuthService authService; // for now. To be removed later
 
     /**
      * LEFT PANEL
@@ -79,7 +83,8 @@ public class MyProjectsController {
      */
     @GetMapping("/project/info")
     public ResponseEntity<GetInfoListResponse> getInfoList() {
-        return ResponseEntity.status(OK).body(new GetInfoListResponse(infoService.getInfoList()));
+        User user = authService.getCurrentUser(); // infoService to be removed from here
+        return ResponseEntity.status(OK).body(new GetInfoListResponse(infoService.getInfoList(user)));
     }
 
     /**

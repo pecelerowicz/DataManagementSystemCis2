@@ -4,6 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
@@ -69,7 +70,8 @@ public class AllDataController {
     public ResponseEntity<GetInfoResponse> getInfoOfUser(@PathVariable String userName, @PathVariable String infoName) {
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
-        return ok(infoToGetInfoResponse(infoService.getInfoOfUser(userName, infoName)));
+        User user = authService.getUserByName(userName);
+        return ok(infoToGetInfoResponse(infoService.getInfoOfUser(user, infoName)));
     }
 
     /**

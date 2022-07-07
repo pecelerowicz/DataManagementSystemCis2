@@ -30,25 +30,21 @@ import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.
 @Service
 public class InfoService {
 
-    private final AuthService authService;
-
     private final InfoRepository infoRepository;
 
     @Autowired
-    public InfoService(AuthService authService, InfoRepository infoRepository) {
-        this.authService = authService;
+    public InfoService(InfoRepository infoRepository) {
         this.infoRepository = infoRepository;
     }
 
     // info
-    public List<Info> getInfoList() {
-        List<Info> infoList = authService.getCurrentUser().getInfoList();
+    public List<Info> getInfoList(User user) {
+        List<Info> infoList = user.getInfoList();
         infoList.sort(new InfoComparator());
         return infoList;
     }
 
-    public Info getInfo(String infoName) {
-        User user = authService.getCurrentUser();
+    public Info getInfo(String infoName, User user) {
         return user.getInfoList()
             .stream()
             .filter(i -> i.getInfoName().equals(infoName))
@@ -57,9 +53,8 @@ public class InfoService {
     }
 
     @Transactional
-    public Info createInfo(CreateInfoRequest createInfoRequest) {
+    public Info createInfo(CreateInfoRequest createInfoRequest, User user) {
         // TODO check for info existence
-        User user = authService.getCurrentUser();
         Info info = Info
             .builder()
             .infoName(createInfoRequest.getInfoName())
@@ -75,8 +70,8 @@ public class InfoService {
     }
 
     @Transactional
-    public Info updateInfo(UpdateInfoRequest updateInfoRequest) {
-        Info info = getInfo(updateInfoRequest.getInfoName());
+    public Info updateInfo(UpdateInfoRequest updateInfoRequest, User user) {
+        Info info = getInfo(updateInfoRequest.getInfoName(), user);
         info.setAccess(updateInfoRequest.getAccess());
         info.setTitle(updateInfoRequest.getTitle());
         info.setShortDescription(updateInfoRequest.getShortDescription());
@@ -85,26 +80,25 @@ public class InfoService {
         info.setDifrInfo(null);
         info.setTestInfo(null);
         if(updateInfoRequest.getCreateDifrInfoRequest() != null) {
-            info.setDifrInfo(createDifrInfo(updateInfoRequest.getCreateDifrInfoRequest()));
+            info.setDifrInfo(createDifrInfo(updateInfoRequest.getCreateDifrInfoRequest(), user));
         }
         if(updateInfoRequest.getCreateTestInfoRequest() != null) {
-            info.setTestInfo(createTestInfo(updateInfoRequest.getCreateTestInfoRequest()));
+            info.setTestInfo(createTestInfo(updateInfoRequest.getCreateTestInfoRequest(), user));
         }
 
         return info;
     }
 
     @Transactional
-    public void deleteInfo(DeleteInfoRequest deleteInfoRequest) {
-        Info info = getInfo(deleteInfoRequest.getInfoName());
-        User user = authService.getCurrentUser();
+    public void deleteInfo(DeleteInfoRequest deleteInfoRequest, User user) {
+        Info info = getInfo(deleteInfoRequest.getInfoName(), user);
         user.getInfoList().remove(info);
         info.setUser(null);
     }
 
     // difrractometer info
-    public DifrInfo getDifrInfo(String infoName) {
-        DifrInfo difrInfo = getInfo(infoName).getDifrInfo();
+    public DifrInfo getDifrInfo(String infoName, User user) {
+        DifrInfo difrInfo = getInfo(infoName, user).getDifrInfo();
         if(difrInfo == null) {
             throw new RuntimeException("No Difr Info in " + infoName);
         } else {
@@ -113,8 +107,8 @@ public class InfoService {
     }
 
     @Transactional
-    public DifrInfo createDifrInfo(CreateDifrInfoRequest createDifrInfoRequest) {
-        Info info = getInfo(createDifrInfoRequest.getInfoName());
+    public DifrInfo createDifrInfo(CreateDifrInfoRequest createDifrInfoRequest, User user) {
+        Info info = getInfo(createDifrInfoRequest.getInfoName(), user);
         if(info.getDifrInfo() != null) {
             throw new RuntimeException("Difr Info already exists in: " + info.getInfoName());
         }
@@ -125,8 +119,8 @@ public class InfoService {
     }
 
     @Transactional
-    public DifrInfo updateDifrInfo(UpdateDifrInfoRequest updateDifrInfoRequest) {
-        Info info = getInfo(updateDifrInfoRequest.getInfoName());
+    public DifrInfo updateDifrInfo(UpdateDifrInfoRequest updateDifrInfoRequest, User user) {
+        Info info = getInfo(updateDifrInfoRequest.getInfoName(), user);
         if(info.getDifrInfo() == null) {
             throw new RuntimeException("No difr info in: " + info.getInfoName());
         }
@@ -137,8 +131,8 @@ public class InfoService {
     }
 
     @Transactional
-    public void deleteDifrInfo(DeleteDifrInfoRequest deleteDifrInfoRequest) {
-        Info info = getInfo(deleteDifrInfoRequest.getInfoName());
+    public void deleteDifrInfo(DeleteDifrInfoRequest deleteDifrInfoRequest, User user) {
+        Info info = getInfo(deleteDifrInfoRequest.getInfoName(), user);
         DifrInfo difrInfo = info.getDifrInfo();
         if(difrInfo == null) {
             throw new RuntimeException("No difr info in: " + info.getInfoName());
@@ -149,18 +143,18 @@ public class InfoService {
     }
 
     // test info
-    public TestInfo getTestInfo(String infoName) {
-        TestInfo testInfo = getInfo(infoName).getTestInfo();
+    public TestInfo getTestInfo(String infoName, User user) {
+        TestInfo testInfo = getInfo(infoName, user).getTestInfo();
         if(testInfo == null) {
             throw new RuntimeException("No Test Info in " + infoName);
         } else {
-            return getInfo(infoName).getTestInfo();
+            return getInfo(infoName, user).getTestInfo();
         }
     }
 
     @Transactional
-    public TestInfo createTestInfo(CreateTestInfoRequest createTestInfoRequest) {
-        Info info = getInfo(createTestInfoRequest.getInfoName());
+    public TestInfo createTestInfo(CreateTestInfoRequest createTestInfoRequest, User user) {
+        Info info = getInfo(createTestInfoRequest.getInfoName(), user);
         if(info.getTestInfo() != null) {
             throw new RuntimeException("Test Info already exists");
         }
@@ -171,8 +165,8 @@ public class InfoService {
     }
 
     @Transactional
-    public TestInfo updateTestInfo(UpdateTestInfoRequest updateTestInfoRequest) {
-        Info info = getInfo(updateTestInfoRequest.getInfoName());
+    public TestInfo updateTestInfo(UpdateTestInfoRequest updateTestInfoRequest, User user) {
+        Info info = getInfo(updateTestInfoRequest.getInfoName(), user);
         if(info.getTestInfo() == null) {
             throw new RuntimeException("Test info does not exist");
         }
@@ -183,8 +177,8 @@ public class InfoService {
     }
 
     @Transactional
-    public void deleteTestInfo(DeleteTestInfoRequest deleteTestInfoRequest) {
-        Info info = getInfo(deleteTestInfoRequest.getInfoName());
+    public void deleteTestInfo(DeleteTestInfoRequest deleteTestInfoRequest, User user) {
+        Info info = getInfo(deleteTestInfoRequest.getInfoName(), user);
         TestInfo testInfo = info.getTestInfo();
         if (testInfo == null) {
             throw new RuntimeException("No test info in: " + info.getInfoName());
@@ -195,14 +189,13 @@ public class InfoService {
     }
 
     @Transactional // not needed ?
-    public Info getInfoOfUser(String userName, String infoName) {
-        return authService
-                .getUserByName(userName)
+    public Info getInfoOfUser(User user, String infoName) {
+        return user
                 .getInfoList()
                 .stream()
                 .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("User " + userName + " does not have public package " + infoName));
+                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have public package " + infoName));
     }
 
     public List<Info> findByUser(User user) {
