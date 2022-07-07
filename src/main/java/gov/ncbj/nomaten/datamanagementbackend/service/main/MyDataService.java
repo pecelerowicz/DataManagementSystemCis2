@@ -13,7 +13,6 @@ import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -38,18 +37,16 @@ public class MyDataService {
     private final InfoRepository infoRepository;
     private final InfoService infoService;
     private final FolderService folderService;
-//    private final StorageService storageService;
 
     @Autowired
     public MyDataService(AuthService authService, StorageRepository storageRepository, InfoRepository infoRepository,
-                         InfoService infoService, FolderService folderService/*, StorageService storageService*/) {
+                         InfoService infoService, FolderService folderService) {
         this.authService = authService;
         this.infoService = infoService;
         this.folderService = folderService;
 
         this.storageRepository = storageRepository;
         this.infoRepository = infoRepository;
-//        this.storageService = storageService;
     }
 
     public Info getInfo(String infoName) {
@@ -134,7 +131,7 @@ public class MyDataService {
     }
 
     public String createStorage(String storageName) throws IOException {
-        return /*storageService*/folderService.createStorage(storageName);
+        return folderService.createStorage(storageName);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
