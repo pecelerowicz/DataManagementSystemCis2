@@ -5,9 +5,10 @@ import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.InfoComparator;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.StorageService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,8 @@ public class AllProjectsService {
     ProjectRepository projectRepository;
 
     @Autowired
-    private StorageService storageService;
+    private FolderService folderService;
 
-    // OTHER PROJECTS
     public Project getProject(Long projectId) {
         String userName = authService.getCurrentUser().getUsername();
         Project project = projectRepository.findById(projectId).orElseThrow(
@@ -48,6 +48,12 @@ public class AllProjectsService {
                 .filter(p -> !p.getOwnerName().equals(user.getUsername()))
                 .sorted()
                 .collect(toList());
+    }
+
+    public List<Info> getInfoList() {
+        List<Info> infoList = authService.getCurrentUser().getInfoList();
+        infoList.sort(new InfoComparator());
+        return infoList;
     }
 
     @Transactional
@@ -92,46 +98,7 @@ public class AllProjectsService {
         return project;
     }
 
-    @Transactional
-    public Project removeMyFromOtherProject(RemoveMyFromOtherProjectRequest removeMyFromOtherProjectRequest) {
-        User user = authService.getCurrentUser();
-        String userName = user.getUsername();
-        Long projectId = removeMyFromOtherProjectRequest.getProjectId();
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(project.getOwnerName().equals(user.getUsername())) {
-            throw new RuntimeException("Cannot remove user from its own project");
-        }
-        if(project.getUsers().stream().noneMatch(u -> u.getUsername().equals(userName))) {
-            throw new RuntimeException("Logged in user is not in project with id " + projectId);
-        }
-        if(project.getInfoList().stream().anyMatch(i -> i.getUser().getUsername().equals(userName))) {
-            throw new RuntimeException("Project with id " + projectId + " contains infos of user " + userName);
-        }
-        project.getUsers().remove(user);
-        user.getProjects().remove(project);
-        return project;
-    }
-
-
-    private Info findInfoOfUser(String infoName, User user) {
-        return user.getInfoList().stream().filter(i -> i.getInfoName().equals(infoName))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have info " + infoName));
-    }
-
-    private Project findMemberProjectOfUser(Long projectId, User user) {
-        return user.getProjects().stream().filter(p -> p.getId().equals(projectId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have project with id " + projectId));
-    }
-
     // PACKAGES IN PROJECT
-
-
-
-
-
     public Info getInfoOfUserAndProject(Long projectId, String userName, String infoName) {
         User currentUser = authService.getCurrentUser();
         Project project = projectRepository
@@ -158,9 +125,23 @@ public class AllProjectsService {
         if (project.getInfoList().stream().noneMatch(i -> i.getInfoName().equals(infoName) && i.getUser().getUsername().equals(userName))) {
             throw new RuntimeException("No info " + infoName + " of user " + userName + " in the project with id " + projectId);
         }
-        System.out.println("case 5");
-        return storageService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
     }
 
-    // downloading files is in FolderService
+
+
+
+    private Info findInfoOfUser(String infoName, User user) {
+        return user.getInfoList().stream().filter(i -> i.getInfoName().equals(infoName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have info " + infoName));
+    }
+
+    private Project findMemberProjectOfUser(Long projectId, User user) {
+        return user.getProjects().stream().filter(p -> p.getId().equals(projectId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have project with id " + projectId));
+    }
+
+    // TODO downloading files in FolderService (?) - should be here too
 }

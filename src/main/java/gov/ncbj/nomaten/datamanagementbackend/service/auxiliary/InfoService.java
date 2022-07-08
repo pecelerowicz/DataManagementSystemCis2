@@ -9,6 +9,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInf
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.DeleteTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.DeleteInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.model.info.InfoComparator;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -211,10 +212,10 @@ public class InfoService {
     }
 
 
-    class InfoComparator implements Comparator<Info> {
-        @Override
-        public int compare(Info info1, Info info2) {
-            return info1.getInfoName().compareTo(info2.getInfoName());
-        }
-    }
+//    class InfoComparator implements Comparator<Info> {
+//        @Override
+//        public int compare(Info info1, Info info2) {
+//            return info1.getInfoName().compareTo(info2.getInfoName());
+//        }
+//    }
 }

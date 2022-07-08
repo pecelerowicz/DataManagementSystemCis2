@@ -25,47 +25,47 @@ public class StorageService { // FolderService will be probably merged with this
 
     private final AuthService authService;
 
-    public PathNode getInfoListOfUser() {
-        String userName = authService.getCurrentUser().getUsername();
-        Path rootPath = getDefault().getPath(STORAGE, userName);
-        List<Path> paths = createSortedPathsOfUser();
-        PathNode root = new PathNode(paths.remove(0), rootPath);
-        for(Path path: paths) {
-            root = addNode(root, path, rootPath);
-        }
-        return root;
-    }
-
-    public String createStorage(String storageName) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
-        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
-        Path createdStoragePath = Files.createDirectory(newStoragePath);
-        return createdStoragePath.getFileName().toString();
-    }
-
-    public String updateStorage(String oldName, String newName) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
-        Path oldStoragePath = getDefault().getPath(STORAGE, userName, oldName);
-        Path newStoragePath = getDefault().getPath(STORAGE, userName, newName);
-        Path updatedStoragePath = Files.move(oldStoragePath, newStoragePath);
-        return updatedStoragePath.getFileName().toString();
-    }
-
-    public boolean deleteStorage(String storageName) {
-        User user = authService.getCurrentUser();
-        String userName = user.getUsername();
-        Path storagePath = getDefault().getPath(STORAGE, userName, storageName);
-
-        try {
-            walk(storagePath)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-            return true;
-        } catch (IOException e) {
-            throw new RuntimeException("No storage " + storageName);
-        }
-    }
+//    public PathNode getInfoListOfUser() {
+//        String userName = authService.getCurrentUser().getUsername();
+//        Path rootPath = getDefault().getPath(STORAGE, userName);
+//        List<Path> paths = createSortedPathsOfUser();
+//        PathNode root = new PathNode(paths.remove(0), rootPath);
+//        for(Path path: paths) {
+//            root = addNode(root, path, rootPath);
+//        }
+//        return root;
+//    }
+//
+//    public String createStorage(String storageName) throws IOException {
+//        String userName = authService.getCurrentUser().getUsername();
+//        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
+//        Path createdStoragePath = Files.createDirectory(newStoragePath);
+//        return createdStoragePath.getFileName().toString();
+//    }
+//
+//    public String updateStorage(String oldName, String newName) throws IOException {
+//        String userName = authService.getCurrentUser().getUsername();
+//        Path oldStoragePath = getDefault().getPath(STORAGE, userName, oldName);
+//        Path newStoragePath = getDefault().getPath(STORAGE, userName, newName);
+//        Path updatedStoragePath = Files.move(oldStoragePath, newStoragePath);
+//        return updatedStoragePath.getFileName().toString();
+//    }
+//
+//    public boolean deleteStorage(String storageName) {
+//        User user = authService.getCurrentUser();
+//        String userName = user.getUsername();
+//        Path storagePath = getDefault().getPath(STORAGE, userName, storageName);
+//
+//        try {
+//            walk(storagePath)
+//                    .sorted(Comparator.reverseOrder())
+//                    .map(Path::toFile)
+//                    .forEach(File::delete);
+//            return true;
+//        } catch (IOException e) {
+//            throw new RuntimeException("No storage " + storageName);
+//        }
+//    }
 
     public PathNode getFolderStructure(Path rootPath) {
         return folderService.getFolderStructure(rootPath);

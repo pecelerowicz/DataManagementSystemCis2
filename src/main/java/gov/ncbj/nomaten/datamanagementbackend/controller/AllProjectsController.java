@@ -4,9 +4,6 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetInfoListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
-import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
 import gov.ncbj.nomaten.datamanagementbackend.service.main.AllProjectsService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.InfoMapper.infoToGetInfoResponse;
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.project.ProjectMapper.*;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @CrossOrigin
@@ -28,12 +24,10 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AllProjectsController {
 
     private final AllProjectsService allProjectsService;
-    private final InfoService infoService;
-
-    private final AuthService authService; // for now, to be removed later
 
     /**
      * LEFT PANEL
+     * Used for retrieving description, packages and members
      */
     @GetMapping("/project/{projectId}")
     // TODO check this method
@@ -56,8 +50,7 @@ public class AllProjectsController {
      */
     @GetMapping("/info")
     public ResponseEntity<GetInfoListResponse> getInfoList() {
-        User user = authService.getCurrentUser();
-        return ResponseEntity.status(OK).body(new GetInfoListResponse(infoService.getInfoList(user)));
+        return ok(new GetInfoListResponse(allProjectsService.getInfoList()));
     }
 
     /**
@@ -78,17 +71,6 @@ public class AllProjectsController {
         RemoveMyInfoFromOtherProjectRequestValidator.builder().build().validate(removeMyInfoFromOtherProjectRequest);
         return ok(projectToRemoveMyInfoFromOtherProjectResponse(allProjectsService.removeMyInfoFromOtherProject(removeMyInfoFromOtherProjectRequest)));
     }
-
-    /**
-     * RIGHT PANEL
-     */
-//    @DeleteMapping("/project/all/user")
-//    // TODO check this method
-//    public ResponseEntity<RemoveMyFromOtherProjectResponse> removeMyFromOtherProject(@RequestBody RemoveMyFromOtherProjectRequest removeMyFromOtherProjectRequest) {
-//        RemoveMyFromOtherProjectRequestValidator.builder().build().validate(removeMyFromOtherProjectRequest);
-//        return ok(projectToRemoveMyFromOtherProjectResponse(projectService.removeMyFromOtherProject(removeMyFromOtherProjectRequest)));
-//    }
-
 
     // TODO check what happens if I delete Info which belongs to the project (my project, other project, multiple projects)
     /**
