@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
@@ -42,6 +41,53 @@ public class MyDataService {
         this.folderService = folderService;
     }
 
+    public List<Package> getPackageList() throws IOException {
+        User user = authService.getCurrentUser();
+        List<Info> infoList = infoService.findByUser(user);
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        return combineStorageWithMetadata(infoList, storageNames);
+    }
+
+    public String createPackage(String packageName) throws IOException {
+        User user = authService.getCurrentUser();
+        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
+            throw new RuntimeException("Package " + packageName + " already exists");
+        }
+        Path createdPackagePath = folderService.createFolder(getDefault().getPath(STORAGE, user.getUsername(), packageName));
+        return getDefault().getPath(STORAGE, user.getUsername()).relativize(createdPackagePath).toString();
+    }
+
+    @Transactional
+    public void deletePackage(DeletePackageRequest deletePackageRequest) throws IOException {
+        User user = authService.getCurrentUser();
+        String userName = user.getUsername();
+        String packageName = deletePackageRequest.getPackageName();
+        Path storagePath = getDefault().getPath(STORAGE, userName, packageName);
+
+        Optional<Info> maybeInfo = user
+                .getInfoList()
+                .stream()
+                .filter(info -> info.getInfoName().equals(packageName))
+                .findFirst();
+
+        boolean storageExists = folderService.itemExists(storagePath);
+        boolean infoExists = maybeInfo.isPresent();
+        if(storageExists || infoExists) {
+            if(storageExists) {
+                folderService.deleteItem(storagePath);
+            }
+            if(infoExists) {
+                Info info = maybeInfo.get();
+                user.getInfoList().remove(info);
+                info.setUser(null);
+            }
+        } else {
+            throw new RuntimeException("No package " + deletePackageRequest.getPackageName());
+        }
+    }
+
     public Info getInfo(String infoName) {
         User user = authService.getCurrentUser();
         return infoService.getInfo(infoName, user);
@@ -57,68 +103,34 @@ public class MyDataService {
         return infoService.updateInfo(updateInfoRequest, user);
     }
 
-    public List<Package> getPackages() throws IOException {
-        User user = authService.getCurrentUser();
-        List<Info> infoList = infoService.findByUser(user);
-        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
-        return combineStorageWithMetadata(infoList, storageNames);
-    }
-
-    public String createPackage(String packageName) throws IOException {
-        User user = authService.getCurrentUser();
-        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
-        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
-        if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
-            throw new RuntimeException("Package " + packageName + " already exists");
-        }
-        folderService.createSubfolder(getDefault().getPath(STORAGE, user.getUsername()), packageName);
-        return packageName; // do poprawy
-    }
-
-    @Transactional
-    public void deletePackage(DeletePackageRequest deletePackageRequest) throws IOException {
-        String packageName = deletePackageRequest.getPackageName();
-        User user = authService.getCurrentUser();
-        String userName = user.getUsername();
-        Path storagePath = getDefault().getPath(STORAGE, userName, packageName);
-
-        Optional<Info> maybeTargetInfo = user
-                .getInfoList()
-                .stream()
-                .filter(info -> info.getInfoName().equals(packageName))
-                .findFirst();
-
-        if(Files.exists(storagePath) || maybeTargetInfo.isPresent()) {
-            if(Files.exists(storagePath)) {
-                Files.walk(storagePath)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-            }
-
-            if(maybeTargetInfo.isPresent()) {
-                Info targetInfo = maybeTargetInfo.get();
-                user.getInfoList().remove(targetInfo);
-                targetInfo.setUser(null);
-            }
-        } else {
-            throw new RuntimeException("No package " + deletePackageRequest.getPackageName());
-        }
+    public String createStorage(String storageName) throws IOException {
+        String userName = authService.getCurrentUser().getUsername();
+        Path newStoragePath = getDefault().getPath(STORAGE, userName, storageName);
+        return folderService.createFolder(newStoragePath).getFileName().toString();
     }
 
     public PathNode getPackageFolderStructure(String storageName) {
         String userName = authService.getCurrentUser().getUsername();
-        return folderService.getPackageFolderStructure(storageName, userName);
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, storageName));
     }
 
     public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {
         String userName = authService.getCurrentUser().getUsername();
-        return folderService.createFolder(createFolderRequest, userName);
+        String packageName = createFolderRequest.getPackageName();
+        String parentFolderRelativePath = createFolderRequest.getParentFolderRelativePath();
+        String newFolderName = createFolderRequest.getNewFolderName();
+        Path newFolderPath = getDefault().getPath(STORAGE, userName, packageName,
+                parentFolderRelativePath, newFolderName);
+        Path createdFolderPath = folderService.createFolder(newFolderPath);
+        Path basePath = getDefault().getPath(STORAGE, userName, packageName);
+        Path subPath = basePath.relativize(createdFolderPath);
+        return subPath.toString();
     }
 
-    public void deleteFolder(String packageName, String folderPathString) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
-        folderService.deleteFolder(packageName, userName, folderPathString);
+    public void deleteItem(String packageName, String folderPathString) throws IOException {
+        Path folderPath = getDefault().getPath(STORAGE,
+                authService.getCurrentUser().getUsername(), packageName, folderPathString);
+        folderService.deleteItem(folderPath);
     }
 
     public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
@@ -131,10 +143,6 @@ public class MyDataService {
         return folderService.downloadFile(packageName, userName, fileNameWithPath);
     }
 
-    public String createStorage(String storageName) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
-        return folderService.createStorage(storageName, userName);
-    }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private List<Package> combineStorageWithMetadata(List<Info> infoList, List<String> storageNames) {

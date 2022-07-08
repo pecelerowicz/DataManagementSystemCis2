@@ -202,6 +202,15 @@ public class InfoService {
         return infoRepository.findByUser(user);
     }
 
+    public List<Info> findAll() {
+        return infoRepository.findAll();
+    }
+
+    public List<Info> findByUserUsername(String username) {
+        return infoRepository.findByUserUsername(username);
+    }
+
+
     class InfoComparator implements Comparator<Info> {
         @Override
         public int compare(Info info1, Info info2) {

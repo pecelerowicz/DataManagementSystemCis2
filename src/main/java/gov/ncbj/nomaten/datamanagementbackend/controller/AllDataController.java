@@ -4,11 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
-import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.SearchService;
+import gov.ncbj.nomaten.datamanagementbackend.service.main.AllDataService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_search.GetSearchListRequestValidator;
@@ -18,11 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.InfoMapper.infoToGetInfoResponse;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -31,47 +25,42 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/all-data")
 public class AllDataController {
 
-    private final InfoService infoService;
-    private final FolderService folderService;
-    private final SearchService searchService;
-    private final AuthService authService;
+    private final AllDataService allDataService;
 
     /**
      * LEFT PANEL
      */
-    // TODO it might be better not to hardcode it ...
     @GetMapping("/types")
     public ResponseEntity<List<String>> getTypeList() {
-        return ok(Arrays.asList("General", "Difrractometer"/*, "Test"*/));
+        return ok(allDataService.getTypeList());
     }
 
     /**
      * LEFT PANEL
      */
-    // TODO zrobić porządne dto
     @GetMapping("/users")
     public ResponseEntity<List<String>> getUsers() {
-        return ResponseEntity.status(OK).body(authService.getUsers());
+        return ok(allDataService.getUsers());
     }
 
     /**
      * LEFT PANEL
+     * POST just to be able to send JSON. No content creation here!
      */
-    @PostMapping("/search") // POST just to be able to send JSON. No content creation here!
+    @PostMapping("/search")
     public GetSearchListResponse getSearchList(@RequestBody GetSearchListRequest getSearchListRequest) {
         GetSearchListRequestValidator.builder().build().validate(getSearchListRequest);
-        return new GetSearchListResponse(searchService.getSearchList(getSearchListRequest));
+        return new GetSearchListResponse(allDataService.getSearchList(getSearchListRequest));
     }
 
     /**
      * LEFT PANEL
      */
-    @GetMapping("/info/{userName}/{infoName}") // używane w search
+    @GetMapping("/info/{userName}/{infoName}")
     public ResponseEntity<GetInfoResponse> getInfoOfUser(@PathVariable String userName, @PathVariable String infoName) {
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
-        User user = authService.getUserByName(userName);
-        return ok(infoToGetInfoResponse(infoService.getInfoOfUser(user, infoName)));
+        return ok(infoToGetInfoResponse(allDataService.getInfoOfUser(userName, infoName)));
     }
 
     /**
@@ -81,7 +70,7 @@ public class AllDataController {
     public PathNode getPackageFolderStructureOfUser(@PathVariable String userName, @PathVariable String storageName) {
         NameValidator.builder().build().validate(storageName);
         UserNameValidator.builder().build().validate(userName);
-        return folderService.getPackageFolderStructureOfUser(userName, storageName);
+        return allDataService.getPackageFolderStructureOfUser(userName, storageName);
     }
 
     /**
@@ -92,7 +81,7 @@ public class AllDataController {
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(packageName);
         // todo validate fileNameWithPath
-        Resource resource = folderService.downloadFileOfUser(userName, packageName, fileNameWithPath);
+        Resource resource = allDataService.downloadFileOfUser(userName, packageName, fileNameWithPath);
         return ok()
 //                .contentType(MediaType.parseMediaType(Files.probeContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())

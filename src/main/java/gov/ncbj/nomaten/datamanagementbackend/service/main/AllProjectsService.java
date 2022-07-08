@@ -6,8 +6,8 @@ import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
-import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +28,7 @@ public class AllProjectsService {
     ProjectRepository projectRepository;
 
     @Autowired
-    StorageRepository storageRepository;
-
+    private StorageService storageService;
 
     // OTHER PROJECTS
     public Project getProject(Long projectId) {
@@ -160,7 +159,7 @@ public class AllProjectsService {
             throw new RuntimeException("No info " + infoName + " of user " + userName + " in the project with id " + projectId);
         }
         System.out.println("case 5");
-        return storageRepository.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
+        return storageService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
     }
 
     // downloading files is in FolderService

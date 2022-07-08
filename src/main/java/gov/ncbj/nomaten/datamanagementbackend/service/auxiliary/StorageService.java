@@ -21,6 +21,8 @@ public class StorageService { // FolderService will be probably merged with this
 
     private final StorageRepository storageRepository;
 
+    private final FolderService folderService;
+
     private final AuthService authService;
 
     public PathNode getInfoListOfUser() {
@@ -65,6 +67,9 @@ public class StorageService { // FolderService will be probably merged with this
         }
     }
 
+    public PathNode getFolderStructure(Path rootPath) {
+        return folderService.getFolderStructure(rootPath);
+    }
 
     private PathNode addNode(PathNode where, Path what, Path rootPath) {
         if(what.getParent().equals(where.getPath())) {

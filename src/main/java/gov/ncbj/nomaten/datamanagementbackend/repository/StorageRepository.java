@@ -45,55 +45,55 @@ public class StorageRepository {
         return getDirectSubfolders(where);
     }
 
-    public PathNode getFolderStructure(Path rootPath) {
-        if(Files.notExists(rootPath)) {
-            throw new RuntimeException("Folder does not exist");
-        }
-        List<Path> paths = createSortedPaths(rootPath);
-        PathNode root = new PathNode(paths.remove(0), rootPath);
-        for(Path path: paths) {
-            root = addNode(root, path, rootPath);
-        }
-        return root;
-    }
+//    public PathNode getFolderStructure(Path rootPath) {
+//        if(Files.notExists(rootPath)) {
+//            throw new RuntimeException("Folder does not exist");
+//        }
+//        List<Path> paths = createSortedPaths(rootPath);
+//        PathNode root = new PathNode(paths.remove(0), rootPath);
+//        for(Path path: paths) {
+//            root = addNode(root, path, rootPath);
+//        }
+//        return root;
+//    }
 
-    private List<Path> createSortedPaths(Path rootPathStorage) {
-        Set<Path> paths = new TreeSet<>();
-        try {
-            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    paths.add(dir);
-                    return super.preVisitDirectory(dir, attrs);
-                }
-
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    paths.add(file);
-                    return super.visitFile(file, attrs);
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return super.visitFileFailed(file, exc);
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return super.postVisitDirectory(dir, exc);
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        List<Path> pathList = new LinkedList<>();
-        paths.forEach(p -> {
-            pathList.add(p);
-        });
-
-        return pathList;
-    }
+//    private List<Path> createSortedPaths(Path rootPathStorage) {
+//        Set<Path> paths = new TreeSet<>();
+//        try {
+//            Files.walkFileTree(rootPathStorage, new SimpleFileVisitor<Path>() {
+//                @Override
+//                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+//                    paths.add(dir);
+//                    return super.preVisitDirectory(dir, attrs);
+//                }
+//
+//                @Override
+//                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+//                    paths.add(file);
+//                    return super.visitFile(file, attrs);
+//                }
+//
+//                @Override
+//                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+//                    return super.visitFileFailed(file, exc);
+//                }
+//
+//                @Override
+//                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+//                    return super.postVisitDirectory(dir, exc);
+//                }
+//            });
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        List<Path> pathList = new LinkedList<>();
+//        paths.forEach(p -> {
+//            pathList.add(p);
+//        });
+//
+//        return pathList;
+//    }
 
     public List<Path> createSortedPathsLevelOne(Path rootPath) {
         Set<Path> paths = new TreeSet<>();

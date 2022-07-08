@@ -8,7 +8,6 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageReques
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.main.MyDataService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.StorageService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.FileNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_folder.*;
@@ -45,7 +44,7 @@ public class MyDataController {
      */
     @GetMapping("/package")
     public ResponseEntity<GetPackageListResponse> getPackageList() throws IOException {
-        return ResponseEntity.status(OK).body(new GetPackageListResponse(myDataService.getPackages()));
+        return ResponseEntity.status(OK).body(new GetPackageListResponse(myDataService.getPackageList()));
     }
 
     /**
@@ -132,7 +131,7 @@ public class MyDataController {
     @DeleteMapping("/folders")
     public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
         DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
-        myDataService.deleteFolder(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
+        myDataService.deleteItem(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
         return ResponseEntity
                 .status(OK)
                 .body(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
