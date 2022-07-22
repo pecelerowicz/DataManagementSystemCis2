@@ -171,6 +171,17 @@ public class FolderService {
         return pathList;
     }
 
+    public boolean fileOrFolderExists(Path path) {
+        return Files.exists(path);
+    }
+
+    public boolean isFile(Path path) {
+        return Files.isRegularFile(path);
+    }
+
+    public boolean isDirectory(Path path) {
+        return Files.isDirectory(path);
+    }
 
     private List<Path> createSortedPaths(Path rootPathStorage) {
         Set<Path> paths = new TreeSet<>();

@@ -1,223 +1,197 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.main;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
-import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
-import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.*;
+import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
+import static java.nio.file.FileSystems.getDefault;
 
 @Service
+@AllArgsConstructor
 public class MyProjectsService {
 
-    @Autowired
-    ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
 
-    @Autowired
-    AuthService authService;
+    private final ProjectService projectService;
 
-    @Autowired
-    UserRepository userRepository;
+    private final AuthService authService;
 
-    @Autowired
-    InfoRepository infoRepository;
+    private final FolderService folderService;
 
+    private final InfoService infoService;
 
-    // OWNED PROJECTS
+    private final CheckService checkService;
+
     public Project getOwnedProject(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(
-                () -> new RuntimeException("No project with id " + projectId));
-        if(!project.getOwnerName().equals(authService.getCurrentUser().getUsername())) {
-            throw new RuntimeException("Project with id " + projectId + " does not belong to the logged in user");
-        }
+        Project project = projectService.getProjectById(projectId);
+        User projectOwner = authService.getCurrentUser();
+        checkService.userOwnsProject(projectOwner, project);
         return project;
     }
 
     public List<Project> getOwnedProjects() {
-        User user = authService.getCurrentUser();
-        return user.getProjects()
-                .stream()
-                .filter(p -> p.getOwnerName().equals(user.getUsername()))
-                .sorted()
-                .collect(toList());
+        User projectOwner = authService.getCurrentUser();
+        return projectService.getProjectsByUserOwned(projectOwner);
     }
 
     @Transactional
     public Project createOwnedProject(CreateProjectRequest createProjectRequest) {
-        User user = authService.getCurrentUser();
-        List<String> projectNames = user.getProjects().stream().map(Project::getProjectName).collect(toList());
-        if(projectNames.contains(createProjectRequest.getProjectName())) {
-            throw new RuntimeException("Project with this name already exists for the logged in user");
-        }
+        User projectOwner = authService.getCurrentUser();
+        checkService.projectWithThisNameAndUserDoesNotExist(projectOwner, createProjectRequest.getProjectName());
+
         Project project = Project.builder()
                 .projectName(createProjectRequest.getProjectName())
                 .description(createProjectRequest.getDescription())
-                .ownerName(user.getUsername())
+                .ownerName(projectOwner.getUsername())
                 .localDateTime(LocalDateTime.now().plusHours(2)) // ?
                 .build();
-        user.getProjects().add(project);
+        projectOwner.getProjects().add(project);
         return project;
     }
 
     @Transactional
     public Project updateOwnedProject(UpdateProjectRequest updateProjectRequest) {
-        Long projectId = updateProjectRequest.getProjectId();
-        String newProjectName = updateProjectRequest.getNewName();
-        String newDescription = updateProjectRequest.getNewDescription();
-        User user = authService.getCurrentUser();
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(!project.getOwnerName().equals(user.getUsername())) {
-            throw new RuntimeException("Project " + projectId + " is not owned by the logged in user");
-        }
-        project.setProjectName(newProjectName);
-        project.setDescription(newDescription);
+        User projectOwner = authService.getCurrentUser();
+        Project project = projectService.getProjectById(updateProjectRequest.getProjectId());
+
+        checkService.userOwnsProject(projectOwner, project);
+
+        project.setProjectName(updateProjectRequest.getNewName());
+        project.setDescription(updateProjectRequest.getNewDescription());
         return project;
     }
 
     @Transactional
     public Project addUserToOwnedProject(AddUserRequest addUserRequest) {
-        Long projectId = addUserRequest.getProjectId();
-        String newUserName = addUserRequest.getUserName();
-        User newUser = authService.getUserByName(newUserName);
-        User owner = authService.getCurrentUser();
-        String ownerName = owner.getUsername();
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("There is no project with id " + projectId));
-        if(!project.getOwnerName().equals(ownerName)) {
-            throw new RuntimeException("Project with id " + projectId + " is not owned by " + ownerName);
-        }
-        List<String> memberNames = project.getUsers().stream().map(User::getUsername).collect(toList());
-        if(memberNames.contains(newUserName)) {
-            throw new RuntimeException("Project with id " + projectId + " already contains user " + newUserName);
-        }
-        project.getUsers().add(newUser);
-        newUser.getProjects().add(project);
+        User userToAdd = authService.getUserByName(addUserRequest.getUserName());
+        User projectOwner = authService.getCurrentUser();
+        Project project = projectService.getProjectById(addUserRequest.getProjectId());
+
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.userDoesNotOwnProject(userToAdd, project);
+        checkService.userIsNotInProject(userToAdd, project);
+
+        project.getUsers().add(userToAdd);
+        userToAdd.getProjects().add(project);
         return project;
     }
 
-    @Transactional // to debug! (?)
-    public Project addMyInfoToOwnedProject(AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
-        String ownerName = authService.getCurrentUser().getUsername();
-        Long projectId = addMyInfoToOwnedProjectRequest.getProjectId();
-        String infoName = addMyInfoToOwnedProjectRequest.getInfoName();
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(!project.getOwnerName().equals(ownerName)) {
-            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
-        }
-        if(project.getInfoList().stream().anyMatch(i -> i.getInfoName().equals(infoName) && i.getUser().getUsername().equals(ownerName))) {
-            throw new RuntimeException("Project with id " + projectId + " already contains info " + infoName + " of user " + ownerName);
-        }
-        Info info = infoRepository.findByUserUsername(ownerName)
-                .stream()
-                .filter(i -> i.getInfoName().equals(infoName))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("User " + ownerName + " does not have info " + infoName));
+    public List<Info> getInfoList() {
+        User user = authService.getCurrentUser();
+        return infoService.getInfoList(user);
+    }
+
+    @Transactional
+    public Project addMyInfoToMyProject(AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
+        User projectOwner = authService.getCurrentUser();
+        Project project = projectService.getProjectById(addMyInfoToOwnedProjectRequest.getProjectId());
+        Info info = infoService.getInfo(addMyInfoToOwnedProjectRequest.getInfoName(), projectOwner);
+
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.projectDoesNotContainInfo(project, info);
+
         project.getInfoList().add(info);
         info.getProjects().add(project);
         return project;
     }
 
     @Transactional
-    public Project removeInfoFromOwnedProject(RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
-        String ownerName = authService.getCurrentUser().getUsername();
-        Long projectId = removeInfoFromOwnedProjectRequest.getProjectId();
+    public Project removeInfoFromMyProject(RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
+        User projectOwner = authService.getCurrentUser();
+        User packageOwner = authService.getUserByName(removeInfoFromOwnedProjectRequest.getUsername());
+        Project project = projectService.getProjectById(removeInfoFromOwnedProjectRequest.getProjectId());
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.userIsInProject(projectOwner, project);
+        checkService.userIsInProject(packageOwner, project);
+        Info info = getInfoInMyProject(project.getId(),
+                removeInfoFromOwnedProjectRequest.getInfoName(), packageOwner.getUsername());
 
-        String userName = removeInfoFromOwnedProjectRequest.getUsername();
-        String infoName = removeInfoFromOwnedProjectRequest.getInfoName();
-
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(!project.getOwnerName().equals(ownerName)) {
-            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
-        }
-        Info info = project.getInfoList().stream()
-                .filter(i -> i.getUser().getUsername().equals(userName) && i.getInfoName().equals(infoName))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Project with id " + projectId +
-                        " does not contain info " + infoName + " of " + userName));
         project.getInfoList().remove(info);
         info.getProjects().remove(project);
         return project;
     }
 
     @Transactional
-    public Project removeUserFromOwnedProject(RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
-        String ownerName = authService.getCurrentUser().getUsername();
-        String userName = removeUserFromOwnedProjectRequest.getUserName();
-        Long projectId = removeUserFromOwnedProjectRequest.getProjectId();
-        User user = userRepository.findByUsername(userName)
-                .orElseThrow(() -> new RuntimeException("No user " + userName + " found"));
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(ownerName.equals(userName)) {
-            throw new RuntimeException("Cannot remove project owner from the project");
-        }
-        if(project.getUsers().stream().noneMatch(u -> u.getUsername().equals(userName))) {
-            throw new RuntimeException("No user " + userName + " found in the project with id " + projectId);
-        }
-        if(!project.getOwnerName().equals(ownerName)) {
-            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
-        }
-        if(project.getInfoList().stream().anyMatch(i -> i.getUser().getUsername().equals(userName))) {
-            throw new RuntimeException("Project with id " + projectId + " contains data by user " + userName);
-        }
-        project.getUsers().remove(user);
-        user.getProjects().remove(project);
+    public Project removeUserFromMyProject(RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
+        User projectOwner = authService.getCurrentUser();
+        User userToRemove = authService.getUserByName(removeUserFromOwnedProjectRequest.getUserName());
+        Project project = projectService.getProjectById(removeUserFromOwnedProjectRequest.getProjectId());
+
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.userIsInProject(projectOwner, project);
+        checkService.userIsInProject(userToRemove, project);
+        checkService.userDoesNotOwnProject(userToRemove, project);
+        checkService.projectDoesNotContainDataByUser(project, userToRemove);
+
+        project.getUsers().remove(userToRemove);
+        userToRemove.getProjects().remove(project);
         return project;
     }
 
     @Transactional
-    public List<Project> deleteOwnedProject(DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
-        User owner = authService.getCurrentUser();
-        String ownerName = owner.getUsername();
+    public List<Project> deleteMyProject(DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
+        User projectOwner = authService.getCurrentUser();
         Long projectId = deleteOwnedProjectRequest.getProjectId();
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(!project.getOwnerName().equals(ownerName)) {
-            throw new RuntimeException("Project with id " + projectId + " is not owned by the logged in user");
-        }
-        if(!project.getInfoList().isEmpty()) {
-            throw new RuntimeException("Project with id " + projectId + " contains data");
-        }
-        if(project.getUsers().size() > 1) {
-            throw new RuntimeException("Project with id " + projectId + " contains member users");
-        }
-        owner.getProjects().remove(project);
-        project.getUsers().remove(owner);
+        Project project = projectService.getProjectById(projectId);
+
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.projectDoesNotContainData(project);
+        checkService.projectDoesNotContainMembers(project);
+
+        projectOwner.getProjects().remove(project);
+        project.getUsers().remove(projectOwner);
         projectRepository.delete(project);
-        return owner.getProjects();
+        return projectOwner.getProjects();
     }
 
-
-
-
-    ////
     public Info getInfoInMyProject(Long projectId, String infoName, String userName) {
-        User currentUser = authService.getCurrentUser();
-        Project project = projectRepository
-                .findById(projectId)
-                .orElseThrow(() -> new RuntimeException("No project with id " + projectId));
-        if(!project.getOwnerName().equals(currentUser.getUsername())) {
-            throw new RuntimeException("Project with id " + projectId + " does not belong to the current logged in user");
-        }
+        User projectOwner = authService.getCurrentUser();
+        Project project = projectService.getProjectById(projectId);
+        checkService.userOwnsProject(projectOwner, project);
         return project.getInfoList()
                 .stream()
                 .filter(i -> i.getInfoName().equals(infoName) && i.getUser().getUsername().equals(userName))
                 .findAny()
                 .orElseThrow(() -> new RuntimeException(
                         "No info " + infoName + " of user " + userName + " in your project with id " + projectId));
+    }
+
+    public PathNode getPackageFolderStructure(Long projectId, String userName, String infoName) {
+        User projectOwner = authService.getCurrentUser();
+        User packageOwner = authService.getUserByName(userName);
+        Project project = projectService.getProjectById(projectId);
+
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.userIsInProject(projectOwner, project);
+        checkService.userIsInProject(packageOwner, project);
+        checkService.packageByUserIsInProject(infoName, packageOwner, project);
+        checkService.mainFolderByUserExists(packageOwner, infoName);
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
+    }
+
+    public Resource downloadFileOfProject(Long projectId, String userName, String infoName, String fileNameWithPath) {
+        Project project = projectService.getProjectById(projectId);
+        User projectOwner = authService.getCurrentUser();
+        User packageOwner = authService.getUserByName(userName);
+
+        checkService.userOwnsProject(projectOwner, project);
+        checkService.userIsInProject(projectOwner, project);
+        checkService.userIsInProject(packageOwner, project);
+        checkService.packageByUserIsInProject(infoName, packageOwner, project);
+        // todo something like: doesTheFileExist (and is it a file not a folder?)
+        return folderService.downloadFile(infoName, userName, fileNameWithPath);
     }
 
 }

@@ -60,6 +60,7 @@ public class MyDataService {
     }
 
     @Transactional
+    // TODO może uniemoliwić usuwanie, gdy pakiet należy do projektu?
     public void deletePackage(DeletePackageRequest deletePackageRequest) throws IOException {
         User user = authService.getCurrentUser();
         String userName = user.getUsername();
@@ -75,6 +76,9 @@ public class MyDataService {
         boolean storageExists = folderService.itemExists(storagePath);
         boolean infoExists = maybeInfo.isPresent();
         if(storageExists || infoExists) {
+            if(infoExists && maybeInfo.get().getProjects().size() > 0) {
+                throw new RuntimeException("Remove package from the projects");
+            }
             if(storageExists) {
                 folderService.deleteItem(storagePath);
             }
@@ -142,8 +146,6 @@ public class MyDataService {
         String userName = authService.getCurrentUser().getUsername();
         return folderService.downloadFile(packageName, userName, fileNameWithPath);
     }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private List<Package> combineStorageWithMetadata(List<Info> infoList, List<String> storageNames) {
         List<Package> packageList = new LinkedList<>();

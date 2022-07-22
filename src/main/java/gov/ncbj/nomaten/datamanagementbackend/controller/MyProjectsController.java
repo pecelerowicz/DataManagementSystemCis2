@@ -3,10 +3,7 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetInfoListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
-import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
+import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.main.MyProjectsService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
@@ -29,26 +26,24 @@ import static org.springframework.http.ResponseEntity.ok;
 public class MyProjectsController {
 
     private final MyProjectsService myProjectsService;
-    private final FolderService folderService;
-    private final InfoService infoService; // to be removed from here
-
-    private final AuthService authService; // for now. To be removed later
 
     /**
      * LEFT PANEL
+     * Gives back list of projects
+     */
+    @GetMapping("/project")
+    public ResponseEntity<GetProjectsResponse> getOwnedProjects() {
+        return ok(projectListToGetProjectsResponse(myProjectsService.getOwnedProjects()));
+    }
+
+    /**
+     * LEFT PANEL
+     * Used to retrieve 1) description, 2) packages, 3) members
      */
     @GetMapping("/project/{projectId}")
     public ResponseEntity<GetProjectResponse> getOwnedProject(@PathVariable Long projectId) {
         // TODO validation
         return ok(projectToGetProjectResponse(myProjectsService.getOwnedProject(projectId)));
-    }
-
-    /**
-     * LEFT PANEL
-     */
-    @GetMapping("/project")
-    public ResponseEntity<GetProjectsResponse> getOwnedProjects() {
-        return ok(projectListToGetProjectsResponse(myProjectsService.getOwnedProjects()));
     }
 
     /**
@@ -61,7 +56,18 @@ public class MyProjectsController {
     }
 
     /**
+     * LEFT PANEL
+     */
+    @DeleteMapping("/project")
+    // TODO check this method (there was no transactional and it seemed to have worked correctly nevertheless)
+    public ResponseEntity<GetProjectsResponse> deleteOwnedProject(@RequestBody DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
+        DeleteOwnedProjectRequestValidator.builder().build().validate(deleteOwnedProjectRequest);
+        return ok(projectListToGetProjectsResponse(myProjectsService.deleteMyProject(deleteOwnedProjectRequest)));
+    }
+
+    /**
      * RIGHT PANEL
+     * Updates project description
      */
     @PutMapping("/project")
     public ResponseEntity<UpdateProjectResponse> updateOwnedProject(@RequestBody UpdateProjectRequest updateProjectRequest) {
@@ -81,10 +87,20 @@ public class MyProjectsController {
     /**
      * RIGHT PANEL
      */
+    @DeleteMapping("/project/user")
+    // TODO check this method
+    public ResponseEntity<RemoveUserFromOwnedProjectResponse> removeUserFromOwnedProject(@RequestBody RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
+        RemoveUserFromOwnedProjectRequestValidator.builder().build().validate(removeUserFromOwnedProjectRequest);
+        return ok(projectToRemoveUserFromOwnedProjectResponse(myProjectsService.removeUserFromMyProject(removeUserFromOwnedProjectRequest)));
+    }
+
+    /**
+     * RIGHT PANEL
+     * Gives back info list in a given project
+     */
     @GetMapping("/project/info")
     public ResponseEntity<GetInfoListResponse> getInfoList() {
-        User user = authService.getCurrentUser(); // infoService to be removed from here
-        return ResponseEntity.status(OK).body(new GetInfoListResponse(infoService.getInfoList(user)));
+        return ResponseEntity.status(OK).body(new GetInfoListResponse(myProjectsService.getInfoList()));
     }
 
     /**
@@ -93,7 +109,7 @@ public class MyProjectsController {
     @PostMapping("/project/info")
     public ResponseEntity<AddMyInfoToOwnedProjectResponse> addMyInfoToOwnedProject(@RequestBody AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
         AddMyInfoToOwnedProjectRequestValidator.builder().build().validate(addMyInfoToOwnedProjectRequest);
-        return ok(projectToAddInfoToOwnedProjectResponse(myProjectsService.addMyInfoToOwnedProject(addMyInfoToOwnedProjectRequest)));
+        return ok(projectToAddInfoToOwnedProjectResponse(myProjectsService.addMyInfoToMyProject(addMyInfoToOwnedProjectRequest)));
     }
 
     /**
@@ -103,11 +119,16 @@ public class MyProjectsController {
     public ResponseEntity<RemoveInfoFromOwnedProjectResponse> removeInfoFromOwnedProject(@RequestBody RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
         RemoveInfoFromOwnedProjectRequestValidator.builder().build().validate(removeInfoFromOwnedProjectRequest);
         // TODO check if it correctly removes other ppl's Infos from the Project owned by me
-        return ok(projectToRemoveInfoFromOwnedProjectResponse(myProjectsService.removeInfoFromOwnedProject(removeInfoFromOwnedProjectRequest)));
+        return ok(projectToRemoveInfoFromOwnedProjectResponse(myProjectsService.removeInfoFromMyProject(removeInfoFromOwnedProjectRequest)));
     }
 
-    //////
+    /*******************************************************************************************************************
+     * BELOW CONTROLLERS RELATED TO INFO WITHIN A PROJECT
+     ******************************************************************************************************************/
 
+    /**
+     * RIGHT PANEL
+     */
     @GetMapping("/project/packages/info/{projectId}/{infoName}")
     public ResponseEntity<GetInfoResponse> getMetadataOfInfoInProject(@PathVariable Long projectId,
                                                                       @PathVariable String infoName,
@@ -117,39 +138,26 @@ public class MyProjectsController {
         return ok(infoToGetInfoResponse(myProjectsService.getInfoInMyProject(projectId, infoName, userName)));
     }
 
-    //////
-
-
-
     /**
      * RIGHT PANEL
      */
-    @DeleteMapping("/project/user")
-    // TODO check this method
-    public ResponseEntity<RemoveUserFromOwnedProjectResponse> removeUserFromOwnedProject(@RequestBody RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
-        RemoveUserFromOwnedProjectRequestValidator.builder().build().validate(removeUserFromOwnedProjectRequest);
-        return ok(projectToRemoveUserFromOwnedProjectResponse(myProjectsService.removeUserFromOwnedProject(removeUserFromOwnedProjectRequest)));
-    }
-
-    /**
-     * LEFT PANEL
-     */
-    @DeleteMapping("/project")
-    // TODO check this method (there was no transactional and it seemed to have worked correctly nevertheless)
-    public ResponseEntity<GetProjectsResponse> deleteOwnedProject(@RequestBody DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
-        DeleteOwnedProjectRequestValidator.builder().build().validate(deleteOwnedProjectRequest);
-        return ok(projectListToGetProjectsResponse(myProjectsService.deleteOwnedProject(deleteOwnedProjectRequest)));
+    @GetMapping("/project/packages/folder/{projectId}/{userName}/{infoName}")
+    public PathNode getPackageFolderStructure(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
+        // TODO id validation (?)
+        UserNameValidator.builder().build().validate(userName);
+        NameValidator.builder().build().validate(infoName);
+        return myProjectsService.getPackageFolderStructure(projectId, userName, infoName);
     }
 
     /**
      * RIGHT PANEL
      */
     @GetMapping("/download")
-    public ResponseEntity<Resource> downloadFileOfProject(@RequestParam String projectId, @RequestParam String userName, @RequestParam String infoName, @RequestParam String fileNameWithPath) {
+    public ResponseEntity<Resource> downloadFileOfProject(@RequestParam Long projectId, @RequestParam String userName, @RequestParam String infoName, @RequestParam String fileNameWithPath) {
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
         // TODO validate remaining request params
-        Resource resource = folderService.downloadFileOfProject(projectId, userName, infoName, fileNameWithPath);
+        Resource resource = myProjectsService.downloadFileOfProject(projectId, userName, infoName, fileNameWithPath);
         return ResponseEntity.ok()
 //                .contentType(MediaType.parseMediaType(Files.probeContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())

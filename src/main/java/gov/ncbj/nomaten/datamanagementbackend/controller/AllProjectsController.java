@@ -10,6 +10,8 @@ import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_project.AddMyInfoToOtherProjectRequestValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_project.RemoveMyInfoFromOtherProjectRequestValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,11 +86,30 @@ public class AllProjectsController {
         return ok(infoToGetInfoResponse(allProjectsService.getInfoOfUserAndProject(projectId, userName, infoName)));
     }
 
+    /**
+     * RIGHT PANEL
+     */
     @GetMapping("/project/packages/folder/{projectId}/{userName}/{infoName}")
     public PathNode getPackageFolderStructureOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
         // TODO id validation (?)
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
         return allProjectsService.getPackageFolderStructureOfUserAndProject(projectId, userName, infoName);
+    }
+
+    /**
+     * RIGHT PANEL
+     */
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFileOfProject(@RequestParam Long projectId, @RequestParam String userName, @RequestParam String infoName, @RequestParam String fileNameWithPath) {
+        UserNameValidator.builder().build().validate(userName);
+        NameValidator.builder().build().validate(infoName);
+        // TODO validate remaining request params
+        Resource resource = allProjectsService.downloadFileOfProject(projectId, userName, infoName, fileNameWithPath);
+        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(Files.probeContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                .body(resource);
     }
 }

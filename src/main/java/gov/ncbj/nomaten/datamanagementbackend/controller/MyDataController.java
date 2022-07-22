@@ -109,9 +109,9 @@ public class MyDataController {
      * LEFT PANEL
      */
     @GetMapping("/folders/{storageName}")
-    public PathNode getPackageFolderStructure(@PathVariable String storageName) {
+    public ResponseEntity<PathNode> getPackageFolderStructure(@PathVariable String storageName) {
         NameValidator.builder().build().validate(storageName);
-        return myDataService.getPackageFolderStructure(storageName);
+        return ok(myDataService.getPackageFolderStructure(storageName));
     }
 
     /**
@@ -120,9 +120,7 @@ public class MyDataController {
     @PostMapping("/folders")
     public ResponseEntity<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) throws IOException {
         CreateFolderRequestValidator.builder().build().validate(createFolderRequest);
-        return ResponseEntity
-                .status(OK)
-                .body(new CreateFolderResponse(myDataService.createFolder(createFolderRequest)));
+        return ok(new CreateFolderResponse(myDataService.createFolder(createFolderRequest)));
     }
 
     /**
@@ -132,9 +130,7 @@ public class MyDataController {
     public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
         DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
         myDataService.deleteItem(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
-        return ResponseEntity
-                .status(OK)
-                .body(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
+        return ok(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
     }
 
     /**
@@ -146,7 +142,7 @@ public class MyDataController {
         UploadFileRequestValidator.builder().build().validate(uploadFileRequest);
         FileNameValidator.builder().build().validate(multipartFile.getOriginalFilename());
         myDataService.uploadFile(multipartFile, uploadFileRequest.getPackageName(), uploadFileRequest.getFolderRelativePath());
-        return ResponseEntity.status(HttpStatus.OK).body(new UploadFileResponse("Successfully uploaded"));
+        return ok(new UploadFileResponse("Successfully uploaded"));
     }
 
     /**

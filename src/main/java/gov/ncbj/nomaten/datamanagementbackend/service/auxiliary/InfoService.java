@@ -189,7 +189,7 @@ public class InfoService {
         }
     }
 
-    @Transactional // not needed ?
+    @Transactional // to be removed (this logic (filter) should be in the main controller, I think)
     public Info getInfoOfUser(User user, String infoName) {
         return user
                 .getInfoList()
