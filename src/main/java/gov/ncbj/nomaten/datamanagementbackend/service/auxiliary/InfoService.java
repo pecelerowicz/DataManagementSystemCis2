@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.createDifrInfoRequestToDifrInfo;
@@ -51,6 +50,22 @@ public class InfoService {
             .filter(i -> i.getInfoName().equals(infoName))
             .findFirst()
             .orElseThrow(() -> new RuntimeException("No Info: " + infoName));
+    }
+
+    @Transactional // to be removed (this logic (filter) should be in the main service, I think)
+    public Info getInfoOfUser(User user, String infoName) {
+        return user
+                .getInfoList()
+                .stream()
+                .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have public package " + infoName));
+    }
+
+    public boolean infoExists(String infoName, User user) {
+        return infoRepository.findByUserUsername(user.getUsername())
+                .stream()
+                .anyMatch(i -> i.getInfoName().equals(infoName));
     }
 
     @Transactional
@@ -95,6 +110,18 @@ public class InfoService {
         Info info = getInfo(deleteInfoRequest.getInfoName(), user);
         user.getInfoList().remove(info);
         info.setUser(null);
+    }
+
+    public List<Info> getInfoListByUser(User user) {
+        return infoRepository.findByUser(user);
+    }
+
+    public List<Info> findAll() {
+        return infoRepository.findAll();
+    }
+
+    public List<Info> findByUserUsername(String username) {
+        return infoRepository.findByUserUsername(username);
     }
 
     // difrractometer info
@@ -189,33 +216,4 @@ public class InfoService {
         }
     }
 
-    @Transactional // to be removed (this logic (filter) should be in the main controller, I think)
-    public Info getInfoOfUser(User user, String infoName) {
-        return user
-                .getInfoList()
-                .stream()
-                .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have public package " + infoName));
-    }
-
-    public List<Info> findByUser(User user) {
-        return infoRepository.findByUser(user);
-    }
-
-    public List<Info> findAll() {
-        return infoRepository.findAll();
-    }
-
-    public List<Info> findByUserUsername(String username) {
-        return infoRepository.findByUserUsername(username);
-    }
-
-
-//    class InfoComparator implements Comparator<Info> {
-//        @Override
-//        public int compare(Info info1, Info info2) {
-//            return info1.getInfoName().compareTo(info2.getInfoName());
-//        }
-//    }
 }

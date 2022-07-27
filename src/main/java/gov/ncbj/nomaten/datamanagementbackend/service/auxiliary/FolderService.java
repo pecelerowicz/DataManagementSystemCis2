@@ -25,15 +25,6 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class FolderService {
 
-    @Autowired
-    private InfoRepository infoRepository;  // TODO REMOVE
-
-    @Autowired
-    private AllProjectsService allProjectsService; // TODO REMOVE
-
-    @Autowired
-    private StorageRepository storageRepository;
-
     public PathNode getFolderStructure(Path rootPath) {
         if(Files.notExists(rootPath)) {
             throw new RuntimeException("Folder does not exist");
@@ -80,45 +71,6 @@ public class FolderService {
         } catch (MalformedURLException ex) {
             throw new RuntimeException("File not found " + fileNameWithPath, ex);
         }
-    }
-
-    public Resource downloadFileOfUser(String userName, String packageName, String fileNameWithPath) {
-        List<Info> infoList = infoRepository.findByUserUsername(userName);
-
-        if(!infoList.stream().anyMatch(info -> info.getInfoName().equals(packageName)
-                && info.getAccess().equals(Info.Access.PUBLIC))) {
-            throw new RuntimeException("User " + userName + " does not have public package " + packageName);
-        }
-
-        try {
-            Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
-            Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
-                return resource;
-            } else {
-                throw new RuntimeException("File not found " + fileNameWithPath);
-            }
-        } catch (MalformedURLException ex) {
-            throw new RuntimeException("File not found " + fileNameWithPath, ex);
-        }
-    }
-
-    public Resource downloadFileOfProject(String projectId, String userName, String infoName, String fileNameWithPath) {
-        Info info = allProjectsService.getInfoOfUserAndProject(Long.parseLong(projectId), userName, infoName); // ugly
-        // This particular project contains this particular info of this particular user, and the logged in user
-        // is allowed to access, otherwise an exception will be thrown
-        try {
-            Path filePath = getDefault().getPath(STORAGE, userName, infoName, fileNameWithPath);
-            Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
-                return resource;
-            } else {
-                throw new RuntimeException("File not found " + fileNameWithPath);
-            }
-        } catch (MalformedURLException ex) {
-            throw new RuntimeException("File not found " + fileNameWithPath, ex);
-        }
-
     }
 
     public List<String> getDirectSubfolders(Path path) {

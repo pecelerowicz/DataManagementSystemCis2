@@ -6,8 +6,13 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -75,7 +80,7 @@ public class CheckService {
         }
     }
 
-    public void packageByUserIsInProject(String infoName, User packageOwner, Project project) {
+    public void infoByUserIsInProject(String infoName, User packageOwner, Project project) {
         if(project.getInfoList().stream().noneMatch(i ->
                 i.getInfoName().equals(infoName) && i.getUser().getUsername().equals(packageOwner.getUsername()))) {
             throw new RuntimeException("Project " + project.getId() + " does not contain package " + infoName +
@@ -106,9 +111,43 @@ public class CheckService {
         }
     }
 
+    public void infoIsNotInProject(Info info) {
+        if(!info.getProjects().isEmpty()) {
+            throw new RuntimeException("The info is member of a project");
+        }
+    }
+
     public void infoIsInProject(Info info, Project project) {
         if(project.getInfoList().stream().noneMatch(i -> i.getId().equals(info.getId()))) {
             throw new RuntimeException("The package is not in the project");
+        }
+    }
+
+    public void packageDoesNotExist(User user, String packageName) {
+        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
+            throw new RuntimeException("Package " + packageName + " already exists");
+        }
+    }
+
+    public void packageExists(User user, String packageName) {
+        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        if(!metadataNames.contains(packageName) && !storageNames.contains(packageName)) {
+            throw new RuntimeException("Package " + packageName + " does not exists");
+        }
+    }
+
+    public void folderDoesNotExist(Path path) {
+        if(Files.exists(path) && Files.isDirectory(path)) {
+            throw new RuntimeException("Folder already exists");
+        }
+    }
+
+    public void infoIsPublic(Info info) {
+        if(!info.getAccess().equals(Info.Access.PUBLIC)) {
+            throw new RuntimeException("Item is not public");
         }
     }
 }

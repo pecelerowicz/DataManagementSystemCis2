@@ -34,13 +34,13 @@ public class AllProjectsService {
     }
 
     public List<Project> getProjects() {
-        User user = authService.getCurrentUser();
-        return projectService.getProjectsByUserNotOwned(user);
+        User currentUser = authService.getCurrentUser();
+        return projectService.getProjectsByUserNotOwned(currentUser);
     }
 
     public List<Info> getInfoList() {
-        User user = authService.getCurrentUser();
-        return infoService.getInfoList(user);
+        User currentUser = authService.getCurrentUser();
+        return infoService.getInfoList(currentUser);
     }
 
     @Transactional
@@ -48,15 +48,11 @@ public class AllProjectsService {
         User currentUser = authService.getCurrentUser();
         Info info = infoService.getInfo(addMyInfoToOtherProjectRequest.getInfoName(), currentUser);
         Project project = projectService.getProjectById(addMyInfoToOtherProjectRequest.getProjectId());
-
         checkService.userIsInProject(currentUser, project);
         checkService.userDoesNotOwnProject(currentUser, project);
         checkService.infoBelongsToUser(currentUser, info);
         checkService.infoIsNotInProject(project, info);
-
-        info.getProjects().add(project);
-        project.getInfoList().add(info);
-        return project;
+        return projectService.addInfoToProject(project, info);
     }
 
     @Transactional
@@ -64,14 +60,10 @@ public class AllProjectsService {
         User currentUser = authService.getCurrentUser();
         Info info = infoService.getInfo(removeMyInfoFromOtherProjectRequest.getInfoName(), currentUser);
         Project project = projectService.getProjectById(removeMyInfoFromOtherProjectRequest.getProjectId());
-
         checkService.userDoesNotOwnProject(currentUser, project);
         checkService.userIsInProject(currentUser, project);
         checkService.infoIsInProject(info, project);
-
-        info.getProjects().remove(project);
-        project.getInfoList().remove(info);
-        return project;
+        return projectService.removeInfoFromProject(project, info);
     }
 
     // PACKAGES IN PROJECT
@@ -80,16 +72,10 @@ public class AllProjectsService {
         User packageOwner = authService.getUserByName(userName);
         Info info = infoService.getInfo(infoName, packageOwner);
         Project project = projectService.getProjectById(projectId);
-
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
-
-        return project.getInfoList()
-                .stream()
-                .filter(i -> i.getInfoName().equals(infoName) && i.getUser().getUsername().equals(userName))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("No info " + infoName + " of user " + userName + " in the project with id " + projectId));
+        return info;
     }
 
     public PathNode getPackageFolderStructureOfUserAndProject(Long projectId, String userName, String infoName) {
@@ -97,13 +83,11 @@ public class AllProjectsService {
         User packageOwner = authService.getUserByName(userName);
         Info info = infoService.getInfo(infoName, packageOwner);
         Project project = projectService.getProjectById(projectId);
-
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
         checkService.infoBelongsToUser(packageOwner, info);
         // todo something like: does this info have a package?
-
         return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
     }
 
@@ -112,14 +96,12 @@ public class AllProjectsService {
         User packageOwner = authService.getUserByName(userName);
         Info info = infoService.getInfo(infoName, packageOwner);
         Project project = projectService.getProjectById(projectId);
-
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
         checkService.infoBelongsToUser(packageOwner, info); // redundant
         // todo something like: does this info have a package/
         // todo something like: doesTheFileExist (and is it a file not a folder?)
-
         return folderService.downloadFile(infoName, userName, fileNameWithPath);
     }
 }

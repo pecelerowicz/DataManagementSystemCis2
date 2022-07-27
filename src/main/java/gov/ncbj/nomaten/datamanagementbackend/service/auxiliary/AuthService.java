@@ -73,7 +73,7 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException("No user " + username + " found"));
     }
 
-    public List<String> getUsers() {
+    public List<String> getUserNames() {
         return userRepository.findAll().stream().map(User::getUsername).sorted().collect(Collectors.toList());
     }
 
