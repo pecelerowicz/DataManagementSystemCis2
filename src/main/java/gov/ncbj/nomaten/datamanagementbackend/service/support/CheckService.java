@@ -174,10 +174,6 @@ public class CheckService {
         }
     }
 
-    public void folderIsEmpty(Path userPath) throws IOException {
-        folderIsEmpty(userPath, "Folder is not empty");
-    }
-
     public void userDoesNotExist(String userName) {
         if(authService.getUserNames().stream().anyMatch(n -> n.equals(userName))) {
             throw new RuntimeException("User " + userName + " exists");

@@ -40,6 +40,14 @@ public class FolderService {
         return Files.exists(itemPath);
     }
 
+    public boolean fileOrFolderExists(Path path) {
+        return Files.exists(path);
+    }
+
+    public boolean isDirectory(Path path) {
+        return Files.isDirectory(path);
+    }
+
     public void deleteItem(Path itemPath) throws IOException {
         Files.walk(itemPath)
                 .sorted(Comparator.reverseOrder())
@@ -47,13 +55,11 @@ public class FolderService {
                 .forEach(File::delete);
     }
 
-    // TODO validate (and then append) relativePath. We only want to place files/folders in already existing folders
     public void uploadFile(MultipartFile file, String packageName, String userName, String folderRelativePath) throws IOException {
         Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getOriginalFilename());
         file.transferTo(rootPathStorage);
     }
 
-    // TODO download file
     public Resource downloadFile(String packageName, String userName, String fileNameWithPath) {
         try {
             Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
@@ -116,18 +122,6 @@ public class FolderService {
         });
 
         return pathList;
-    }
-
-    public boolean fileOrFolderExists(Path path) {
-        return Files.exists(path);
-    }
-
-    public boolean isFile(Path path) {
-        return Files.isRegularFile(path);
-    }
-
-    public boolean isDirectory(Path path) {
-        return Files.isDirectory(path);
     }
 
     private List<Path> createSortedPaths(Path rootPathStorage) {

@@ -106,8 +106,8 @@ public class InfoService {
     }
 
     @Transactional
-    public void deleteInfo(DeleteInfoRequest deleteInfoRequest, User user) {
-        Info info = getInfo(deleteInfoRequest.getInfoName(), user);
+    public void deleteInfo(String infoName, User user) {
+        Info info = getInfo(infoName, user);
         user.getInfoList().remove(info);
         info.setUser(null);
     }

@@ -53,17 +53,14 @@ public class MyDataService {
     public void deletePackage(DeletePackageRequest deletePackageRequest) throws IOException {
         User currentUser = authService.getCurrentUser();
         String packageName = deletePackageRequest.getPackageName();
-
         checkService.packageExists(currentUser, packageName);
-
         if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName))) {
             folderService.deleteItem(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
         }
         if(infoService.infoExists(packageName, currentUser)) {
             Info info = infoService.getInfo(packageName, currentUser);
             checkService.infoIsNotInProject(info);
-            currentUser.getInfoList().remove(info);
-            info.setUser(null);
+            infoService.deleteInfo(info.getInfoName(), currentUser);
         }
     }
 
