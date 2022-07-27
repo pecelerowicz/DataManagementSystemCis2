@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
+package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;

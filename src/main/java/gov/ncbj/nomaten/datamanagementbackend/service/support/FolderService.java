@@ -1,10 +1,5 @@
-package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
+package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
-import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
-import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
-import gov.ncbj.nomaten.datamanagementbackend.repository.StorageRepository;
-import gov.ncbj.nomaten.datamanagementbackend.service.main.AllProjectsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;

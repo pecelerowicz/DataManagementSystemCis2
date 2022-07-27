@@ -4,7 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
-import gov.ncbj.nomaten.datamanagementbackend.service.main.AllDataService;
+import gov.ncbj.nomaten.datamanagementbackend.service.action.AllDataService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_search.GetSearchListRequestValidator;

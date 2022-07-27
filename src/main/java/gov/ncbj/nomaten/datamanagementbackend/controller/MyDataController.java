@@ -7,7 +7,7 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.*;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
-import gov.ncbj.nomaten.datamanagementbackend.service.main.MyDataService;
+import gov.ncbj.nomaten.datamanagementbackend.service.action.MyDataService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.FileNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_folder.*;
@@ -19,7 +19,6 @@ import gov.ncbj.nomaten.datamanagementbackend.validators.my_storage.CreateStorag
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

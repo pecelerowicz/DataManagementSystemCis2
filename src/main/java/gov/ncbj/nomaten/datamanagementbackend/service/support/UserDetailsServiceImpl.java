@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
+package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;

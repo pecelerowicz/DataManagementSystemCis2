@@ -3,6 +3,7 @@ package gov.ncbj.nomaten.datamanagementbackend.service.main;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
+import gov.ncbj.nomaten.datamanagementbackend.service.action.MyProjectsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

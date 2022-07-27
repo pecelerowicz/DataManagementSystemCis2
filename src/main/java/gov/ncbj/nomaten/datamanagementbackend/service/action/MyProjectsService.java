@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service.main;
+package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
@@ -6,7 +6,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.*;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.*;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;

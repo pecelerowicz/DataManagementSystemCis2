@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service.auxiliary;
+package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -6,9 +6,11 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
@@ -19,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 public class CheckService {
 
     private final FolderService folderService;
+    private final AuthService authService;
 
     public void projectDoesNotContainInfo(Project project, Info info) {
         if(project.getInfoList()
@@ -139,10 +142,20 @@ public class CheckService {
         }
     }
 
-    public void folderDoesNotExist(Path path) {
-        if(Files.exists(path) && Files.isDirectory(path)) {
-            throw new RuntimeException("Folder already exists");
+    public void folderExists(Path path, String message) {
+        if(!Files.exists(path) || !Files.isDirectory(path)) {
+            throw new RuntimeException(message);
         }
+    }
+
+    public void folderDoesNotExist(Path path, String message) {
+        if(Files.exists(path) && Files.isDirectory(path)) {
+            throw new RuntimeException(message);
+        }
+    }
+
+    public void folderDoesNotExist(Path path) {
+        folderDoesNotExist(path, "Folder already exists");
     }
 
     public void infoIsPublic(Info info) {
@@ -150,4 +163,25 @@ public class CheckService {
             throw new RuntimeException("Item is not public");
         }
     }
+
+    public void folderIsEmpty(Path userPath, String message) throws IOException {
+        if (Files.isDirectory(userPath)) {
+            try (Stream<Path> entries = Files.list(userPath)) {
+                if(entries.findFirst().isPresent()) {
+                    throw new RuntimeException(message);
+                }
+            }
+        }
+    }
+
+    public void folderIsEmpty(Path userPath) throws IOException {
+        folderIsEmpty(userPath, "Folder is not empty");
+    }
+
+    public void userDoesNotExist(String userName) {
+        if(authService.getUserNames().stream().anyMatch(n -> n.equals(userName))) {
+            throw new RuntimeException("User " + userName + " exists");
+        }
+    }
+
 }

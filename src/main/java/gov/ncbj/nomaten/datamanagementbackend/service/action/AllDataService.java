@@ -1,14 +1,14 @@
-package gov.ncbj.nomaten.datamanagementbackend.service.main;
+package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Search;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.CheckService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.FolderService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.InfoService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.AuthService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.CheckService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.FolderService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.InfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;

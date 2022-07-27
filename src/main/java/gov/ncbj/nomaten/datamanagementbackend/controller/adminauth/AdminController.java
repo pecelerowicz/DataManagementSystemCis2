@@ -1,7 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller.adminauth;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_admin.*;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AdminService;
+import gov.ncbj.nomaten.datamanagementbackend.service.action.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

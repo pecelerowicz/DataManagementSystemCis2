@@ -1,8 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller.adminauth;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.AuthService;
-import gov.ncbj.nomaten.datamanagementbackend.service.auxiliary.RefreshTokenService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.AuthService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.RefreshTokenService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_auth.ChangePasswordRequestValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
