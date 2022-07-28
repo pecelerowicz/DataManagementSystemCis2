@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_search;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.SearchComparator;
 import gov.ncbj.nomaten.datamanagementbackend.model.Search;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class GetSearchListResponse {
     public GetSearchListResponse(List<Search> searchList) {
         this.searchResponseList = searchList
                 .stream()
+                .sorted(new SearchComparator())
                 .map(s -> SearchResponse.builder()
                     .name(s.getName())
                     .username(s.getUsername())

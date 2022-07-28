@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.exception.CustomException;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -74,7 +75,8 @@ public class AuthService {
     }
 
     public List<String> getUserNames() {
-        return userRepository.findAll().stream().map(User::getUsername).sorted().collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .sorted(new UserComparator()).map(User::getUsername).collect(Collectors.toList());
     }
 
 }

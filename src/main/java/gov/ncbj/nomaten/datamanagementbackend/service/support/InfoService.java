@@ -8,8 +8,6 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInf
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.DeleteTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.DeleteInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.model.info.InfoComparator;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -39,9 +37,7 @@ public class InfoService {
 
     // info
     public List<Info> getInfoList(User user) {
-        List<Info> infoList = user.getInfoList();
-        infoList.sort(new InfoComparator());
-        return infoList;
+        return user.getInfoList();
     }
 
     public Info getInfo(String infoName, User user) {

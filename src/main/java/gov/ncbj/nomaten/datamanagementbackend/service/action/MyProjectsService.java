@@ -5,24 +5,20 @@ import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
-import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.*;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
 
-// TODO transactional annotations should be probably removed from here.
 @Service
 @AllArgsConstructor
 public class MyProjectsService {
 
-    private final ProjectRepository projectRepository;
     private final ProjectService projectService;
     private final AuthService authService;
     private final FolderService folderService;
@@ -41,14 +37,12 @@ public class MyProjectsService {
         return projectService.getProjectsByUserOwned(projectOwner);
     }
 
-    @Transactional
     public Project createOwnedProject(CreateProjectRequest createProjectRequest) {
         User projectOwner = authService.getCurrentUser();
         checkService.projectWithThisNameAndUserDoesNotExist(projectOwner, createProjectRequest.getProjectName());
         return projectService.createProject(projectOwner, createProjectRequest.getProjectName(), createProjectRequest.getDescription());
     }
 
-    @Transactional
     public Project updateOwnedProject(UpdateProjectRequest updateProjectRequest) {
         User projectOwner = authService.getCurrentUser();
         Project project = projectService.getProjectById(updateProjectRequest.getProjectId());
@@ -56,7 +50,6 @@ public class MyProjectsService {
         return projectService.updateProject(project, updateProjectRequest.getNewName(), updateProjectRequest.getNewDescription());
     }
 
-    @Transactional
     public Project addUserToOwnedProject(AddUserRequest addUserRequest) {
         User userToAdd = authService.getUserByName(addUserRequest.getUserName());
         User projectOwner = authService.getCurrentUser();
@@ -72,7 +65,6 @@ public class MyProjectsService {
         return infoService.getInfoList(user);
     }
 
-    @Transactional
     public Project addMyInfoToMyProject(AddMyInfoToOwnedProjectRequest addMyInfoToOwnedProjectRequest) {
         User projectOwner = authService.getCurrentUser();
         Project project = projectService.getProjectById(addMyInfoToOwnedProjectRequest.getProjectId());
@@ -82,7 +74,6 @@ public class MyProjectsService {
         return projectService.addInfoToProject(project, info);
     }
 
-    @Transactional
     public Project removeInfoFromMyProject(RemoveInfoFromOwnedProjectRequest removeInfoFromOwnedProjectRequest) {
         User projectOwner = authService.getCurrentUser();
         User packageOwner = authService.getUserByName(removeInfoFromOwnedProjectRequest.getUsername());
@@ -96,7 +87,6 @@ public class MyProjectsService {
         return projectService.removeInfoFromProject(project, info);
     }
 
-    @Transactional
     public Project removeUserFromMyProject(RemoveUserFromOwnedProjectRequest removeUserFromOwnedProjectRequest) {
         User projectOwner = authService.getCurrentUser();
         User userToRemove = authService.getUserByName(removeUserFromOwnedProjectRequest.getUserName());
@@ -109,8 +99,6 @@ public class MyProjectsService {
         return projectService.removeUserFromProject(project, userToRemove);
     }
 
-    @Transactional
-    // todo czy @Transactional nie MUSI być na delete project?
     public List<Project> deleteMyProject(DeleteOwnedProjectRequest deleteOwnedProjectRequest) {
         User projectOwner = authService.getCurrentUser();
         Project project = projectService.getProjectById(deleteOwnedProjectRequest.getProjectId());

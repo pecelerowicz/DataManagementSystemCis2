@@ -133,7 +133,6 @@ public class MyDataService {
                 packageList.add(new Package(storageName, true, false, null, null, null));
             }
         }
-        Collections.sort(packageList);
         return packageList;
     }
 

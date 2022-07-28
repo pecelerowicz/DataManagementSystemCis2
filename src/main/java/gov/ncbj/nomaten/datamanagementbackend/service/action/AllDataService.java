@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
@@ -57,7 +56,6 @@ public class AllDataService {
                                                                                 i.getDifrInfo() == null).collect(toList()));
             }
         }
-        Collections.sort(searchList);
         return searchList;
     }
 
@@ -94,7 +92,6 @@ public class AllDataService {
                         .hasStorage(folderService.itemExists(getPackagePath(i)) && folderService.isDirectory(getPackagePath(i)))
                         .localDateTime(i.getLocalDateTime())
                         .build())
-                .sorted()
                 .collect(toList());
     }
 

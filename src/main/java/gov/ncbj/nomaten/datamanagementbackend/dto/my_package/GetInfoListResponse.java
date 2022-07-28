@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_package;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.InfoComparator;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import lombok.Data;
 
@@ -10,6 +11,9 @@ import java.util.stream.Collectors;
 public class GetInfoListResponse {
     private List<String> infoNameList;
     public GetInfoListResponse(List<Info> infoList) {
-        infoNameList = infoList.stream().map(Info::getInfoName).collect(Collectors.toList());
+        infoNameList = infoList.stream()
+                .sorted(new InfoComparator())
+                .map(Info::getInfoName)
+                .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.mapper.project;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.ProjectComparator;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -24,6 +25,7 @@ public class ProjectMapper {
         return GetProjectsResponse
                 .builder()
                 .getProjectResponseList(projects.stream()
+                        .sorted(new ProjectComparator())
                         .map(ProjectMapper::projectToGetProjectResponse)
                         .collect(toList()))
                 .build();

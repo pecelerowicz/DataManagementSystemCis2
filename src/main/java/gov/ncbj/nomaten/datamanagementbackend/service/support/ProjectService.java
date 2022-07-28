@@ -6,6 +6,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
 
     public List<Project> getProjectsByUserOwned(User user) {
-        return user.getProjects().stream().filter(p -> p.getOwnerName().equals(user.getUsername())).sorted().collect(toList());
+        return user.getProjects().stream().filter(p -> p.getOwnerName().equals(user.getUsername())).collect(toList());
     }
 
     public Project getProjectById(Long projectId) {
@@ -31,10 +32,10 @@ public class ProjectService {
         return user.getProjects()
                 .stream()
                 .filter(p -> !p.getOwnerName().equals(user.getUsername()))
-                .sorted()
                 .collect(toList());
     }
 
+    @Transactional
     public Project createProject(User projectOwner, String projectName, String description) {
         Project project = Project.builder()
                 .projectName(projectName)
@@ -46,36 +47,42 @@ public class ProjectService {
         return project;
     }
 
+    @Transactional
     public Project updateProject(Project project, String newName, String newDescription) {
         project.setProjectName(newName);
         project.setDescription(newDescription);
         return project;
     }
 
+    @Transactional
     public Project addUserToProject(Project project, User userToAdd) {
         project.getUsers().add(userToAdd);
         userToAdd.getProjects().add(project);
         return project;
     }
 
+    @Transactional
     public Project addInfoToProject(Project project, Info info) {
         project.getInfoList().add(info);
         info.getProjects().add(project);
         return project;
     }
 
+    @Transactional
     public Project removeInfoFromProject(Project project, Info info) {
         project.getInfoList().remove(info);
         info.getProjects().remove(project);
         return project;
     }
 
+    @Transactional
     public Project removeUserFromProject(Project project, User user) {
         project.getUsers().remove(user);
         user.getProjects().remove(project);
         return project;
     }
 
+    @Transactional
     public void deleteProject(Project project) {
         String projectOwnerName = project.getOwnerName();
         User projectOwner = project.getUsers().stream().filter(u -> u.getUsername().equals(projectOwnerName)).findAny().get();

@@ -1,5 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_package;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.PackageComparator;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class GetPackageListResponse {
 
     public GetPackageListResponse(List<Package> packageList) {
         this.packageResponseList = packageList.stream()
+                .sorted(new PackageComparator())
                 .map(s -> new PackageResponse(s.getName(),
                         s.isHasStorage(),
                         s.isHasMetadata(),
