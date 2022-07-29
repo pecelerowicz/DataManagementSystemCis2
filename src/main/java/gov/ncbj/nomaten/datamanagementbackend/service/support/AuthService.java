@@ -1,6 +1,5 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
-import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.exception.CustomException;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.time.Instant.now;
 
@@ -74,9 +72,8 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException("No user " + username + " found"));
     }
 
-    public List<String> getUserNames() {
-        return userRepository.findAll().stream()
-                .sorted(new UserComparator()).map(User::getUsername).collect(Collectors.toList());
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 
 }

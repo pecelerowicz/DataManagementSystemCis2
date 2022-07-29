@@ -175,7 +175,7 @@ public class CheckService {
     }
 
     public void userDoesNotExist(String userName) {
-        if(authService.getUserNames().stream().anyMatch(n -> n.equals(userName))) {
+        if(authService.getUsers().stream().anyMatch(u -> u.getUsername().equals(userName))) {
             throw new RuntimeException("User " + userName + " exists");
         }
     }

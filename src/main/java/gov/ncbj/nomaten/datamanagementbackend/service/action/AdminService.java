@@ -53,8 +53,8 @@ public class AdminService {
         return folderService.getDirectSubfolders(path);
     }
 
-    public List<String> getDbUsers() {
-        return authService.getUserNames();
+    public List<User> getDbUsers() {
+        return authService.getUsers();
     }
 
     @Transactional

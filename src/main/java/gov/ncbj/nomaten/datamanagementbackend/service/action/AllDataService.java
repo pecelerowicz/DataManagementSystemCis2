@@ -34,8 +34,8 @@ public class AllDataService {
         return Arrays.asList("General", "Difrractometer"/*, "Test"*/); // TODO change
     }
 
-    public List<String> getUsers() {
-        return authService.getUserNames();
+    public List<User> getUsers() {
+        return authService.getUsers();
     }
 
     public List<Search> getSearchList(GetSearchListRequest getSearchListRequest) {

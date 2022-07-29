@@ -1,6 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.mapper.project;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.InfoComparator;
 import gov.ncbj.nomaten.datamanagementbackend.comparator.ProjectComparator;
+import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
@@ -16,8 +18,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -48,8 +50,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -60,8 +62,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -72,8 +74,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -84,8 +86,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -96,8 +98,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -108,8 +110,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -120,8 +122,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 
@@ -132,8 +134,8 @@ public class ProjectMapper {
                 .description(project.getDescription())
                 .localDate(project.getLocalDateTime().toLocalDate())
                 .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted((i1, i2) -> -i1.getLocalDateTime().compareTo(i2.getLocalDateTime())).map(ProjectInfoResponse::new).collect(toList()))
+                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
+                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
                 .build();
     }
 }

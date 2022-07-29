@@ -1,12 +1,15 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller.adminauth;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_admin.*;
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -41,7 +44,11 @@ public class AdminController {
     @GetMapping("/db/users")
     public ResponseEntity<UsersResponse> getDbUsers() {
         return ResponseEntity.status(OK)
-                .body(UsersResponse.builder().users(adminService.getDbUsers()).build());
+                .body(UsersResponse.builder().users(adminService.getDbUsers()
+                        .stream()
+                        .sorted(new UserComparator())   // TODO should be changed
+                        .map(User::getUsername)
+                        .collect(Collectors.toList())).build());
     }
 
     @PostMapping("/db/users")
@@ -49,7 +56,11 @@ public class AdminController {
         // TODO validation
         adminService.createDbUser(createDbUserRequest);
         return ResponseEntity.status(OK)
-                .body(UsersResponse.builder().users(adminService.getDbUsers()).build());
+                .body(UsersResponse.builder().users(adminService.getDbUsers()
+                        .stream()
+                        .sorted(new UserComparator())   // TODO should be changed
+                        .map(User::getUsername)
+                        .collect(Collectors.toList())).build());
     }
 
     @DeleteMapping("/db/users")
@@ -57,7 +68,11 @@ public class AdminController {
         // TODO validation
         adminService.deleteDbUser(deleteUserRequest);
         return ResponseEntity.status(OK)
-                .body(UsersResponse.builder().users(adminService.getDbUsers()).build());
+                .body(UsersResponse.builder().users(adminService.getDbUsers()
+                        .stream()
+                        .sorted(new UserComparator())   // TODO should be changed
+                        .map(User::getUsername)
+                        .collect(Collectors.toList())).build());
     }
 
     @PutMapping("/db/users/activate")

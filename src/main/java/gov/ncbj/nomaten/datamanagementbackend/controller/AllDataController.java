@@ -1,9 +1,11 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
+import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
+import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.AllDataService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.InfoMapper.infoToGetInfoResponse;
 import static org.springframework.http.ResponseEntity.ok;
@@ -39,8 +42,8 @@ public class AllDataController {
      * LEFT PANEL
      */
     @GetMapping("/users")
-    public ResponseEntity<List<String>> getUsers() {
-        return ok(allDataService.getUsers());
+    public ResponseEntity<List<String>> getUsers() { // TODO wrap in a proper DTO
+        return ok(allDataService.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(Collectors.toList()));
     }
 
     /**
