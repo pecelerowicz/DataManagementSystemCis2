@@ -1,9 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_data.GetSearchListRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_data.GetSearchListResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.AllDataService;
@@ -34,7 +34,7 @@ public class AllDataController {
      * LEFT PANEL
      */
     @GetMapping("/types")
-    public ResponseEntity<List<String>> getTypeList() {
+    public ResponseEntity<List<String>> getTypeList() { // TODO wrap in a proper DTO
         return ok(allDataService.getTypeList());
     }
 

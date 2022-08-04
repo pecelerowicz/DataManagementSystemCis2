@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_package;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.CreatePackageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreatePackageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import lombok.Builder;

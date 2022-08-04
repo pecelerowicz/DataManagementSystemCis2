@@ -1,9 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.DeletePackageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateFolderRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.UpdateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.DeletePackageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;

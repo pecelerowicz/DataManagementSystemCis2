@@ -1,8 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_info;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.CreateDifrInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.UpdateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.difrinfo.CreateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.testinfo.CreateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.field_validators.*;

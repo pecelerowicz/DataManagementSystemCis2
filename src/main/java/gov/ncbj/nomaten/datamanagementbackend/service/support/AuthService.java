@@ -1,6 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.ChangePasswordRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.LoginRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.LoginResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.RefreshTokenRequest;
 import gov.ncbj.nomaten.datamanagementbackend.exception.CustomException;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
@@ -29,12 +32,12 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
-        return AuthenticationResponse.builder()
+        return LoginResponse.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
@@ -49,10 +52,10 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException("No user " + loggedUserName + " found"));
     }
 
-    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+    public LoginResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
         String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
-        return AuthenticationResponse.builder()
+        return LoginResponse.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenRequest.getRefreshToken())
                 .expiresAt(now().plusMillis(jwtProvider.getJwtExpirationInMillis()))

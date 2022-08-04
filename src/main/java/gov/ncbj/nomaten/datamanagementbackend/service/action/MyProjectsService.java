@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_projects.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;

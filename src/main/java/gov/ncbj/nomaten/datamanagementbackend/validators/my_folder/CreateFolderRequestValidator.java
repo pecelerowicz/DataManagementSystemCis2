@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_folder;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.CreateFolderRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateFolderRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.FolderNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.PathValidator;

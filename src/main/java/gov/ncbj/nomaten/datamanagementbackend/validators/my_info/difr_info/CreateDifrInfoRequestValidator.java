@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_info.difr_info;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.CreateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.difrinfo.CreateDifrInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;

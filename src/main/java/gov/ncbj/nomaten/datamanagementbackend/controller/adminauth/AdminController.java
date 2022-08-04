@@ -1,7 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller.adminauth;
 
 import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_admin.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.admin.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.admin.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.AdminService;
 import lombok.AllArgsConstructor;

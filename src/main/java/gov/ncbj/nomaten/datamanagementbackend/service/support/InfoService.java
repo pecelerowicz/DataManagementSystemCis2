@@ -1,13 +1,13 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.CreateDifrInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.DeleteDifrInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.difrinfo.UpdateDifrInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.CreateTestInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.DeleteTestInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.testinfo.UpdateTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.UpdateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.difrinfo.CreateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.difrinfo.DeleteDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.difrinfo.UpdateDifrInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.testinfo.CreateTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.testinfo.DeleteTestInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.testinfo.UpdateTestInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.DifrInfo;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;

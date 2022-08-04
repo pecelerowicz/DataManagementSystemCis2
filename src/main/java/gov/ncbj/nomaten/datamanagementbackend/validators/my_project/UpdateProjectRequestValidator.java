@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_project;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.UpdateProjectRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_projects.UpdateProjectRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import lombok.Builder;
 

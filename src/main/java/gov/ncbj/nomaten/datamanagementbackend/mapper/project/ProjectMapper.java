@@ -3,7 +3,11 @@ package gov.ncbj.nomaten.datamanagementbackend.mapper.project;
 import gov.ncbj.nomaten.datamanagementbackend.comparator.InfoComparator;
 import gov.ncbj.nomaten.datamanagementbackend.comparator.ProjectComparator;
 import gov.ncbj.nomaten.datamanagementbackend.comparator.UserComparator;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_projects.AddMyInfoToOtherProjectResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_projects.RemoveMyInfoFromOtherProjectResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_projects.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetProjectResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetProjectsResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import java.util.List;
@@ -127,15 +131,4 @@ public class ProjectMapper {
                 .build();
     }
 
-    public static RemoveMyFromOtherProjectResponse projectToRemoveMyFromOtherProjectResponse(Project project) {
-        return RemoveMyFromOtherProjectResponse.builder()
-                .projectId(project.getId())
-                .name(project.getProjectName())
-                .description(project.getDescription())
-                .localDate(project.getLocalDateTime().toLocalDate())
-                .ownerName(project.getOwnerName())
-                .memberNames(project.getUsers().stream().sorted(new UserComparator()).map(User::getUsername).collect(toList()))
-                .projectInfoResponseList(project.getInfoList().stream().sorted(new InfoComparator()).map(ProjectInfoResponse::new).collect(toList()))
-                .build();
-    }
 }

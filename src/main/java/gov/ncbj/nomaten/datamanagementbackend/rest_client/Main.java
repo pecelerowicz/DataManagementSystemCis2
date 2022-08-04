@@ -1,9 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.rest_client;
 
-import com.sun.net.httpserver.Headers;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.AuthenticationResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.LoginRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.LoginResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.LoginRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateInfoRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -92,7 +91,7 @@ public class Main {
         HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest);
 //        String response1 = restTemplate.postForObject(basicUrl + "/login", request, String.class);
 //        System.out.println(response1);
-        AuthenticationResponse response2 = restTemplate.postForObject(basicUrl + "/auth/login", request, AuthenticationResponse.class);
+        LoginResponse response2 = restTemplate.postForObject(basicUrl + "/auth/login", request, LoginResponse.class);
         return response2.getAuthenticationToken();
     }
 

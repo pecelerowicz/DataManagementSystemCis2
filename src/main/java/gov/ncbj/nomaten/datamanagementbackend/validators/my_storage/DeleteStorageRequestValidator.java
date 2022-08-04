@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_storage;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.DeleteStorageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.DeleteStorageRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import lombok.Builder;
 

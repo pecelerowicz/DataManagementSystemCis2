@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_project;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.RemoveInfoFromOwnedProjectRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_projects.RemoveInfoFromOwnedProjectRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;

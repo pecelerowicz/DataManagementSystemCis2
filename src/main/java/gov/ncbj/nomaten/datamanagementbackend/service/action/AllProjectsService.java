@@ -1,6 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_projects.AddMyInfoToOtherProjectRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_projects.RemoveMyInfoFromOtherProjectRequest;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.Project;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;

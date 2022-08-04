@@ -1,6 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_search;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_search.GetSearchListRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.all_data.GetSearchListRequest;
 import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
 import lombok.Builder;

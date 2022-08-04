@@ -1,11 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import com.google.gson.Gson;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_folder.*;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.*;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.*;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_storage.CreateStorageResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateStorageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateStorageResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.MyDataService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.FileNameValidator;

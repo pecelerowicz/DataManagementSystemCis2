@@ -1,8 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_package.GetInfoListResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_project.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetInfoListResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_projects.*;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetProjectResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetProjectsResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.MyProjectsService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;

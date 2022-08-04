@@ -1,8 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.mapper.info;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.CreateInfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.GetInfoResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_info.UpdateInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetInfoResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.UpdateInfoResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.DifrInfoMapper.difrInfoToGetDifrInfoResponse;
