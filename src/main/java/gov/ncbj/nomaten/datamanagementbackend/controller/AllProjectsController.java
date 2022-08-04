@@ -10,10 +10,10 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetProject
 import gov.ncbj.nomaten.datamanagementbackend.dto.shared_info_project.GetProjectsResponse;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.AllProjectsService;
-import gov.ncbj.nomaten.datamanagementbackend.validators.NameValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.UserNameValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.my_project.AddMyInfoToOtherProjectRequestValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.my_project.RemoveMyInfoFromOtherProjectRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.NameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.UserNameValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.all_projects.AddMyInfoToOtherProjectRequestValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.all_projects.RemoveMyInfoFromOtherProjectRequestValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
