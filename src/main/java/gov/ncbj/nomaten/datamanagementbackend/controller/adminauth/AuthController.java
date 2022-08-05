@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller.adminauth;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.admin.adminauth.auth.*;
-import gov.ncbj.nomaten.datamanagementbackend.dto.admin.auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.*;
-import gov.ncbj.nomaten.datamanagementbackend.dto.auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.RefreshTokenService;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_auth.ChangePasswordRequestValidator;

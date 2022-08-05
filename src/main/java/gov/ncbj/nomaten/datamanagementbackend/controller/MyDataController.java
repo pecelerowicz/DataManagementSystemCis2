@@ -7,11 +7,9 @@ import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateStorageResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.MyDataService;
-import gov.ncbj.nomaten.datamanagementbackend.validators.my_auth.my_data.*;
 import gov.ncbj.nomaten.datamanagementbackend.validators.my_data.*;
 import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.FileNameValidator;
 import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.NameValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.my_data.*;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -38,8 +36,8 @@ public class MyDataController {
      * LEFT PANEL
      */
     @GetMapping("/package")
-    public ResponseEntity<GetPackageListResponse> getPackageList() throws IOException {
-        return ResponseEntity.status(OK).body(new GetPackageListResponse(myDataService.getPackageList()));
+    public ResponseEntity<GetPackageListResponse> getPackageList() {
+        return ok(new GetPackageListResponse(myDataService.getPackageList()));
     }
 
     /**
@@ -59,8 +57,8 @@ public class MyDataController {
     public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
         DeletePackageRequestValidator.builder().build().validate(deletePackageRequest);
         myDataService.deletePackage(deletePackageRequest);
-        return ResponseEntity.status(OK).body(DeletePackageResponse.builder().deleteMessage(
-                "The package " + deletePackageRequest.getPackageName() + " was deleted").build());
+        return ok(DeletePackageResponse.builder().deleteMessage("The package " + deletePackageRequest.getPackageName() +
+                                                                " was deleted").build());
     }
 
     /**

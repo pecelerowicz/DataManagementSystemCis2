@@ -54,13 +54,13 @@ public class MyDataService {
         User currentUser = authService.getCurrentUser();
         String packageName = deletePackageRequest.getPackageName();
         checkService.packageExists(currentUser, packageName);
-        if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName))) {
-            folderService.deleteItem(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
-        }
         if(infoService.infoExists(packageName, currentUser)) {
             Info info = infoService.getInfo(packageName, currentUser);
             checkService.infoIsNotInProject(info);
             infoService.deleteInfo(info.getInfoName(), currentUser);
+        }
+        if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName))) {
+            folderService.deleteItem(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
         }
     }
 
