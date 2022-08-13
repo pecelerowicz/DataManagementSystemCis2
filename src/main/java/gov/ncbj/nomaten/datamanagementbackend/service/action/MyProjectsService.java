@@ -60,7 +60,7 @@ public class MyProjectsService {
         return projectService.addUserToProject(project, userToAdd);
     }
 
-    public List<Info> getInfoList() {
+    public List<Info>              getInfoList() {
         User user = authService.getCurrentUser();
         return infoService.getInfoList(user);
     }
@@ -110,9 +110,9 @@ public class MyProjectsService {
         return projectOwner.getProjects();
     }
 
-    public Info getInfoInMyProject(Long projectId, String infoName, String userName) {
+    public Info getInfoInMyProject(Long projectId, String infoName, String ownerName) {
         User projectOwner = authService.getCurrentUser();
-        User packageOwner = authService.getUserByName(userName);
+        User packageOwner = authService.getUserByName(ownerName);
         Project project = projectService.getProjectById(projectId);
         Info info = infoService.getInfo(infoName, packageOwner);
         checkService.userOwnsProject(projectOwner, project);
@@ -122,16 +122,16 @@ public class MyProjectsService {
         return info;
     }
 
-    public PathNode getPackageFolderStructure(Long projectId, String userName, String infoName) {
+    public PathNode getPackageFolderStructure(Long projectId, String ownerName, String infoName) {
         User projectOwner = authService.getCurrentUser();
-        User packageOwner = authService.getUserByName(userName);
+        User packageOwner = authService.getUserByName(ownerName);
         Project project = projectService.getProjectById(projectId);
         checkService.userOwnsProject(projectOwner, project);
         checkService.userIsInProject(projectOwner, project);
         checkService.userIsInProject(packageOwner, project);
-        checkService.infoByUserIsInProject(infoName, packageOwner, project); // todo probably remove
-        checkService.mainFolderByUserExists(packageOwner, infoName);
-        return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
+        checkService.infoByUserIsInProject(infoName, packageOwner, project);
+        checkService.storageExists(packageOwner, infoName);
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, ownerName, infoName));
     }
 
     public Resource downloadFileOfProject(Long projectId, String userName, String infoName, String fileNameWithPath) {
@@ -141,8 +141,9 @@ public class MyProjectsService {
         checkService.userOwnsProject(projectOwner, project);
         checkService.userIsInProject(projectOwner, project);
         checkService.userIsInProject(packageOwner, project);
-        checkService.infoByUserIsInProject(infoName, packageOwner, project); // todo probably remove
-        // todo something like: doesTheFileExist (and is it a file not a folder?)
+        checkService.infoByUserIsInProject(infoName, packageOwner, project);
+        checkService.fileExists(getDefault().getPath(STORAGE, packageOwner.getUsername(), infoName, fileNameWithPath),
+                "File does not exist");
         return folderService.downloadFile(infoName, userName, fileNameWithPath);
     }
 

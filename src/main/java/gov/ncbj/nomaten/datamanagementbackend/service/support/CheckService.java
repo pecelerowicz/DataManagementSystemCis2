@@ -91,7 +91,7 @@ public class CheckService {
         }
     }
 
-    public void mainFolderByUserExists(User packageOwner, String infoName) {
+    public void storageExists(User packageOwner, String infoName) {
         if(!folderService.fileOrFolderExists(getDefault().getPath(STORAGE, packageOwner.getUsername(), infoName))) {
             throw new RuntimeException("Item does not exist");
         }
@@ -148,6 +148,12 @@ public class CheckService {
         }
     }
 
+    public void fileExists(Path path, String message) {
+        if(!Files.exists(path) || Files.isDirectory(path)) {
+            throw new RuntimeException(message);
+        }
+    }
+
     public void folderDoesNotExist(Path path, String message) {
         if(Files.exists(path) && Files.isDirectory(path)) {
             throw new RuntimeException(message);
@@ -180,4 +186,15 @@ public class CheckService {
         }
     }
 
+    public void userDoesNotHaveInfo(String infoName, User user) {
+        if(user.getInfoList().stream().map(Info::getInfoName).anyMatch(i -> i.equals(infoName))) {
+            throw new RuntimeException("User " + user.getUsername() + " already has package " + infoName);
+        }
+    }
+
+    public void userHasInfo(String infoName, User user) {
+        if(user.getInfoList().stream().map(Info::getInfoName).noneMatch(i -> i.equals(infoName))) {
+            throw new RuntimeException("User " + user.getUsername() + " does not have package " + infoName);
+        }
+    }
 }

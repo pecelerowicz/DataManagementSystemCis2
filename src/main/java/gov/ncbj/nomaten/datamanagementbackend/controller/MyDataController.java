@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.InfoMapper.*;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -143,8 +142,8 @@ public class MyDataController {
      */
     @GetMapping("/download")
     public ResponseEntity<Resource> downloadFile(@RequestParam String packageName, @RequestParam String fileNameWithPath) {
-        DownloadFilePackageNameValidator.builder().build().validate(packageName);
-        DownloadFileFileNameWithPathValidator.builder().build().validate(fileNameWithPath);
+        NameValidator.builder().build().validate(packageName);
+        FileNameWithPathValidator.builder().build().validate(fileNameWithPath);
         Resource resource = myDataService.downloadFile(packageName, fileNameWithPath);
         return ok()
 //                .contentType(MediaType.parseMediaType(Files.probeContentType()))

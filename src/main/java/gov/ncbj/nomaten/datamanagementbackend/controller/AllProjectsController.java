@@ -83,9 +83,9 @@ public class AllProjectsController {
     /**
      * RIGHT PANEL
      */
-    @GetMapping("/project/packages/info/{projectId}/{userName}/{infoName}") // response type is borrowed for now
-    public ResponseEntity<GetInfoResponse> getInfoOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
-        // TODO id validation (?)
+    @GetMapping("/project/packages/info/{projectId}/{userName}/{infoName}")
+    public ResponseEntity<GetInfoResponse> getInfoOfUserInProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
+        // TODO id validation
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
         return ok(infoToGetInfoResponse(allProjectsService.getInfoOfUserAndProject(projectId, userName, infoName)));
@@ -96,7 +96,7 @@ public class AllProjectsController {
      */
     @GetMapping("/project/packages/folder/{projectId}/{userName}/{infoName}")
     public PathNode getPackageFolderStructureOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
-        // TODO id validation (?)
+        // TODO id validation
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);
         return allProjectsService.getPackageFolderStructureOfUserAndProject(projectId, userName, infoName);

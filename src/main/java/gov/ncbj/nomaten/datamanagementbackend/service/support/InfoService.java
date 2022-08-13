@@ -13,6 +13,7 @@ import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.subinfo.TestInfo;
 import gov.ncbj.nomaten.datamanagementbackend.repository.InfoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,14 +27,10 @@ import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.
 import static gov.ncbj.nomaten.datamanagementbackend.mapper.info.TestInfoMapper.updateTestInfoRequestToTestInfo;
 
 @Service
+@AllArgsConstructor
 public class InfoService {
 
     private final InfoRepository infoRepository;
-
-    @Autowired
-    public InfoService(InfoRepository infoRepository) {
-        this.infoRepository = infoRepository;
-    }
 
     // info
     public List<Info> getInfoList(User user) {
@@ -46,16 +43,6 @@ public class InfoService {
             .filter(i -> i.getInfoName().equals(infoName))
             .findFirst()
             .orElseThrow(() -> new RuntimeException("No Info: " + infoName));
-    }
-
-    @Transactional // to be removed (this logic (filter) should be in the main service, I think)
-    public Info getInfoOfUser(User user, String infoName) {
-        return user
-                .getInfoList()
-                .stream()
-                .filter(i -> i.getInfoName().equals(infoName) && i.getAccess().equals(Info.Access.PUBLIC))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User " + user.getUsername() + " does not have public package " + infoName));
     }
 
     public boolean infoExists(String infoName, User user) {
@@ -121,15 +108,6 @@ public class InfoService {
     }
 
     // difrractometer info
-    public DifrInfo getDifrInfo(String infoName, User user) {
-        DifrInfo difrInfo = getInfo(infoName, user).getDifrInfo();
-        if(difrInfo == null) {
-            throw new RuntimeException("No Difr Info in " + infoName);
-        } else {
-            return difrInfo;
-        }
-    }
-
     @Transactional
     public DifrInfo createDifrInfo(CreateDifrInfoRequest createDifrInfoRequest, User user) {
         Info info = getInfo(createDifrInfoRequest.getInfoName(), user);
@@ -140,18 +118,6 @@ public class InfoService {
         difrInfo.setInfo(info);
         info.setDifrInfo(difrInfo);
         return difrInfo;
-    }
-
-    @Transactional
-    public DifrInfo updateDifrInfo(UpdateDifrInfoRequest updateDifrInfoRequest, User user) {
-        Info info = getInfo(updateDifrInfoRequest.getInfoName(), user);
-        if(info.getDifrInfo() == null) {
-            throw new RuntimeException("No difr info in: " + info.getInfoName());
-        }
-        DifrInfo newDifrInfo = updateDifrInfoRequestToDifrInfo(updateDifrInfoRequest);
-        newDifrInfo.setInfo(info);
-        info.setDifrInfo(newDifrInfo);
-        return newDifrInfo;
     }
 
     @Transactional
@@ -167,15 +133,6 @@ public class InfoService {
     }
 
     // test info
-    public TestInfo getTestInfo(String infoName, User user) {
-        TestInfo testInfo = getInfo(infoName, user).getTestInfo();
-        if(testInfo == null) {
-            throw new RuntimeException("No Test Info in " + infoName);
-        } else {
-            return getInfo(infoName, user).getTestInfo();
-        }
-    }
-
     @Transactional
     public TestInfo createTestInfo(CreateTestInfoRequest createTestInfoRequest, User user) {
         Info info = getInfo(createTestInfoRequest.getInfoName(), user);
@@ -186,18 +143,6 @@ public class InfoService {
         testInfo.setInfo(info);
         info.setTestInfo(testInfo);
         return testInfo;
-    }
-
-    @Transactional
-    public TestInfo updateTestInfo(UpdateTestInfoRequest updateTestInfoRequest, User user) {
-        Info info = getInfo(updateTestInfoRequest.getInfoName(), user);
-        if(info.getTestInfo() == null) {
-            throw new RuntimeException("Test info does not exist");
-        }
-        TestInfo newTestInfo = updateTestInfoRequestToTestInfo(updateTestInfoRequest);
-        newTestInfo.setInfo(info);
-        info.setTestInfo(newTestInfo);
-        return newTestInfo;
     }
 
     @Transactional

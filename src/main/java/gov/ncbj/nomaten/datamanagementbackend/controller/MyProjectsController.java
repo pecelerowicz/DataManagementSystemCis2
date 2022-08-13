@@ -132,12 +132,14 @@ public class MyProjectsController {
     /**
      * RIGHT PANEL
      */
-    @GetMapping("/project/packages/info/{projectId}/{infoName}")
-    public ResponseEntity<GetInfoResponse> getMetadataOfInfoInProject(@PathVariable Long projectId,
-                                                                      @PathVariable String infoName,
-                                                                      @PathVariable String userName) {
-        // TODO projectId validation (?)
+    // TODO check this path
+    @GetMapping("/project/packages/info/{projectId}/{userName}/{infoName}")
+    public ResponseEntity<GetInfoResponse> getInfoOfUserInProject(@PathVariable Long projectId,
+                                                                  @PathVariable String infoName,
+                                                                  @PathVariable String userName) {
+        // TODO projectId validation
         NameValidator.builder().build().validate(infoName);
+        UserNameValidator.builder().build().validate(userName);
         return ok(infoToGetInfoResponse(myProjectsService.getInfoInMyProject(projectId, infoName, userName)));
     }
 
@@ -145,7 +147,7 @@ public class MyProjectsController {
      * RIGHT PANEL
      */
     @GetMapping("/project/packages/folder/{projectId}/{userName}/{infoName}")
-    public PathNode getPackageFolderStructure(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
+    public PathNode getPackageFolderStructureOfUserAndProject(@PathVariable Long projectId, @PathVariable String userName, @PathVariable String infoName) {
         // TODO id validation (?)
         UserNameValidator.builder().build().validate(userName);
         NameValidator.builder().build().validate(infoName);

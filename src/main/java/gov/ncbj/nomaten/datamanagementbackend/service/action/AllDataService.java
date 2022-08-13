@@ -41,7 +41,7 @@ public class AllDataService {
     public List<Search> getSearchList(GetSearchListRequest getSearchListRequest) {
         String userName = getSearchListRequest.getUserName();
         List<Info> infoList = userName.isEmpty() ? this.infoService.findAll() : this.infoService.findByUserUsername(userName);
-        List<Info> publicInfoList = keepPublicInfo(infoList);
+        List<Info> publicInfoList = filterPublicInfo(infoList);
 
         List<Search> searchList;
         if(!getSearchListRequest.isHasInfo()) {
@@ -80,7 +80,7 @@ public class AllDataService {
         return folderService.downloadFile(packageName, userName, fileNameWithPath);
     }
 
-    private List<Info> keepPublicInfo(List <Info> infoList) {
+    private List<Info> filterPublicInfo(List <Info> infoList) {
         return infoList.stream().filter(i -> i.getAccess().equals(Info.Access.PUBLIC)).collect(toList());
     }
 

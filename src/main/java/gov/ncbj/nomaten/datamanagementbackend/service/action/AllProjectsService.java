@@ -87,8 +87,7 @@ public class AllProjectsService {
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
-        checkService.infoBelongsToUser(packageOwner, info);
-        // todo something like: does this info have a package?
+        checkService.folderExists(getDefault().getPath(STORAGE, userName, infoName), "Package does not exist");
         return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
     }
 
@@ -100,9 +99,8 @@ public class AllProjectsService {
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
-        checkService.infoBelongsToUser(packageOwner, info); // redundant
-        // todo something like: does this info have a package/
-        // todo something like: doesTheFileExist (and is it a file not a folder?)
+        checkService.folderExists(getDefault().getPath(STORAGE, userName, infoName), "Package does not exist");
+        checkService.fileExists(getDefault().getPath(STORAGE, userName, infoName, fileNameWithPath), "File does not exist");
         return folderService.downloadFile(infoName, userName, fileNameWithPath);
     }
 }

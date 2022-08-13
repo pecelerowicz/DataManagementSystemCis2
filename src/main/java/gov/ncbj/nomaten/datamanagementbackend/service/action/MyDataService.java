@@ -71,21 +71,26 @@ public class MyDataService {
 
     public Info createInfo(CreateInfoRequest createInfoRequest) {
         User currentUser = authService.getCurrentUser();
+        checkService.userDoesNotHaveInfo(createInfoRequest.getInfoName(), currentUser);
         return infoService.createInfo(createInfoRequest, currentUser);
     }
 
     public Info updateInfo(UpdateInfoRequest updateInfoRequest) {
         User currentUser = authService.getCurrentUser();
+        checkService.userHasInfo(updateInfoRequest.getInfoName(), currentUser);
         return infoService.updateInfo(updateInfoRequest, currentUser);
     }
 
     public String createStorage(String storageName) throws IOException {
         User currentUser = authService.getCurrentUser();
+        checkService.folderDoesNotExist(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName));
         return folderService.createFolder(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName)).getFileName().toString();
     }
 
     public PathNode getPackageFolderStructure(String storageName) {
         User currentUser = authService.getCurrentUser();
+        checkService.folderExists(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName),
+                "Package " + storageName + " does not exist");
         return folderService.getFolderStructure(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName));
     }
 

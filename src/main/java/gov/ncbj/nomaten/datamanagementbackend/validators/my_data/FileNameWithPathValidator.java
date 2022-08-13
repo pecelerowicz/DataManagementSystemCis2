@@ -4,7 +4,7 @@ import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.Vali
 import lombok.Builder;
 
 @Builder
-public class DownloadFileFileNameWithPathValidator implements Validator<String> {
+public class FileNameWithPathValidator implements Validator<String> {
     @Override
     // TODO check and possibly extend
     public void validate(String fileNameWithPath) {
