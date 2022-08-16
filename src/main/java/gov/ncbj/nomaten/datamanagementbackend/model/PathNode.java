@@ -12,7 +12,7 @@ public class PathNode implements Comparable<PathNode> {
     private Path path;
     private String relative;
     private boolean isFolder;
-    private Set<PathNode> children = new TreeSet<>();
+    private Set<PathNode> children;
 
     public PathNode(Path path, Path rootPath) {
         this.path = path;

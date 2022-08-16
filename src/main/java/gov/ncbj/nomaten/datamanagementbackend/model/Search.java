@@ -11,14 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Search implements Comparable<Search> {
+public class Search {
     private String name;
     private String username;
     private boolean hasStorage;
     private LocalDateTime localDateTime;
-
-    @Override
-    public int compareTo(Search that) {
-        return -this.localDateTime.compareTo(that.localDateTime);
-    }
 }

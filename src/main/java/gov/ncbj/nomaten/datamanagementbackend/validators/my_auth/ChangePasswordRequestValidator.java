@@ -1,8 +1,8 @@
 package gov.ncbj.nomaten.datamanagementbackend.validators.my_auth;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_auth.ChangePasswordRequest;
-import gov.ncbj.nomaten.datamanagementbackend.validators.PasswordValidator;
-import gov.ncbj.nomaten.datamanagementbackend.validators.Validator;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.ChangePasswordRequest;
+import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.PasswordValidator;
+import gov.ncbj.nomaten.datamanagementbackend.validators.z_field_validators.Validator;
 import lombok.Builder;
 
 @Builder
