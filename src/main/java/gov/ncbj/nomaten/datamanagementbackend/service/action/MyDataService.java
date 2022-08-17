@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateFolderRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.CreateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.UpdateInfoRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.DeletePackageRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_data.*;
 import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import gov.ncbj.nomaten.datamanagementbackend.model.info.Info;
 import gov.ncbj.nomaten.datamanagementbackend.model.Package;
@@ -47,6 +44,25 @@ public class MyDataService {
         checkService.packageDoesNotExist(currentUser, packageName);
         Path createdPackagePath = folderService.createFolder(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
         return getDefault().getPath(STORAGE, currentUser.getUsername()).relativize(createdPackagePath).toString();
+    }
+
+    /**
+     * Might cause consistency issues.
+     */
+    @Transactional
+    public void renamePackage(RenamePackageRequest renamePackageRequest) throws IOException {
+        User currentUser = authService.getCurrentUser();
+        checkService.packageExists(currentUser, renamePackageRequest.getPackageOldName());
+        checkService.packageDoesNotExist(currentUser, renamePackageRequest.getPackageNewName());
+        if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName())) &&
+           folderService.isDirectory(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName()))) {
+                folderService.renameItem(getDefault().getPath(STORAGE, currentUser.getUsername()),
+                        renamePackageRequest.getPackageOldName(), renamePackageRequest.getPackageNewName());
+        }
+        if(infoService.infoExists(renamePackageRequest.getPackageOldName(), currentUser)) {
+            Info info = infoService.getInfo(renamePackageRequest.getPackageOldName(), currentUser);
+            info.setInfoName(renamePackageRequest.getPackageNewName());
+        }
     }
 
     @Transactional

@@ -36,6 +36,12 @@ public class FolderService {
         return Files.createDirectory(newFolderPath);
     }
 
+    public Path renameItem(Path folderPath, String itemOldName, String itemNewName) throws IOException {
+        Path sourcePath = folderPath.resolve(itemOldName);
+        Path targetPath = folderPath.resolve(itemNewName);
+        return Files.move(sourcePath, targetPath);
+    }
+
     public boolean itemExists(Path itemPath) {
         return Files.exists(itemPath);
     }

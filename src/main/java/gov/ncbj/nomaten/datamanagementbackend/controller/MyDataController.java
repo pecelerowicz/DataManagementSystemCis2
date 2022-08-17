@@ -52,6 +52,18 @@ public class MyDataController {
     /**
      * LEFT PANEL
      */
+    @PutMapping("/package")
+    public ResponseEntity<RenamePackageResponse> renamePackage(@RequestBody RenamePackageRequest renamePackageRequest) throws IOException {
+        RenamePackageRequestValidator.builder().build().validate(renamePackageRequest);
+        myDataService.renamePackage(renamePackageRequest);
+        return ok(RenamePackageResponse.builder()
+                .renamePackageMessage("The package " + renamePackageRequest.getPackageOldName() +
+                                      " was renamed to " + renamePackageRequest.getPackageNewName()).build());
+    }
+
+    /**
+     * LEFT PANEL
+     */
     @DeleteMapping("/package")
     public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
         DeletePackageRequestValidator.builder().build().validate(deletePackageRequest);
