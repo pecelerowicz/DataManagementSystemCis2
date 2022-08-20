@@ -75,6 +75,17 @@ public class MyDataController {
     /**
      * LEFT PANEL
      */
+    @PutMapping("/archive")
+    public ResponseEntity<ArchivePackageResponse> archivePackage(@RequestBody ArchivePackageRequest archivePackageRequest) {
+        ArchivePackageRequestValidator.builder().build().validate(archivePackageRequest);
+        myDataService.archivePackage(archivePackageRequest);
+        return ok(ArchivePackageResponse.builder().archivePackageMessage("The package " + archivePackageRequest.getPackageName() +
+                                                                         " was archived").build());
+    }
+
+    /**
+     * LEFT PANEL
+     */
     @GetMapping("/info/{infoName}")
     public ResponseEntity<GetInfoResponse> getInfo(@PathVariable String infoName) {
         NameValidator.builder().build().validate(infoName);
@@ -133,7 +144,7 @@ public class MyDataController {
     @DeleteMapping("/folders")
     public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
         DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
-        myDataService.deleteItem(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
+        myDataService.deleteItem(deleteItemRequest);
         return ok(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
     }
 

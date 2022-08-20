@@ -48,12 +48,18 @@ public class MyDataService {
 
     /**
      * Might cause consistency issues.
+     * Very defensive approach here.
+     * Investigate why order matters.
      */
     @Transactional
     public void renamePackage(RenamePackageRequest renamePackageRequest) throws IOException {
         User currentUser = authService.getCurrentUser();
         checkService.packageExists(currentUser, renamePackageRequest.getPackageOldName());
         checkService.packageDoesNotExist(currentUser, renamePackageRequest.getPackageNewName());
+        if(infoService.infoExists(renamePackageRequest.getPackageOldName(), currentUser)) {
+            Info info = infoService.getInfo(renamePackageRequest.getPackageOldName(), currentUser);
+            checkService.packageIsNotArchived(info, "package archived");
+        }
         if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName())) &&
            folderService.isDirectory(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName()))) {
                 folderService.renameItem(getDefault().getPath(STORAGE, currentUser.getUsername()),
@@ -61,6 +67,7 @@ public class MyDataService {
         }
         if(infoService.infoExists(renamePackageRequest.getPackageOldName(), currentUser)) {
             Info info = infoService.getInfo(renamePackageRequest.getPackageOldName(), currentUser);
+            checkService.packageIsNotArchived(info, "package archived");
             info.setInfoName(renamePackageRequest.getPackageNewName());
         }
     }
@@ -72,12 +79,23 @@ public class MyDataService {
         checkService.packageExists(currentUser, packageName);
         if(infoService.infoExists(packageName, currentUser)) {
             Info info = infoService.getInfo(packageName, currentUser);
+            checkService.packageIsNotArchived(info, "package archived");
             checkService.infoIsNotInProject(info);
             infoService.deleteInfo(info.getInfoName(), currentUser);
         }
         if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName))) {
             folderService.deleteItem(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
         }
+    }
+
+    @Transactional
+    public void archivePackage(ArchivePackageRequest archivePackageRequest) {
+        User currentUser = authService.getCurrentUser();
+        String packageName = archivePackageRequest.getPackageName();
+        checkService.packageExists(currentUser, packageName);
+        checkService.packageIsReadyToBeArchived(currentUser, packageName);
+        Info info = infoService.getInfo(packageName, currentUser);
+        info.setArchived(true);
     }
 
     public Info getInfo(String infoName) {
@@ -94,6 +112,7 @@ public class MyDataService {
     public Info updateInfo(UpdateInfoRequest updateInfoRequest) {
         User currentUser = authService.getCurrentUser();
         checkService.userHasInfo(updateInfoRequest.getInfoName(), currentUser);
+        checkService.packageIsNotArchived(currentUser, updateInfoRequest.getInfoName(), "package archived");
         return infoService.updateInfo(updateInfoRequest, currentUser);
     }
 
@@ -114,24 +133,26 @@ public class MyDataService {
         User currentUser = authService.getCurrentUser();
         Path newFolderPath = getDefault().getPath(STORAGE, currentUser.getUsername(), createFolderRequest.getPackageName(),
                 createFolderRequest.getParentFolderRelativePath(), createFolderRequest.getNewFolderName());
-
+        checkService.packageIsNotArchived(currentUser, createFolderRequest.getPackageName(), "package archived");
         checkService.folderDoesNotExist(newFolderPath);
-
         Path createdFolderPath = folderService.createFolder(newFolderPath);
         Path basePath = getDefault().getPath(STORAGE, currentUser.getUsername(), createFolderRequest.getPackageName());
         Path subPath = basePath.relativize(createdFolderPath);
         return subPath.toString();
     }
 
-    public void deleteItem(String packageName, String folderPathString) throws IOException {
-        Path folderPath = getDefault().getPath(STORAGE,
-                authService.getCurrentUser().getUsername(), packageName, folderPathString);
+    public void deleteItem(DeleteItemRequest deleteItemRequest) throws IOException {
+        User currentUser = authService.getCurrentUser();
+        Path folderPath = getDefault().getPath(STORAGE, currentUser.getUsername(),
+                deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
+        checkService.packageIsNotArchived(currentUser, deleteItemRequest.getPackageName(), "package archived");
         folderService.deleteItem(folderPath);
     }
 
     public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
-        String userName = authService.getCurrentUser().getUsername();
-        folderService.uploadFile(file, packageName, userName, folderRelativePath);
+        User currentUser = authService.getCurrentUser();
+        checkService.packageIsNotArchived(currentUser, packageName, "package archived");
+        folderService.uploadFile(file, packageName, currentUser.getUsername(), folderRelativePath);
     }
 
     public Resource downloadFile(String packageName, String fileNameWithPath) {
@@ -143,18 +164,22 @@ public class MyDataService {
         List<Package> packageList = new LinkedList<>();
         for(Info info: infoList) {
             if(storageNames.contains(info.getInfoName())) {
-                packageList.add(new Package(info.getInfoName(), true, true, info.getTitle(), info.getShortDescription(), info.getLocalDateTime()));
+                packageList.add(new Package(info.getInfoName(), true, true, isArchived(info.getArchived()), info.getTitle(), info.getShortDescription(), info.getLocalDateTime()));
             } else {
-                packageList.add(new Package(info.getInfoName(), false, true, info.getTitle(), info.getShortDescription(), info.getLocalDateTime()));
+                packageList.add(new Package(info.getInfoName(), false, true, isArchived(info.getArchived()), info.getTitle(), info.getShortDescription(), info.getLocalDateTime()));
             }
         }
         Set<String> infoNameSet = infoList.stream().map(Info::getInfoName).collect(Collectors.toSet());
         for(String storageName: storageNames) {
             if(!infoNameSet.contains(storageName)) {
-                packageList.add(new Package(storageName, true, false, null, null, null));
+                packageList.add(new Package(storageName, true, false, false, null, null, null));
             }
         }
         return packageList;
+    }
+
+    private boolean isArchived(Boolean isArchived) {
+        return isArchived != null && isArchived;
     }
 
 }

@@ -13,6 +13,7 @@ public class PackageResponse {
     private String name;
     private boolean hasStorage;
     private boolean hasMetadata;
+    private boolean archived;
     private String title;
     private String shortDescription;
     private LocalDate localDate;

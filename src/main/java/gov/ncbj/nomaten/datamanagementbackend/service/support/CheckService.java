@@ -22,6 +22,7 @@ public class CheckService {
 
     private final FolderService folderService;
     private final AuthService authService;
+    private final InfoService infoService;
 
     public void projectDoesNotContainInfo(Project project, Info info) {
         if(project.getInfoList()
@@ -140,6 +141,29 @@ public class CheckService {
         if(!metadataNames.contains(packageName) && !storageNames.contains(packageName)) {
             throw new RuntimeException("Package " + packageName + " does not exists");
         }
+    }
+
+    public void packageIsNotArchived(Info info, String message) {
+        Boolean archived = info.getArchived();
+        if(!(archived==null) && archived) {
+            throw new RuntimeException(message);
+        }
+    }
+
+    public void packageIsNotArchived(User user, String packageName, String message) {
+        Info info = infoService.getInfo(packageName, user);
+        packageIsNotArchived(info, message);
+    }
+
+    public void packageIsReadyToBeArchived(User user, String packageName) {
+        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        if(!metadataNames.contains(packageName) || !storageNames.contains(packageName)) {
+            throw new RuntimeException("Package must contain both data and metadata to be archived");
+        }
+        Info info = infoService.getInfo(packageName, user);
+        packageIsNotArchived(info, "Package already archived");
+        // TODO nie można zarichiwizować pustego folderu
     }
 
     public void folderExists(Path path, String message) {
