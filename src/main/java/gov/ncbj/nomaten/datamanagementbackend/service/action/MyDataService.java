@@ -58,7 +58,7 @@ public class MyDataService {
         checkService.packageDoesNotExist(currentUser, renamePackageRequest.getPackageNewName());
         if(infoService.infoExists(renamePackageRequest.getPackageOldName(), currentUser)) {
             Info info = infoService.getInfo(renamePackageRequest.getPackageOldName(), currentUser);
-            checkService.packageIsNotArchived(info, "package archived");
+            checkService.infoIsNotArchived(info, "package archived");
         }
         if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName())) &&
            folderService.isDirectory(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName()))) {
@@ -67,7 +67,7 @@ public class MyDataService {
         }
         if(infoService.infoExists(renamePackageRequest.getPackageOldName(), currentUser)) {
             Info info = infoService.getInfo(renamePackageRequest.getPackageOldName(), currentUser);
-            checkService.packageIsNotArchived(info, "package archived");
+            checkService.infoIsNotArchived(info, "package archived");
             info.setInfoName(renamePackageRequest.getPackageNewName());
         }
     }
@@ -79,7 +79,7 @@ public class MyDataService {
         checkService.packageExists(currentUser, packageName);
         if(infoService.infoExists(packageName, currentUser)) {
             Info info = infoService.getInfo(packageName, currentUser);
-            checkService.packageIsNotArchived(info, "package archived");
+            checkService.infoIsNotArchived(info, "The package is archived and cannot be deleted.");
             checkService.infoIsNotInProject(info);
             infoService.deleteInfo(info.getInfoName(), currentUser);
         }
@@ -133,7 +133,8 @@ public class MyDataService {
         User currentUser = authService.getCurrentUser();
         Path newFolderPath = getDefault().getPath(STORAGE, currentUser.getUsername(), createFolderRequest.getPackageName(),
                 createFolderRequest.getParentFolderRelativePath(), createFolderRequest.getNewFolderName());
-        checkService.packageIsNotArchived(currentUser, createFolderRequest.getPackageName(), "package archived");
+        checkService.packageIsNotArchived(currentUser, createFolderRequest.getPackageName(),
+                "The package is archived and cannot be modified.");
         checkService.folderDoesNotExist(newFolderPath);
         Path createdFolderPath = folderService.createFolder(newFolderPath);
         Path basePath = getDefault().getPath(STORAGE, currentUser.getUsername(), createFolderRequest.getPackageName());
@@ -145,13 +146,14 @@ public class MyDataService {
         User currentUser = authService.getCurrentUser();
         Path folderPath = getDefault().getPath(STORAGE, currentUser.getUsername(),
                 deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
-        checkService.packageIsNotArchived(currentUser, deleteItemRequest.getPackageName(), "package archived");
+        checkService.packageIsNotArchived(currentUser, deleteItemRequest.getPackageName(),
+                "The package is archived and cannot be modified.");
         folderService.deleteItem(folderPath);
     }
 
     public void uploadFile(MultipartFile file, String packageName, String folderRelativePath) throws IOException {
         User currentUser = authService.getCurrentUser();
-        checkService.packageIsNotArchived(currentUser, packageName, "package archived");
+        checkService.packageIsNotArchived(currentUser, packageName, "The package is archived and cannot be modified.");
         folderService.uploadFile(file, packageName, currentUser.getUsername(), folderRelativePath);
     }
 
