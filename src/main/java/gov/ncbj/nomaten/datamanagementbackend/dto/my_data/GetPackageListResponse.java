@@ -19,6 +19,7 @@ public class GetPackageListResponse {
                 .map(s -> new PackageResponse(s.getName(),
                         s.isHasStorage(),
                         s.isHasMetadata(),
+                        s.isArchived(),
                         s.getTitle() != null ? s.getTitle() : null,
                         s.getShortDescription() != null ? s.getShortDescription() : null,
                         s.getLocalDateTime() != null ? s.getLocalDateTime().toLocalDate() : null))

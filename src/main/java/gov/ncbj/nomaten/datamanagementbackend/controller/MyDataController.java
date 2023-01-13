@@ -52,12 +52,35 @@ public class MyDataController {
     /**
      * LEFT PANEL
      */
+    @PutMapping("/package")
+    public ResponseEntity<RenamePackageResponse> renamePackage(@RequestBody RenamePackageRequest renamePackageRequest) throws IOException {
+        RenamePackageRequestValidator.builder().build().validate(renamePackageRequest);
+        myDataService.renamePackage(renamePackageRequest);
+        return ok(RenamePackageResponse.builder()
+                .renamePackageMessage("The package " + renamePackageRequest.getPackageOldName() +
+                                      " was renamed to " + renamePackageRequest.getPackageNewName()).build());
+    }
+
+    /**
+     * LEFT PANEL
+     */
     @DeleteMapping("/package")
     public ResponseEntity<DeletePackageResponse> deletePackage(@RequestBody DeletePackageRequest deletePackageRequest) throws IOException {
         DeletePackageRequestValidator.builder().build().validate(deletePackageRequest);
         myDataService.deletePackage(deletePackageRequest);
         return ok(DeletePackageResponse.builder().deleteMessage("The package " + deletePackageRequest.getPackageName() +
                                                                 " was deleted").build());
+    }
+
+    /**
+     * LEFT PANEL
+     */
+    @PutMapping("/archive")
+    public ResponseEntity<ArchivePackageResponse> archivePackage(@RequestBody ArchivePackageRequest archivePackageRequest) {
+        ArchivePackageRequestValidator.builder().build().validate(archivePackageRequest);
+        myDataService.archivePackage(archivePackageRequest);
+        return ok(ArchivePackageResponse.builder().archivePackageMessage("The package " + archivePackageRequest.getPackageName() +
+                                                                         " was archived").build());
     }
 
     /**
@@ -121,7 +144,7 @@ public class MyDataController {
     @DeleteMapping("/folders")
     public ResponseEntity<DeleteFolderResponse> deleteItem(@RequestBody DeleteItemRequest deleteItemRequest) throws IOException {
         DeleteItemRequestValidator.builder().build().validate(deleteItemRequest);
-        myDataService.deleteItem(deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
+        myDataService.deleteItem(deleteItemRequest);
         return ok(new DeleteFolderResponse("Item " + deleteItemRequest.getItemPathString() + " successfully deleted!"));
     }
 

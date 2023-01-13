@@ -22,6 +22,7 @@ public class CheckService {
 
     private final FolderService folderService;
     private final AuthService authService;
+    private final InfoService infoService;
 
     public void projectDoesNotContainInfo(Project project, Info info) {
         if(project.getInfoList()
@@ -142,21 +143,45 @@ public class CheckService {
         }
     }
 
-    public void folderExists(Path path, String message) {
+    public void infoIsNotArchived(Info info, String errorMessage) {
+        Boolean archived = info.getArchived();
+        if(!(archived==null) && archived) {
+            throw new RuntimeException(errorMessage);
+        }
+    }
+
+    public void packageIsNotArchived(User user, String packageName, String errorMessage) {
+        if(infoService.infoExists(packageName, user)) {
+            infoIsNotArchived(infoService.getInfo(packageName, user), errorMessage);
+        }
+    }
+
+    public void packageIsReadyToBeArchived(User user, String packageName) {
+        List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        if(!metadataNames.contains(packageName) || !storageNames.contains(packageName)) {
+            throw new RuntimeException("Package must contain both data and metadata to be archived");
+        }
+        Info info = infoService.getInfo(packageName, user);
+        infoIsNotArchived(info, "Package is already archived");
+        // TODO nie można zarichiwizować pustego folderu
+    }
+
+    public void folderExists(Path path, String errorMessage) {
         if(!Files.exists(path) || !Files.isDirectory(path)) {
-            throw new RuntimeException(message);
+            throw new RuntimeException(errorMessage);
         }
     }
 
-    public void fileExists(Path path, String message) {
+    public void fileExists(Path path, String errorMessage) {
         if(!Files.exists(path) || Files.isDirectory(path)) {
-            throw new RuntimeException(message);
+            throw new RuntimeException(errorMessage);
         }
     }
 
-    public void folderDoesNotExist(Path path, String message) {
+    public void folderDoesNotExist(Path path, String errorMessage) {
         if(Files.exists(path) && Files.isDirectory(path)) {
-            throw new RuntimeException(message);
+            throw new RuntimeException(errorMessage);
         }
     }
 
@@ -170,11 +195,11 @@ public class CheckService {
         }
     }
 
-    public void folderIsEmpty(Path userPath, String message) throws IOException {
+    public void folderIsEmpty(Path userPath, String errorMessage) throws IOException {
         if (Files.isDirectory(userPath)) {
             try (Stream<Path> entries = Files.list(userPath)) {
                 if(entries.findFirst().isPresent()) {
-                    throw new RuntimeException(message);
+                    throw new RuntimeException(errorMessage);
                 }
             }
         }

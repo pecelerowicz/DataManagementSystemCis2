@@ -15,6 +15,7 @@ public class Package {// TODO hasStorage = false; hasMetadata = false (NOT AT TH
     private String name;
     private boolean hasStorage;
     private boolean hasMetadata;
+    private boolean isArchived;
     private String title;
     private String shortDescription;
     private LocalDateTime localDateTime;
