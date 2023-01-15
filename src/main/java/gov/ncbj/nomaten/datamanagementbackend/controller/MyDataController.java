@@ -84,6 +84,17 @@ public class MyDataController {
     }
 
     /**
+     * RIGHT PANEL
+     * Test if a package is archived
+     */
+    // TODO should probably be removed later
+    @GetMapping("/archive/{packageName}")
+    public ResponseEntity<IsArchivedResponse> isArchived(@PathVariable String packageName) {
+        IsArchivedValidator.builder().build().validate(packageName);
+        return ok(IsArchivedResponse.builder().isArchived(myDataService.isArchived(packageName)).build());
+    }
+
+    /**
      * LEFT PANEL
      */
     @GetMapping("/info/{infoName}")

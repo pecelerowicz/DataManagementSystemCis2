@@ -15,6 +15,7 @@ public class InfoMapper {
         return GetInfoResponse
             .builder()
             .access(info.getAccess())
+            .archived(info.getArchived() != null && info.getArchived())  // TODO it should probably disappear
             .infoName(info.getInfoName())
             .title(info.getTitle())
             .shortDescription(info.getShortDescription())

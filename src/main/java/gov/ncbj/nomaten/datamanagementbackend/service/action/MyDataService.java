@@ -98,6 +98,16 @@ public class MyDataService {
         info.setArchived(true);
     }
 
+    // TODO should probably be removed later
+    public boolean isArchived(String packageName) {
+        User currentUser = authService.getCurrentUser();
+        if(infoService.infoExists(packageName, currentUser)) {
+            Info info = infoService.getInfo(packageName, currentUser);
+            return info.getArchived() != null ? info.getArchived() : false;
+        }
+        return false;
+    }
+
     public Info getInfo(String infoName) {
         User currentUser = authService.getCurrentUser();
         return infoService.getInfo(infoName, currentUser);

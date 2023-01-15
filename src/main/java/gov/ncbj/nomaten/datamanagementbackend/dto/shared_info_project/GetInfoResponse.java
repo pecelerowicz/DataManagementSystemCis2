@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Builder
 public class GetInfoResponse {
     private String infoName;
-
+    private boolean archived; // TODO it should probably disappear
     private Info.Access access;
     private String title;
     private String shortDescription;

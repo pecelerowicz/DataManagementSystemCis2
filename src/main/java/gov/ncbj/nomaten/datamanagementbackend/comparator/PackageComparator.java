@@ -10,8 +10,16 @@ public class PackageComparator implements Comparator<Package> {
         if(!p1.isHasMetadata() && !p2.isHasMetadata()) {
             return p1.getName().compareTo(p2.getName());
         } else if(p1.isHasMetadata() && p2.isHasMetadata()) {
-            return -p1.getLocalDateTime().compareTo(p2.getLocalDateTime());
-        } else if(p1.isHasMetadata() && !p1.isHasMetadata()) {
+            if(p1.isArchived() && p2.isArchived()) {
+                return -p1.getLocalDateTime().compareTo(p2.getLocalDateTime());
+            } else if(!p1.isArchived() && !p2.isArchived()) {
+                return -p1.getLocalDateTime().compareTo(p2.getLocalDateTime());
+            } else if(p1.isArchived() && !p2.isArchived()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        } else if(p1.isHasMetadata() && !p2.isHasMetadata()) {
             return 1;
         } else {
             return -1;
