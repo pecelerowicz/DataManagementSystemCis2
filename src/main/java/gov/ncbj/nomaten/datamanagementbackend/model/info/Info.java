@@ -49,13 +49,13 @@ public class Info {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "short_description")
+    @Column(name = "keywords")
     private String shortDescription;
 
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
-    @Column
+    @Column(name = "creation_date")
     private LocalDateTime localDateTime;
 
     @Column
