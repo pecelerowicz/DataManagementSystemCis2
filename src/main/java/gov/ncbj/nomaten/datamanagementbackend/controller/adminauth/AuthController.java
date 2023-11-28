@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -20,6 +21,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
+
+    @PostMapping("/auth/signup")
+    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
+        authService.signup(registerRequest);
+        return new ResponseEntity<>("User registration successful.", OK);
+    }
 
     @PostMapping("/auth/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {

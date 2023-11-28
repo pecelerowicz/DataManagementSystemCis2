@@ -1,9 +1,6 @@
 package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.ChangePasswordRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.LoginRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.LoginResponse;
-import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.RefreshTokenRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.adminauth.auth.*;
 import gov.ncbj.nomaten.datamanagementbackend.exception.CustomException;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
@@ -35,6 +32,23 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+
+    @Transactional
+    public void signup(RegisterRequest registerRequest) {
+
+        if(userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            throw new RuntimeException("User " + registerRequest.getUsername() + " already exists");
+        }
+
+        User user = new User();
+        user.setUsername(registerRequest.getUsername());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRoles("ROLE_ADMIN");
+        user.setCreated(now());
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
 
     public LoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
