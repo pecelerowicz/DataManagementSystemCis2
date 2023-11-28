@@ -11,6 +11,7 @@ import gov.ncbj.nomaten.datamanagementbackend.service.support.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.InfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

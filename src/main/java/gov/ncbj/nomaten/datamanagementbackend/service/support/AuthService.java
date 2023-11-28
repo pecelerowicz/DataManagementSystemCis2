@@ -12,11 +12,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 import static java.time.Instant.now;
@@ -50,6 +52,10 @@ public class AuthService {
         String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(loggedUserName)
                 .orElseThrow(() -> new CustomException("No user " + loggedUserName + " found"));
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
     }
 
     public LoginResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
