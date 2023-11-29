@@ -13,6 +13,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.XRD;
 import static java.nio.file.FileSystems.getDefault;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.util.stream.Collectors.toList;
@@ -69,6 +70,20 @@ public class FolderService {
     public Resource downloadFile(String packageName, String userName, String fileNameWithPath) {
         try {
             Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileNameWithPath);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileNameWithPath, ex);
+        }
+    }
+
+    public Resource downloadXrdFile(String fileNameWithPath) { // todo remove later (merge with the upper)
+        try {
+            Path filePath = getDefault().getPath(XRD, fileNameWithPath);
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;
