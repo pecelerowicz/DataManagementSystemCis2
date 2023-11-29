@@ -13,7 +13,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.XRD;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.TEM;
 import static java.nio.file.FileSystems.getDefault;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.util.stream.Collectors.toList;
@@ -81,9 +81,9 @@ public class FolderService {
         }
     }
 
-    public Resource downloadXrdFile(String fileNameWithPath) { // todo remove later (merge with the upper)
+    public Resource downloadTemFile(String fileNameWithPath) { // todo remove later (merge with the upper)
         try {
-            Path filePath = getDefault().getPath(XRD, fileNameWithPath);
+            Path filePath = getDefault().getPath(TEM, fileNameWithPath);
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;

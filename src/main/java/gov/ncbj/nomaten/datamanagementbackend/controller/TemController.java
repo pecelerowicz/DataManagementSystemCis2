@@ -1,9 +1,9 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
-import gov.ncbj.nomaten.datamanagementbackend.dto.xrd.GrantAccessXrdRequest;
-import gov.ncbj.nomaten.datamanagementbackend.dto.xrd.GrantAccessXrdResponse;
-import gov.ncbj.nomaten.datamanagementbackend.model.XrdFolderStructure;
-import gov.ncbj.nomaten.datamanagementbackend.service.XrdService;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemResponse;
+import gov.ncbj.nomaten.datamanagementbackend.model.TemFolderStructure;
+import gov.ncbj.nomaten.datamanagementbackend.service.TemService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,20 +15,20 @@ import static org.springframework.http.ResponseEntity.ok;
 @CrossOrigin
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/xrd")
-public class XrdController {
+@RequestMapping("/api/tem")
+public class TemController {
 
-    private final XrdService xrdService;
+    private final TemService temService;
 
     @GetMapping("/main-folder")
-    public ResponseEntity<XrdFolderStructure> getXrdFolderStructure() {
-        return ok(xrdService.getXrdFolderStructure());
+    public ResponseEntity<TemFolderStructure> getTemFolderStructure() {
+        return ok(temService.getTemFolderStructure());
     }
 
     @GetMapping("/download-file")
-    public ResponseEntity<Resource> downloadXrdFile(@RequestParam String fileNameWithPath) {
+    public ResponseEntity<Resource> downloadTemFile(@RequestParam String fileNameWithPath) {
         // todo validation
-        Resource resource = xrdService.downloadXrdFile(fileNameWithPath);
+        Resource resource = temService.downloadTemFile(fileNameWithPath);
         return ok()
 //                .contentType(MediaType.parseMediaType(Files.probeContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
@@ -37,9 +37,9 @@ public class XrdController {
     }
 
     @PutMapping("/grant-access")
-    public ResponseEntity<GrantAccessXrdResponse> grantAccessXrd(@RequestBody GrantAccessXrdRequest grantAccessXrdRequest) {
+    public ResponseEntity<GrantAccessTemResponse> grantAccessTem(@RequestBody GrantAccessTemRequest grantAccessTemRequest) {
         // todo validation
-        return ok(xrdService.grantAccessXrd(grantAccessXrdRequest));
+        return ok(temService.grantAccessTem(grantAccessTemRequest));
     }
 
 }

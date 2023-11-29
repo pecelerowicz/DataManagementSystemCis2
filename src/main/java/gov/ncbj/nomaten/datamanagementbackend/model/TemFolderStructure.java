@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class XrdFolderStructure {
+public class TemFolderStructure {
     private PathNode folderStructure;
     private boolean canRead;
     private boolean canDownload;
