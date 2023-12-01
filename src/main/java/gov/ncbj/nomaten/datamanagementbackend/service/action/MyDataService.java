@@ -21,6 +21,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.GENERAL;
 import static java.nio.file.FileSystems.getDefault;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
@@ -36,15 +37,15 @@ public class MyDataService {
     public List<Package> getPackageList() {
         User currentUser = authService.getCurrentUser();
         List<Info> infoList = infoService.getInfoListByUser(currentUser);
-        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, currentUser.getUsername()));
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername()));
         return combineStorageWithMetadata(infoList, storageNames);
     }
 
     public String createPackage(String packageName) throws IOException {
         User currentUser = authService.getCurrentUser();
         checkService.packageDoesNotExist(currentUser, packageName);
-        Path createdPackagePath = folderService.createFolder(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
-        return getDefault().getPath(STORAGE, currentUser.getUsername()).relativize(createdPackagePath).toString();
+        Path createdPackagePath = folderService.createFolder(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), packageName));
+        return getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername()).relativize(createdPackagePath).toString();
     }
 
     /**
@@ -61,9 +62,9 @@ public class MyDataService {
             Info info = infoService.getInfo(renamePackageRequest.getPackageOldName(), currentUser);
             checkService.infoIsNotArchived(info, "package archived");
         }
-        if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName())) &&
-           folderService.isDirectory(getDefault().getPath(STORAGE, currentUser.getUsername(), renamePackageRequest.getPackageOldName()))) {
-                folderService.renameItem(getDefault().getPath(STORAGE, currentUser.getUsername()),
+        if(folderService.itemExists(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), renamePackageRequest.getPackageOldName())) &&
+           folderService.isDirectory(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), renamePackageRequest.getPackageOldName()))) {
+                folderService.renameItem(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername()),
                         renamePackageRequest.getPackageOldName(), renamePackageRequest.getPackageNewName());
         }
         if(infoService.infoExists(renamePackageRequest.getPackageOldName(), currentUser)) {
@@ -84,8 +85,8 @@ public class MyDataService {
             checkService.infoIsNotInProject(info);
             infoService.deleteInfo(info.getInfoName(), currentUser);
         }
-        if(folderService.itemExists(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName))) {
-            folderService.deleteItem(getDefault().getPath(STORAGE, currentUser.getUsername(), packageName));
+        if(folderService.itemExists(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), packageName))) {
+            folderService.deleteItem(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), packageName));
         }
     }
 
@@ -129,33 +130,33 @@ public class MyDataService {
 
     public String createStorage(String storageName) throws IOException {
         User currentUser = authService.getCurrentUser();
-        checkService.folderDoesNotExist(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName));
-        return folderService.createFolder(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName)).getFileName().toString();
+        checkService.folderDoesNotExist(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), storageName));
+        return folderService.createFolder(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), storageName)).getFileName().toString();
     }
 
     public PathNode getPackageFolderStructure(String storageName) {
         User currentUser = authService.getCurrentUser();
-        checkService.folderExists(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName),
+        checkService.folderExists(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), storageName),
                 "Package " + storageName + " does not exist");
-        return folderService.getFolderStructure(getDefault().getPath(STORAGE, currentUser.getUsername(), storageName));
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), storageName));
     }
 
     public String createFolder(CreateFolderRequest createFolderRequest) throws IOException {
         User currentUser = authService.getCurrentUser();
-        Path newFolderPath = getDefault().getPath(STORAGE, currentUser.getUsername(), createFolderRequest.getPackageName(),
+        Path newFolderPath = getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), createFolderRequest.getPackageName(),
                 createFolderRequest.getParentFolderRelativePath(), createFolderRequest.getNewFolderName());
         checkService.packageIsNotArchived(currentUser, createFolderRequest.getPackageName(),
                 "The package is archived and cannot be modified.");
         checkService.folderDoesNotExist(newFolderPath);
         Path createdFolderPath = folderService.createFolder(newFolderPath);
-        Path basePath = getDefault().getPath(STORAGE, currentUser.getUsername(), createFolderRequest.getPackageName());
+        Path basePath = getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(), createFolderRequest.getPackageName());
         Path subPath = basePath.relativize(createdFolderPath);
         return subPath.toString();
     }
 
     public void deleteItem(DeleteItemRequest deleteItemRequest) throws IOException {
         User currentUser = authService.getCurrentUser();
-        Path folderPath = getDefault().getPath(STORAGE, currentUser.getUsername(),
+        Path folderPath = getDefault().getPath(STORAGE, GENERAL, currentUser.getUsername(),
                 deleteItemRequest.getPackageName(), deleteItemRequest.getItemPathString());
         checkService.packageIsNotArchived(currentUser, deleteItemRequest.getPackageName(),
                 "The package is archived and cannot be modified.");

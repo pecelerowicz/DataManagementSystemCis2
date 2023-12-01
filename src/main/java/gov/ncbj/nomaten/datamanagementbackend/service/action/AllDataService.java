@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.GENERAL;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
 import static java.util.stream.Collectors.toList;
@@ -70,7 +71,7 @@ public class AllDataService {
         User packageOwner = authService.getUserByName(userName);
         Info info = infoService.getInfo(storageName, packageOwner);
         checkService.infoIsPublic(info);
-        return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, storageName));
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, GENERAL, userName, storageName));
     }
 
     public Resource downloadFileOfUser(String userName, String packageName, String fileNameWithPath) {
@@ -98,7 +99,7 @@ public class AllDataService {
     private Path getPackagePath(Info info) {
         String username = info.getUser().getUsername();
         String name = info.getInfoName();
-        return getDefault().getPath(STORAGE, username, name);
+        return getDefault().getPath(STORAGE, GENERAL, username, name);
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.GENERAL;
 import static java.nio.file.FileSystems.getDefault;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 
@@ -87,8 +88,8 @@ public class AllProjectsService {
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
-        checkService.folderExists(getDefault().getPath(STORAGE, userName, infoName), "Package does not exist");
-        return folderService.getFolderStructure(getDefault().getPath(STORAGE, userName, infoName));
+        checkService.folderExists(getDefault().getPath(STORAGE, GENERAL, userName, infoName), "Package does not exist");
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, GENERAL, userName, infoName));
     }
 
     public Resource downloadFileOfProject(Long projectId, String userName, String infoName, String fileNameWithPath) {
@@ -99,8 +100,8 @@ public class AllProjectsService {
         checkService.userIsInProject(currentUser, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoIsInProject(info, project);
-        checkService.folderExists(getDefault().getPath(STORAGE, userName, infoName), "Package does not exist");
-        checkService.fileExists(getDefault().getPath(STORAGE, userName, infoName, fileNameWithPath), "File does not exist");
+        checkService.folderExists(getDefault().getPath(STORAGE, GENERAL, userName, infoName), "Package does not exist");
+        checkService.fileExists(getDefault().getPath(STORAGE, GENERAL, userName, infoName, fileNameWithPath), "File does not exist");
         return folderService.downloadFile(infoName, userName, fileNameWithPath);
     }
 }

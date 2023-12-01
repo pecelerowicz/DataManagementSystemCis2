@@ -13,9 +13,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.TEM;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.*;
 import static java.nio.file.FileSystems.getDefault;
-import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -63,13 +62,13 @@ public class FolderService {
     }
 
     public void uploadFile(MultipartFile file, String packageName, String userName, String folderRelativePath) throws IOException {
-        Path rootPathStorage = getDefault().getPath(STORAGE, userName, packageName, folderRelativePath, file.getOriginalFilename());
+        Path rootPathStorage = getDefault().getPath(STORAGE, GENERAL, userName, packageName, folderRelativePath, file.getOriginalFilename());
         file.transferTo(rootPathStorage);
     }
 
     public Resource downloadFile(String packageName, String userName, String fileNameWithPath) {
         try {
-            Path filePath = getDefault().getPath(STORAGE, userName, packageName, fileNameWithPath);
+            Path filePath = getDefault().getPath(STORAGE, GENERAL, userName, packageName, fileNameWithPath);
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;
@@ -83,7 +82,7 @@ public class FolderService {
 
     public Resource downloadTemFile(String fileNameWithPath) { // todo remove later (merge with the upper)
         try {
-            Path filePath = getDefault().getPath(TEM, fileNameWithPath);
+            Path filePath = getDefault().getPath(STORAGE, TEM, fileNameWithPath);
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;

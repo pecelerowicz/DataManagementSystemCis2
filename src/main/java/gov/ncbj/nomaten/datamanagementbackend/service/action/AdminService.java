@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.GENERAL;
 import static java.nio.file.FileSystems.getDefault;
 import static java.time.Instant.now;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
@@ -36,16 +37,16 @@ public class AdminService {
     }
 
     public List<String> createStorageUser(CreateStorageUserRequest createStorageUserRequest) throws IOException {
-        Path path = getDefault().getPath(STORAGE);
-        Path userPath = getDefault().getPath(STORAGE, createStorageUserRequest.getUserName());
+        Path path = getDefault().getPath(STORAGE, GENERAL);
+        Path userPath = getDefault().getPath(STORAGE, GENERAL, createStorageUserRequest.getUserName());
         checkService.folderDoesNotExist(userPath, "User " + createStorageUserRequest.getUserName() + " already exists");
         folderService.createFolder(userPath);
         return folderService.getDirectSubfolders(path);
     }
 
     public List<String> deleteStorageUser(DeleteUserRequest deleteUserRequest) throws IOException {
-        Path path = getDefault().getPath(STORAGE);
-        Path userPath = getDefault().getPath(STORAGE, deleteUserRequest.getUserName());
+        Path path = getDefault().getPath(STORAGE, GENERAL);
+        Path userPath = getDefault().getPath(STORAGE, GENERAL, deleteUserRequest.getUserName());
         checkService.folderExists(userPath, "Main folder of the user "
                 + deleteUserRequest.getUserName() + " does not exist");
         checkService.folderIsEmpty(userPath, "Cannot remove user with data");

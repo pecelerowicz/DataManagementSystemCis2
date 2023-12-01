@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.GENERAL;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
 
@@ -60,7 +61,7 @@ public class MyProjectsService {
         return projectService.addUserToProject(project, userToAdd);
     }
 
-    public List<Info>              getInfoList() {
+    public List<Info> getInfoList() {
         User user = authService.getCurrentUser();
         return infoService.getInfoList(user);
     }
@@ -131,7 +132,7 @@ public class MyProjectsService {
         checkService.userIsInProject(packageOwner, project);
         checkService.infoByUserIsInProject(infoName, packageOwner, project);
         checkService.storageExists(packageOwner, infoName);
-        return folderService.getFolderStructure(getDefault().getPath(STORAGE, ownerName, infoName));
+        return folderService.getFolderStructure(getDefault().getPath(STORAGE, GENERAL, ownerName, infoName));
     }
 
     public Resource downloadFileOfProject(Long projectId, String userName, String infoName, String fileNameWithPath) {
@@ -142,7 +143,7 @@ public class MyProjectsService {
         checkService.userIsInProject(projectOwner, project);
         checkService.userIsInProject(packageOwner, project);
         checkService.infoByUserIsInProject(infoName, packageOwner, project);
-        checkService.fileExists(getDefault().getPath(STORAGE, packageOwner.getUsername(), infoName, fileNameWithPath),
+        checkService.fileExists(getDefault().getPath(STORAGE, GENERAL, packageOwner.getUsername(), infoName, fileNameWithPath),
                 "File does not exist");
         return folderService.downloadFile(infoName, userName, fileNameWithPath);
     }

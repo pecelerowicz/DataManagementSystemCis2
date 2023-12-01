@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.TEM;
 import static java.nio.file.FileSystems.getDefault;
 
@@ -38,7 +39,7 @@ public class TemService {
                 .canDownload(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN") || authorities.contains("ROLE_TEM_USER"))
                 .canModifyContent(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN"))
                 .canModifyAuthorities(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN"))
-                .folderStructure(folderService.getFolderStructure(getDefault().getPath(TEM)))
+                .folderStructure(folderService.getFolderStructure(getDefault().getPath(STORAGE, TEM)))
                 .build();
     }
 

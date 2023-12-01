@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.GENERAL;
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
 import static java.nio.file.FileSystems.getDefault;
 import static java.util.stream.Collectors.toList;
@@ -93,10 +94,10 @@ public class CheckService {
     }
 
     public void storageExists(User packageOwner, String infoName) {
-        if(!folderService.fileOrFolderExists(getDefault().getPath(STORAGE, packageOwner.getUsername(), infoName))) {
+        if(!folderService.fileOrFolderExists(getDefault().getPath(STORAGE, GENERAL, packageOwner.getUsername(), infoName))) {
             throw new RuntimeException("Item does not exist");
         }
-        if(!folderService.isDirectory(getDefault().getPath(STORAGE, packageOwner.getUsername(), infoName))) {
+        if(!folderService.isDirectory(getDefault().getPath(STORAGE, GENERAL, packageOwner.getUsername(), infoName))) {
             throw new RuntimeException("Main folder does not exist");
         }
     }
@@ -129,7 +130,7 @@ public class CheckService {
 
     public void packageDoesNotExist(User user, String packageName) {
         List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
-        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, GENERAL, user.getUsername()));
         if(metadataNames.contains(packageName) || storageNames.contains(packageName)) {
             throw new RuntimeException("Package " + packageName + " already exists");
         }
@@ -137,7 +138,7 @@ public class CheckService {
 
     public void packageExists(User user, String packageName) {
         List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
-        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, GENERAL, user.getUsername()));
         if(!metadataNames.contains(packageName) && !storageNames.contains(packageName)) {
             throw new RuntimeException("Package " + packageName + " does not exists");
         }
@@ -158,7 +159,7 @@ public class CheckService {
 
     public void packageIsReadyToBeArchived(User user, String packageName) {
         List<String> metadataNames = user.getInfoList().stream().map(Info::getInfoName).collect(toList());
-        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, user.getUsername()));
+        List<String> storageNames = folderService.getDirectSubfolders(getDefault().getPath(STORAGE, GENERAL, user.getUsername()));
         if(!metadataNames.contains(packageName) || !storageNames.contains(packageName)) {
             throw new RuntimeException("Package must contain both data and metadata to be archived");
         }
