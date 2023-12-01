@@ -2,7 +2,7 @@ package gov.ncbj.nomaten.datamanagementbackend.controller;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemResponse;
-import gov.ncbj.nomaten.datamanagementbackend.model.TemFolderStructure;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.TemFolderStructure;
 import gov.ncbj.nomaten.datamanagementbackend.service.TemService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;

@@ -1,9 +1,7 @@
 package gov.ncbj.nomaten.datamanagementbackend.dto.my_tem;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
+import lombok.*;
 
 @Data
 @Builder

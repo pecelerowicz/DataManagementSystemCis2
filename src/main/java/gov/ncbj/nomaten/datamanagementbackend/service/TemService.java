@@ -2,8 +2,8 @@ package gov.ncbj.nomaten.datamanagementbackend.service;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemResponse;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.TemFolderStructure;
 import gov.ncbj.nomaten.datamanagementbackend.model.User;
-import gov.ncbj.nomaten.datamanagementbackend.model.TemFolderStructure;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.FolderService;

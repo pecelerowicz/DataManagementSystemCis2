@@ -1,5 +1,6 @@
-package gov.ncbj.nomaten.datamanagementbackend.model;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_tem;
 
+import gov.ncbj.nomaten.datamanagementbackend.model.PathNode;
 import lombok.*;
 
 @Data
