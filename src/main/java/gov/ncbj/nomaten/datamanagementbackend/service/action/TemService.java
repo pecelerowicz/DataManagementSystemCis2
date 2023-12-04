@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.service;
+package gov.ncbj.nomaten.datamanagementbackend.service.action;
 
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemResponse;
@@ -7,12 +7,15 @@ import gov.ncbj.nomaten.datamanagementbackend.model.User;
 import gov.ncbj.nomaten.datamanagementbackend.repository.UserRepository;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.AuthService;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.FolderService;
+import gov.ncbj.nomaten.datamanagementbackend.service.support.ZipService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,11 +27,9 @@ import static java.nio.file.FileSystems.getDefault;
 @Service
 @AllArgsConstructor
 public class TemService {
-
     private final AuthService authService;
-
     private final FolderService folderService;
-
+    private final ZipService zipService;
     private final UserRepository userRepository;
 
     public TemFolderStructure getTemFolderStructure() {
@@ -68,5 +69,12 @@ public class TemService {
         String newRoles = user.getRoles().concat(";ROLE_TEM_USER");
         user.setRoles(newRoles);
         return GrantAccessTemResponse.builder().message("Access granted").build();
+    }
+
+    @Transactional
+    public Resource createZipResource(String fileNameWithPath) {
+        folderService.itemExistsOrThrow(FileSystems.getDefault().getPath(STORAGE, TEM, fileNameWithPath));
+        Path zipFilePath = zipService.zipFile(fileNameWithPath);
+        return folderService.downloadZipFile(zipFilePath.toString());
     }
 }

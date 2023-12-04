@@ -46,6 +46,12 @@ public class FolderService {
         return Files.exists(itemPath);
     }
 
+    public void itemExistsOrThrow(Path itemPath) {
+        if(!Files.exists(itemPath)) {
+            throw new RuntimeException("Item does not exist");
+        }
+    }
+
     public boolean fileOrFolderExists(Path path) {
         return Files.exists(path);
     }
@@ -93,6 +99,22 @@ public class FolderService {
             throw new RuntimeException("File not found " + fileNameWithPath, ex);
         }
     }
+
+    public Resource downloadZipFile(String fileNameWithPath) { // todo remove later (merge with the upper two)
+        try {
+            Path filePath = getDefault().getPath(fileNameWithPath);
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileNameWithPath);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileNameWithPath, ex);
+        }
+    }
+
+
 
     public List<String> getDirectSubfolders(Path path) {
         List<Path> paths = createSortedPathsLevelOne(path);
