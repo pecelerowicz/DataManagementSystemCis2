@@ -14,14 +14,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
-import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.STORAGE;
-import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.TEM;
+import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.*;
 import static java.nio.file.FileSystems.getDefault;
 
 @Service
@@ -76,5 +82,51 @@ public class TemService {
         folderService.itemExistsOrThrow(FileSystems.getDefault().getPath(STORAGE, TEM, fileNameWithPath));
         Path zipFilePath = zipService.zipFile(fileNameWithPath);
         return folderService.downloadZipFile(zipFilePath.toString());
+    }
+
+    @Transactional
+    public Resource createZipResource(List<String> fileNamesWithPaths) {
+        fileNamesWithPaths.forEach(fn -> folderService.itemExistsOrThrow(FileSystems.getDefault().getPath(STORAGE, TEM, fn)));
+
+        List<Path> filesToZip = fileNamesWithPaths.stream().map(fp -> getDefault().getPath(STORAGE, TEM, fp)).collect(Collectors.toList());
+
+        Path zipFilePath = FileSystems.getDefault().getPath(STORAGE, ZIP, "archive-" + UUID.randomUUID() + ".zip");
+
+        try {
+            zipFiles(filesToZip, zipFilePath);
+            System.out.println("Files zipped successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return folderService.downloadZipFile(zipFilePath.toString());
+    }
+
+
+    private static void zipFiles(List<Path> filesToZip, Path zipFilePath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(zipFilePath.toFile());
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            byte[] buffer = new byte[1024];
+
+            for (Path filePath : filesToZip) {
+                if (!Files.exists(filePath)) {
+                    System.out.println("File not found: " + filePath);
+                    continue;
+                }
+
+                ZipEntry zipEntry = new ZipEntry(filePath.toString());
+                zos.putNextEntry(zipEntry);
+
+                try (InputStream fis = Files.newInputStream(filePath)) {
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+                }
+
+                zos.closeEntry();
+            }
+        }
     }
 }

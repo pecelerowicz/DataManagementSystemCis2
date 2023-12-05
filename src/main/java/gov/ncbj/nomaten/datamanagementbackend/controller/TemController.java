@@ -1,9 +1,10 @@
 package gov.ncbj.nomaten.datamanagementbackend.controller;
 
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.DownloadTemZipFilesRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemRequest;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.GrantAccessTemResponse;
 import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.TemFolderStructure;
-import gov.ncbj.nomaten.datamanagementbackend.dto.my_zip.DownloadTemZipFileRequest;
+import gov.ncbj.nomaten.datamanagementbackend.dto.my_tem.DownloadTemZipFileRequest;
 import gov.ncbj.nomaten.datamanagementbackend.service.action.TemService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -48,6 +49,18 @@ public class TemController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename())
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
                 .body(resource);
+    }
+
+    @PostMapping("/download-zip-files")
+    public ResponseEntity<Resource> downloadTemZipFiles(@RequestBody DownloadTemZipFilesRequest downloadTemZipFilesRequest) {
+        // todo validation (ONLY FILES WITH A VERY WELL DEFINED STRUCTURE CAN BE ZIPPED!)
+        Resource zipResource = temService.createZipResource(downloadTemZipFilesRequest.getFileNamesWithPaths());
+
+        return ok()
+//                .contentType(MediaType.parseMediaType(Files.probeContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipResource.getFilename())
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                .body(zipResource);
     }
 
     @PutMapping("/grant-access")

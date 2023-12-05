@@ -1,4 +1,4 @@
-package gov.ncbj.nomaten.datamanagementbackend.dto.my_zip;
+package gov.ncbj.nomaten.datamanagementbackend.dto.my_tem;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ZipAndDownloadFilesRequest {
+public class DownloadTemZipFilesRequest {
     private List<String> fileNamesWithPaths;
 }
