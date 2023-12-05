@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DownloadTemZipFilesRequest {
+public class DownloadZipFilesRequest {
     private List<String> fileNamesWithPaths;
 }
