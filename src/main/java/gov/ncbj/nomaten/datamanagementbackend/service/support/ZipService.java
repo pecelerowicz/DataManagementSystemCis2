@@ -2,41 +2,85 @@ package gov.ncbj.nomaten.datamanagementbackend.service.support;
 
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.*;
-
 @Service
 public class ZipService {
-    public Path zipFile(String fileNameWithPath) {
-        Path sourceFilePath = FileSystems.getDefault().getPath(STORAGE, TEM, fileNameWithPath);
-        String zippedFileName = changeExtensionToZip(sourceFilePath.getFileName().toString());
-        Path zipFilePath = FileSystems.getDefault().getPath(STORAGE, ZIP, zippedFileName);
+    public void zipFile(Path sourcePath, Path outputPath) {
         try {
-            try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
-                ZipEntry zipEntry = new ZipEntry(sourceFilePath.getFileName().toString());
+            try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(outputPath))) {
+                ZipEntry zipEntry = new ZipEntry(sourcePath.getFileName().toString());
                 zipOutputStream.putNextEntry(zipEntry);
-                Files.copy(sourceFilePath, zipOutputStream);
+                Files.copy(sourcePath, zipOutputStream);
                 zipOutputStream.closeEntry();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return zipFilePath;
     }
 
-    private String changeExtensionToZip(String fileNameWithExtension) {
-        if(!fileNameWithExtension.contains(".")) {
-            return fileNameWithExtension;
-        } else if(fileNameWithExtension.split("\\.").length > 2) {
-            throw new RuntimeException("Invalid file name");
-        } else {
-            return fileNameWithExtension.split("\\.")[0].concat(".zip");
+    public void zipFiles(List<Path> sourcePaths, Path outputPath) {
+        try {
+            zipFilesPrivate(sourcePaths, outputPath);
+            System.out.println("Files zipped successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    private static void zipFilesPrivate(List<Path> filesToZip, Path zipFilePath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(zipFilePath.toFile());
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            byte[] buffer = new byte[1024];
+
+            for (Path filePath : filesToZip) {
+                if (!Files.exists(filePath)) {
+                    System.out.println("File not found: " + filePath);
+                    continue;
+                }
+
+                ZipEntry zipEntry = new ZipEntry(filePath.toString());
+                zos.putNextEntry(zipEntry);
+
+                try (InputStream fis = Files.newInputStream(filePath)) {
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+                }
+
+                zos.closeEntry();
+            }
+        }
+    }
+
+    public void zipFolder(Path sourcePath, Path outputPath) {
+        try {
+            try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(outputPath))) {
+                Files.walk(sourcePath)
+                        .filter(path -> !Files.isDirectory(path))
+                        .forEach(path -> {
+                            ZipEntry zipEntry = new ZipEntry(sourcePath.relativize(path).toString());
+                            try {
+                                zipOutputStream.putNextEntry(zipEntry);
+                                Files.copy(path, zipOutputStream);
+                                zipOutputStream.closeEntry();
+                            } catch (IOException e) {
+                                e.printStackTrace(); // Handle the exception according to your requirements
+                            }
+                        });
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception according to your requirements
+        }
+    }
+
 }

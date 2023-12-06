@@ -10,21 +10,15 @@ import gov.ncbj.nomaten.datamanagementbackend.service.support.FolderService;
 import gov.ncbj.nomaten.datamanagementbackend.service.support.ZipService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import static gov.ncbj.nomaten.datamanagementbackend.constants.Constants.*;
 import static java.nio.file.FileSystems.getDefault;
@@ -38,109 +32,70 @@ public class TemService {
     private final UserRepository userRepository;
 
     public TemFolderStructure getFolderStructure() {
-        List<String> authorities = authService.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-
-        return TemFolderStructure.builder() // todo fix
+        return TemFolderStructure.builder() // todo test
                 .canRead(true)
-                .canDownload(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN") || authorities.contains("ROLE_TEM_USER"))
-                .canModifyContent(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN"))
-                .canModifyAuthorities(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN"))
+                .canDownload(authService.isAuthorizedAsEither("ROLE_ADMIN", "ROLE_TEM_ADMIN", "ROLE_TEM_USER"))
+                .canModifyContent(authService.isAuthorizedAsEither("ROLE_ADMIN", "ROLE_TEM_ADMIN"))
+                .canModifyAuthorities(authService.isAuthorizedAsEither("ROLE_ADMIN", "ROLE_TEM_ADMIN"))
                 .folderStructure(folderService.getFolderStructure(getDefault().getPath(STORAGE, TEM)))
                 .build();
     }
 
     public Resource createFileResource(String fileNameWithPath) {
-        List<String> authorities = authService.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        if(!(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN") || authorities.contains("ROLE_TEM_USER"))) {
-            throw new RuntimeException("No access for the resource");
-        }
-        return folderService.downloadTemFile(fileNameWithPath);
+        authService.isAuthorizedAsEitherOrThrow("ROLE_ADMIN", "ROLE_TEM_ADMIN", "ROLE_TEM_USER");
+        Path resourcePath = getDefault().getPath(STORAGE, TEM, fileNameWithPath);
+        // TODO check if: resourcePath exists, resourcePath is a file
+
+        return folderService.retrieveResource(resourcePath);
     }
 
     @Transactional
     public Resource createZipFileResource(String fileNameWithPath) {
-        folderService.itemExistsOrThrow(FileSystems.getDefault().getPath(STORAGE, TEM, fileNameWithPath));
-        Path zipFilePath = zipService.zipFile(fileNameWithPath);
-        return folderService.downloadZipFile(zipFilePath.toString());
+        authService.isAuthorizedAsEitherOrThrow("ROLE_ADMIN", "ROLE_TEM_ADMIN", "ROLE_TEM_USER");
+
+        Path sourcePath = FileSystems.getDefault().getPath(STORAGE, TEM, fileNameWithPath);
+        Path outputPath = FileSystems.getDefault().getPath(STORAGE, ZIP, "archive-file-" + UUID.randomUUID() + ".zip");
+        // TODO check if: sourcePath exists, sourcePath is a file, outputPath doesn't exist
+
+        zipService.zipFile(sourcePath, outputPath);
+        // TODO check if: outputPath exists
+
+        return folderService.retrieveResource(outputPath);
     }
 
     @Transactional
     public Resource createZipFilesResource(List<String> fileNamesWithPaths) {
-        fileNamesWithPaths.forEach(fn -> folderService.itemExistsOrThrow(FileSystems.getDefault().getPath(STORAGE, TEM, fn)));
+        authService.isAuthorizedAsEitherOrThrow("ROLE_ADMIN", "ROLE_TEM_ADMIN", "ROLE_TEM_USER");
 
-        List<Path> filesToZip = fileNamesWithPaths.stream().map(fp -> getDefault().getPath(STORAGE, TEM, fp)).collect(Collectors.toList());
+        List<Path> sourcePaths = fileNamesWithPaths.stream()
+                .map(n -> FileSystems.getDefault().getPath(STORAGE, TEM, n))
+                .collect(Collectors.toList());
+        Path outputPath = FileSystems.getDefault().getPath(STORAGE, ZIP, "archive-files-" + UUID.randomUUID() + ".zip");
+        // TODO check if: all source paths exist (done, check), all source paths are files, output path doesn't exist
+        sourcePaths.forEach(folderService::itemExistsOrThrow); // todo fix
 
-        Path zipFilePath = FileSystems.getDefault().getPath(STORAGE, ZIP, "archive-files-" + UUID.randomUUID() + ".zip");
+        zipService.zipFiles(sourcePaths, outputPath);
+        // TODO check if: outputPath exists
 
-        try {
-            zipFiles(filesToZip, zipFilePath);
-            System.out.println("Files zipped successfully.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return folderService.downloadZipFile(zipFilePath.toString());
+        return folderService.retrieveResource(outputPath);
     }
 
     public Resource createZipFolderResource(String folderNameWithPath) {
+        authService.isAuthorizedAsEitherOrThrow("ROLE_ADMIN", "ROLE_TEM_ADMIN", "ROLE_TEM_USER");
 
-        Path sourceFolderPath = FileSystems.getDefault().getPath(STORAGE, TEM, folderNameWithPath);
-        Path zipFilePath = FileSystems.getDefault().getPath(STORAGE, ZIP, "archive-folder-" + UUID.randomUUID() + ".zip");
+        Path sourcePath = FileSystems.getDefault().getPath(STORAGE, TEM, folderNameWithPath);
+        Path outputPath = FileSystems.getDefault().getPath(STORAGE, ZIP, "archive-folder-" + UUID.randomUUID() + ".zip");
+        // TODO check if: sourcePath exists, sourcePath is a folder, outputPath doesn't exist
 
-        try {
-            try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
-                Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Path relativePath = sourceFolderPath.relativize(file);
-                        ZipEntry zipEntry = new ZipEntry(relativePath.toString());
-                        zipOutputStream.putNextEntry(zipEntry);
-                        Files.copy(file, zipOutputStream);
-                        zipOutputStream.closeEntry();
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return folderService.downloadZipFile(zipFilePath.toString());
+        zipService.zipFolder(sourcePath, outputPath);
+        // TODO check if: outputPath exists
 
-    }
-
-    private static void zipFiles(List<Path> filesToZip, Path zipFilePath) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(zipFilePath.toFile());
-             ZipOutputStream zos = new ZipOutputStream(fos)) {
-
-            byte[] buffer = new byte[1024];
-
-            for (Path filePath : filesToZip) {
-                if (!Files.exists(filePath)) {
-                    System.out.println("File not found: " + filePath);
-                    continue;
-                }
-
-                ZipEntry zipEntry = new ZipEntry(filePath.toString());
-                zos.putNextEntry(zipEntry);
-
-                try (InputStream fis = Files.newInputStream(filePath)) {
-                    int length;
-                    while ((length = fis.read(buffer)) > 0) {
-                        zos.write(buffer, 0, length);
-                    }
-                }
-
-                zos.closeEntry();
-            }
-        }
+        return folderService.retrieveResource(outputPath);
     }
 
     @Transactional
     public GrantAccessTemResponse grantAccessTem(GrantAccessTemRequest grantAccessTemRequest) {
-        List<String> authorities = authService.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        if(!(authorities.contains("ROLE_ADMIN") || authorities.contains("ROLE_TEM_ADMIN"))) {
-            throw new RuntimeException("No access for the action");
-        }
+        authService.isAuthorizedAsEitherOrThrow("ROLE_ADMIN", "ROLE_TEM_ADMIN");
         User user = userRepository.findByUsername(grantAccessTemRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("No user " + grantAccessTemRequest.getUsername()));
         List<String> listOfRoles = Arrays.stream(user.getRoles().split(";")).collect(Collectors.toList());

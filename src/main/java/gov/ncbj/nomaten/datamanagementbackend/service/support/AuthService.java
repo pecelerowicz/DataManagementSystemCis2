@@ -18,8 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.Instant.now;
 
@@ -56,6 +58,18 @@ public class AuthService {
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    }
+
+    public boolean isAuthorizedAsEither(String... sufficientAuthorities) {
+        return getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(Arrays.stream(sufficientAuthorities).collect(Collectors.toList())::contains);
+    }
+
+    public void isAuthorizedAsEitherOrThrow(String... sufficientAuthorities) {
+        if(!isAuthorizedAsEither(sufficientAuthorities)) {
+            throw new RuntimeException("No access for the resource");
+        }
     }
 
     public LoginResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
