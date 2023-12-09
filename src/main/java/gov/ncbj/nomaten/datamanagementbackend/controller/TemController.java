@@ -59,7 +59,7 @@ public class TemController {
                 .body(zipResource);
     }
 
-    @PostMapping("/download-zip-folder")
+    @GetMapping("/download-zip-folder")
     public ResponseEntity<Resource> downloadZipFolder(@RequestParam String folderNameWithPath) {
         // todo validation
         Resource zipFolderResource = temService.createZipFolderResource(folderNameWithPath);
