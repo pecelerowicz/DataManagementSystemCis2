@@ -46,6 +46,12 @@ public class FolderService {
         return Files.exists(itemPath);
     }
 
+    public void itemExistsOrThrow(Path itemPath) {
+        if(!Files.exists(itemPath)) {
+            throw new RuntimeException("Item does not exist");
+        }
+    }
+
     public boolean fileOrFolderExists(Path path) {
         return Files.exists(path);
     }
@@ -80,17 +86,16 @@ public class FolderService {
         }
     }
 
-    public Resource downloadTemFile(String fileNameWithPath) { // todo remove later (merge with the upper)
+    public Resource retrieveResource(Path resourcePath) {
         try {
-            Path filePath = getDefault().getPath(STORAGE, TEM, fileNameWithPath);
-            Resource resource = new UrlResource(filePath.toUri());
+            Resource resource = new UrlResource(resourcePath.toUri());
             if(resource.exists()) {
                 return resource;
             } else {
-                throw new RuntimeException("File not found " + fileNameWithPath);
+                throw new RuntimeException("File not found");
             }
         } catch (MalformedURLException ex) {
-            throw new RuntimeException("File not found " + fileNameWithPath, ex);
+            throw new RuntimeException("File not found", ex);
         }
     }
 
