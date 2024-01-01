@@ -34,6 +34,10 @@ public class User {
     @NotBlank(message = "Username is required")
     private String username;
 
+    private String firstName;
+
+    private String secondName;
+
     @NotBlank(message = "Password is required")
     private String password;
 

@@ -39,12 +39,18 @@ public class Info {
 
     @NotBlank(message = "Info name cannot be blank")
     @Column(name = "info_name")
-    @Length(min = 1, max = 40)
+    @Length(min = 1, max = 150)
     private String infoName;
 
     @Column(name = "access")
     @Enumerated(EnumType.STRING)
     private Access access;
+
+    @Column(name = "authors")
+    private String authors;
+
+    @Column(name = "doi")
+    private String doi;
 
     @Column(name = "title")
     private String title;
@@ -57,6 +63,15 @@ public class Info {
 
     @Column(name = "creation_date")
     private LocalDateTime localDateTime;
+
+    @Column(name = "archivization_date")
+    private LocalDateTime archivizationDate;
+
+    @Column(name = "modification_date")
+    private LocalDateTime modificationDate;
+
+    @Column(name = "publication_date")
+    private LocalDateTime publicationDate;
 
     @Column
     private Boolean archived;
